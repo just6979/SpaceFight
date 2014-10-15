@@ -29,7 +29,7 @@ void setOriginCenter(sf::Sprite&);
 void initializeSystem()
 {
 	// Create the main window
-	window.create(sf::VideoMode(width, height), title);
+	window.create(sf::VideoMode(width, height), title, sf::Style::Titlebar|sf::Style::Close);
 	window.setVerticalSyncEnabled(true);
 	// Load a sprite to display
 	if(!logoTexture.loadFromFile("cb.bmp")) {
