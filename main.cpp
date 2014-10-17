@@ -9,10 +9,12 @@ const char* title = "SFML";
 sf::RenderWindow window;
 
 // game data
-const float speed = 0.10;
+const float logoSpeed = 0.010;
+const float deadZone = 15;
+const float keySpeed = 75;
 sf::Texture logoTexture;
 sf::Sprite logo;
-sf::Vector2<float> dir;
+sf::Vector2<float> logoVector;
 
 
 // system functions
@@ -73,27 +75,32 @@ void processEvents()
 
 void updateControls()
 {
-	dir.x = 0;
-	dir.y = 0;
-	// check controls
+	logoVector.x = 0;
+	logoVector.y = 0;
+
+	float joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+	float joy0_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+	logoVector.x = abs(joy0_X) < deadZone ? 0 : joy0_X;
+	logoVector.y = abs(joy0_y) < deadZone ? 0 : joy0_y;
+
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		dir.y += -1.0;
+		logoVector.y += -keySpeed;
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		dir.x += 1.0;
+		logoVector.x += keySpeed;
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		dir.y += 1.0;
+		logoVector.y += keySpeed;
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		dir.x += -1.0;
+		logoVector.x += -keySpeed;
 	}
 }
 
 void updateWorld(sf::Time elapsed)
 {
 	const int millis = elapsed.asMilliseconds();
-	logo.move(dir * (speed * millis));
+	logo.move(logoVector * (logoSpeed * millis));
 }
 
 void renderWorld()
