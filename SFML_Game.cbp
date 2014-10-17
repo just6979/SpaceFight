@@ -91,6 +91,8 @@
 			<Add library="winmm" />
 			<Add library="dxguid" />
 		</Linker>
+		<Unit filename="Logger.cpp" />
+		<Unit filename="Logger.h" />
 		<Unit filename="main.cpp">
 			<Option weight="0" />
 		</Unit>
