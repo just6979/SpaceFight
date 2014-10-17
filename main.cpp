@@ -1,4 +1,9 @@
+#include <iostream>
+#include <fstream>
+
 #include <cstdio>
+
+using namespace std;
 
 #include <SFML/Graphics.hpp>
 
@@ -7,6 +12,7 @@ const int width = 1280;
 const int height = 720;
 const char* title = "SFML";
 sf::RenderWindow window;
+std::ofstream info("log.txt");
 
 // game data
 const float logoSpeed = 0.010;
@@ -30,10 +36,10 @@ void setOriginCenter(sf::Sprite&);
 
 void initializeSystem()
 {
-	// Create the main window
+	info << "Create the main window." << std::endl;
 	window.create(sf::VideoMode(width, height), title, sf::Style::Titlebar | sf::Style::Close);
 	window.setVerticalSyncEnabled(true);
-	// Load a sprite to display
+	info << "Load a sprite to display." << endl;
 	if(!logoTexture.loadFromFile("cb.bmp")) {
 		exit(EXIT_FAILURE);
 	}
@@ -50,11 +56,13 @@ void processEvents()
 	while(window.pollEvent(event)) {
 		switch(event.type) {
 		case sf::Event::Closed:
+			info << "Window closed." << endl;
 			window.close();
 			break;
 		case sf::Event::KeyPressed:
 			switch(event.key.code) {
 			case sf::Keyboard::Escape:
+				info << "Player exited." << endl;
 				window.close();
 				break;
 			default:
@@ -119,10 +127,11 @@ void setOriginCenter(sf::Sprite& sprite)
 
 int main()
 {
+	info << "Starting up..." << endl;
 	initializeSystem();
 	sf::Clock gameClock;
 	sf::Time elapsed;
-
+	info << "Running..." << endl;
 	while(window.isOpen()) {
 		elapsed = gameClock.restart();
 		processEvents();
@@ -130,6 +139,6 @@ int main()
 		updateWorld(elapsed);
 		renderWorld();
 	}
-
+	info << "Exiting." << endl;
 	return EXIT_SUCCESS;
 }
