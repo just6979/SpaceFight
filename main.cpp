@@ -12,7 +12,7 @@ using namespace std;
 //system data
 const int width = 1280;
 const int height = 720;
-const char* title = "SFML";
+const char* title = "SpaceFight";
 sf::RenderWindow window;
 Logger logger("log.txt");
 
