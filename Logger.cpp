@@ -4,13 +4,19 @@ Logger::Logger(const string& filename)
 {
 	logFilename = filename;
 	logFile.open(logFilename, ios_base::trunc);
-	info((string("Opening ") += logFilename) += " for logging.");
+	setLevel(INFO);
+	debug((string("Opening ") += logFilename) += " for logging.");
 }
 
 Logger::~Logger()
 {
-	info((string("Closing log file ") += logFilename) += ".");
+	debug((string("Closing log file ") += logFilename) += ".");
 	logFile.close();
+}
+
+void Logger::setLevel(levels newLevel)
+{
+	logLevel = newLevel;
 }
 
 void Logger::logIt(const string& msg)
@@ -21,24 +27,30 @@ void Logger::logIt(const string& msg)
 
 void Logger::debug(const string& msg)
 {
-	logIt(string("DEBUG: ") += msg);
+#ifdef DEBUG
+	if(logLevel <= DEBUG) {
+		logIt(string("DEBUG: ") += msg);
+	}
+#endif
 }
 
 void Logger::info(const string& msg)
 {
-	logIt(string("DEBUG: ") += msg);
+	if(logLevel <= INFO) {
+		logIt(string("INFO: ") += msg);
+	}
 }
 
 void Logger::warning(const string& msg)
 {
-	s = "WARNING: ";
-	s += msg;
-	logIt(s);
+	if(logLevel <= WARNING) {
+		logIt(string("WARNING: ") += msg);
+	}
 }
 
 void Logger::error(const string& msg)
 {
-	s = "ERROR: ";
-	s += msg;
-	logIt(s);
+	if(logLevel <= ERROR) {
+		logIt(string("ERROR: ") += msg);
+	}
 }
