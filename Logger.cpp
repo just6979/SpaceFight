@@ -1,3 +1,8 @@
+/*
+	Copyright 2014 Justin White
+	See included LICENSE file for details.
+*/
+
 #include "Logger.h"
 
 Logger::Logger(const string& filename)

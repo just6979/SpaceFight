@@ -1,3 +1,8 @@
+/*
+	Copyright 2014 Justin White
+	See included LICENSE file for details.
+*/
+
 #ifndef LOGGER_H
 #define LOGGER_H
 
