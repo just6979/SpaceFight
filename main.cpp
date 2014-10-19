@@ -12,14 +12,27 @@ using namespace std;
 
 #include <SFML/Graphics.hpp>
 
-#include "Logger.h"
+#include "log4cpp/Category.hh"
+#include "log4cpp/Appender.hh"
+#include "log4cpp/FileAppender.hh"
+#include "log4cpp/OstreamAppender.hh"
+#include "log4cpp/Layout.hh"
+#include "log4cpp/BasicLayout.hh"
+#include "log4cpp/Priority.hh"
+
+// short names for log4cpp Priorities;
+const int DEBUG = log4cpp::Priority::DEBUG;
+const int INFO = log4cpp::Priority::INFO;
+const int WARN = log4cpp::Priority::WARN;
+const int ERROR = log4cpp::Priority::ERROR;
 
 //system data
 const int width = 1280;
 const int height = 720;
 const char* title = "SpaceFight";
 sf::RenderWindow window;
-Logger logger("log.txt");
+string logFilename = "SpaceFight.log";
+log4cpp::Category& logger = log4cpp::Category::getRoot();
 
 // game data
 const float logoSpeed = 0.010;
@@ -39,7 +52,6 @@ void renderWorld();
 
 // utility functions
 void setOriginCenter(sf::Sprite&);
-
 
 void initializeSystem()
 {
@@ -134,6 +146,19 @@ void setOriginCenter(sf::Sprite& sprite)
 
 int main()
 {
+	log4cpp::Appender* console = new log4cpp::OstreamAppender("console", &std::cout);
+	console->setLayout(new log4cpp::BasicLayout());
+	logger.addAppender(console);
+	log4cpp::Appender* logFile = new log4cpp::FileAppender("logFile", logFilename, false);
+	logFile->setLayout(new log4cpp::BasicLayout());
+	logger.addAppender(logFile);
+#ifdef DO_DEBUG
+	logger.setPriority(log4cpp::Priority::DEBUG);
+#else
+	logger.setPriority(log4cpp::Priority::INFO);
+#endif
+	logger << DEBUG << "Opening log " << logFilename;
+
 	logger.info("Starting up...");
 	initializeSystem();
 	sf::Clock gameClock;
@@ -147,5 +172,9 @@ int main()
 		renderWorld();
 	}
 	logger.info("Exiting.");
+
+	logger << DEBUG << "Closing log " << logFilename;
+	logFile->close();
+
 	return EXIT_SUCCESS;
 }
