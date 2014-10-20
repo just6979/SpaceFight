@@ -35,7 +35,7 @@ const int revision = 1;
 const int width = 1280;
 const int height = 720;
 const string title = "SpaceFight";
-sf::RenderWindow window;
+sf::RenderWindow* window;
 string logFilename = title + ".log";
 log4cpp::Category& logger = log4cpp::Category::getRoot();
 
@@ -61,9 +61,9 @@ void setOriginCenter(sf::Sprite&);
 
 void initializeSystem()
 {
-	window.create(sf::VideoMode(width, height), title, sf::Style::Titlebar | sf::Style::Close);
-	if (window.isOpen()) {
-		sf::ContextSettings settings = window.getSettings();
+	window = new sf::RenderWindow(sf::VideoMode(width, height), title, sf::Style::Titlebar | sf::Style::Close);
+	if (window->isOpen()) {
+		sf::ContextSettings settings = window->getSettings();
 		logger.info("Using OpenGL v%d.%d",settings.majorVersion, settings.minorVersion);
 		logger.info("Created the main window %dx%d", width, height);
 	} else {
@@ -71,7 +71,7 @@ void initializeSystem()
 		exit(EXIT_FAILURE);
 	}
 	logger.info("Enabling VSync");
-	window.setVerticalSyncEnabled(true);
+	window->setVerticalSyncEnabled(true);
 	if(!logoTexture.loadFromFile("cb.bmp")) {
 		exit(EXIT_FAILURE);
 	}
@@ -86,17 +86,17 @@ void processEvents()
 {
 	static sf::Event event;
 
-	while(window.pollEvent(event)) {
+	while(window->pollEvent(event)) {
 		switch(event.type) {
 		case sf::Event::Closed:
 			logger.info("Window closed");
-			window.close();
+			window->close();
 			break;
 		case sf::Event::KeyPressed:
 			switch(event.key.code) {
 			case sf::Keyboard::Escape:
 				logger.info("Player exited");
-				window.close();
+				window->close();
 				break;
 			default:
 				break;
@@ -146,9 +146,9 @@ void updateWorld(sf::Time elapsed)
 
 void renderWorld()
 {
-	window.clear(sf::Color::Black);
-	window.draw(logo);
-	window.display();
+	window->clear(sf::Color::Black);
+	window->draw(logo);
+	window->display();
 }
 
 
@@ -189,7 +189,7 @@ int main()
 	sf::Clock gameClock;
 	sf::Time elapsed;
 	logger.info("Running...");
-	while(window.isOpen()) {
+	while(window->isOpen()) {
 		elapsed = gameClock.restart();
 		processEvents();
 		updateControls();
