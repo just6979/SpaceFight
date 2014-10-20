@@ -11,6 +11,7 @@
 
 using namespace std;
 
+#include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 
 #include "log4cpp/Category.hh"
@@ -19,6 +20,7 @@ using namespace std;
 #include "log4cpp/OstreamAppender.hh"
 #include "log4cpp/Layout.hh"
 #include "log4cpp/BasicLayout.hh"
+#include "log4cpp/PatternLayout.hh"
 #include "log4cpp/Priority.hh"
 
 // short names for log4cpp Priorities;
@@ -28,11 +30,13 @@ const int WARN = log4cpp::Priority::WARN;
 const int ERROR = log4cpp::Priority::ERROR;
 
 //system data
+const int version = 0;
+const int revision = 1;
 const int width = 1280;
 const int height = 720;
-const char* title = "SpaceFight";
+const string title = "SpaceFight";
 sf::RenderWindow window;
-string logFilename = "SpaceFight.log";
+string logFilename = title + ".log";
 log4cpp::Category& logger = log4cpp::Category::getRoot();
 
 // game data
@@ -54,15 +58,24 @@ void renderWorld();
 // utility functions
 void setOriginCenter(sf::Sprite&);
 
+
 void initializeSystem()
 {
-	logger.info("Create the main window.");
 	window.create(sf::VideoMode(width, height), title, sf::Style::Titlebar | sf::Style::Close);
+	if (window.isOpen()) {
+		sf::ContextSettings settings = window.getSettings();
+		logger.info("Using OpenGL v%d.%d",settings.majorVersion, settings.minorVersion);
+		logger.info("Created the main window %dx%d", width, height);
+	} else {
+		logger.error("Could not create main window");
+		exit(EXIT_FAILURE);
+	}
+	logger.info("Enabling VSync");
 	window.setVerticalSyncEnabled(true);
-	logger.info("Load a sprite to display.");
 	if(!logoTexture.loadFromFile("cb.bmp")) {
 		exit(EXIT_FAILURE);
 	}
+	logger.info("Loaded sprite");
 	logoTexture.setSmooth(true);
 	logo.setTexture(logoTexture, true);
 	setOriginCenter(logo);
@@ -76,13 +89,13 @@ void processEvents()
 	while(window.pollEvent(event)) {
 		switch(event.type) {
 		case sf::Event::Closed:
-			logger.info("Window closed.");
+			logger.info("Window closed");
 			window.close();
 			break;
 		case sf::Event::KeyPressed:
 			switch(event.key.code) {
 			case sf::Keyboard::Escape:
-				logger.info("Player exited.");
+				logger.info("Player exited");
 				window.close();
 				break;
 			default:
@@ -147,20 +160,31 @@ void setOriginCenter(sf::Sprite& sprite)
 
 int main()
 {
+	log4cpp::PatternLayout* consoleLayout = new log4cpp::PatternLayout();
+	consoleLayout->setConversionPattern("%d{%H:%M:%S,%l} %p %m%n");
 	log4cpp::Appender* console = new log4cpp::OstreamAppender("console", &std::cout);
-	console->setLayout(new log4cpp::BasicLayout());
-	logger.addAppender(console);
+	console->setLayout(consoleLayout);
+
+	log4cpp::PatternLayout* logFileLayout = new log4cpp::PatternLayout();
+	logFileLayout->setConversionPattern("%d{%Y-%m-%d %H:%M:%S,%l} %p %m%n");
 	log4cpp::Appender* logFile = new log4cpp::FileAppender("logFile", logFilename, false);
-	logFile->setLayout(new log4cpp::BasicLayout());
+	logFile->setLayout(logFileLayout);
+
+	logger.addAppender(console);
 	logger.addAppender(logFile);
+
 #ifdef DO_DEBUG
 	logger.setPriority(log4cpp::Priority::DEBUG);
 #else
 	logger.setPriority(log4cpp::Priority::INFO);
 #endif
+
 	logger << DEBUG << "Opening log " << logFilename;
 
-	logger.info("Starting up...");
+	logger.info("Spacefight v%d.%d", version, revision);
+	logger.info("Built %s %s", __DATE__, __TIME__);
+	logger.info("GCC %s", __VERSION__);
+	logger.info("SFML %d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR);
 	initializeSystem();
 	sf::Clock gameClock;
 	sf::Time elapsed;
@@ -172,7 +196,7 @@ int main()
 		updateWorld(elapsed);
 		renderWorld();
 	}
-	logger.info("Exiting.");
+	logger.info("Stopped");
 
 	logger << DEBUG << "Closing log " << logFilename;
 	logFile->close();
