@@ -66,11 +66,17 @@ void initializeSystem()
 		alog.info("Created the main window %dx%d", width, height);
 		window->setVerticalSyncEnabled(true);
 		alog.info("Enabled VSync");
+		// center the window
+		sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+		int h = sf::VideoMode::getDesktopMode().height;
+		window->setPosition(sf::Vector2i(
+		                        desktop.width / 2 - width / 2,
+		                        desktop.height / 2 - height / 2 - 36
+		                    ));
 	} else {
 		alog.error("Could not create main window");
 		exit(EXIT_FAILURE);
 	}
-	window->setPosition(sf::Vector2i(100,100));
 
 	player = new GameSprite(sf::Color::Blue);
 	player->setPosition(width / 2, height / 2);
