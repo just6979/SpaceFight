@@ -46,7 +46,7 @@ log4cpp::Category& flog = log4cpp::Category::getInstance("file");
 // game data
 const float deadZone = 15;
 const float keySpeed = 75;
-GameSprite* logo;
+GameSprite* player;
 
 
 // system functions
@@ -70,9 +70,10 @@ void initializeSystem()
 	}
 	alog.info("Enabling VSync");
 	window->setVerticalSyncEnabled(true);
+	window->setPosition(sf::Vector2i(100,100));
 
-	logo = new GameSprite("cb.bmp");
-	logo->setPosition(width / 2, height / 2);
+	player = new GameSprite(sf::Color::Blue);
+	player->setPosition(width / 2, height / 2);
 	alog.info("Loaded sprite");
 }
 
@@ -129,19 +130,19 @@ void updateControls()
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 		x += -keySpeed;
 	}
-	logo->moveBy(x, y);
+	player->moveBy(x, y);
 }
 
 void updateWorld(sf::Time elapsed)
 {
 	const int millis = elapsed.asMilliseconds();
-	logo->update(millis);
+	player->update(millis);
 }
 
 void renderWorld()
 {
 	window->clear(sf::Color::Black);
-	window->draw(*logo);
+	window->draw(*player);
 	window->display();
 }
 
