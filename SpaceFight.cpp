@@ -60,16 +60,16 @@ void renderWorld();
 void initializeSystem()
 {
 	window = new sf::RenderWindow(sf::VideoMode(width, height), title, sf::Style::Titlebar | sf::Style::Close);
-	if (window->isOpen()) {
+	if(window->isOpen()) {
 		sf::ContextSettings settings = window->getSettings();
-		alog.info("Using OpenGL v%d.%d",settings.majorVersion, settings.minorVersion);
+		alog.info("Using OpenGL v%d.%d", settings.majorVersion, settings.minorVersion);
 		alog.info("Created the main window %dx%d", width, height);
+		window->setVerticalSyncEnabled(true);
+		alog.info("Enabled VSync");
 	} else {
 		alog.error("Could not create main window");
 		exit(EXIT_FAILURE);
 	}
-	alog.info("Enabling VSync");
-	window->setVerticalSyncEnabled(true);
 	window->setPosition(sf::Vector2i(100,100));
 
 	player = new GameSprite(sf::Color::Blue);
