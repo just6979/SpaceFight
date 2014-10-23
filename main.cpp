@@ -43,7 +43,7 @@ log4cpp::Category& logger = log4cpp::Category::getRoot();
 const float logoSpeed = 0.010;
 const float deadZone = 15;
 const float keySpeed = 75;
-sf::Sprite logo;
+sf::Sprite* logo;
 sf::Vector2<float> logoVector;
 
 
@@ -55,7 +55,7 @@ void updateWorld(sf::Time);
 void renderWorld();
 
 // utility functions
-void setOriginCenter(sf::Sprite&);
+void setOriginCenter(sf::Sprite*);
 
 
 void initializeSystem()
@@ -78,9 +78,10 @@ void initializeSystem()
 	}
 	logger.info("Loaded sprite");
 	logoTexture->setSmooth(true);
-	logo.setTexture(*logoTexture, true);
+	logo = new sf::Sprite();
+	logo->setTexture(*logoTexture, true);
 	setOriginCenter(logo);
-	logo.move(width / 2, height / 2);
+	logo->move(width / 2, height / 2);
 }
 
 void processEvents()
@@ -142,20 +143,20 @@ void updateControls()
 void updateWorld(sf::Time elapsed)
 {
 	const int millis = elapsed.asMilliseconds();
-	logo.move(logoVector * (logoSpeed * millis));
+	logo->move(logoVector * (logoSpeed * millis));
 }
 
 void renderWorld()
 {
 	window->clear(sf::Color::Black);
-	window->draw(logo);
+	window->draw(*logo);
 	window->display();
 }
 
 
-void setOriginCenter(sf::Sprite& sprite)
+void setOriginCenter(sf::Sprite* sprite)
 {
-	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
+	sprite->setOrigin(sprite->getLocalBounds().width / 2, sprite->getLocalBounds().height / 2);
 }
 
 
