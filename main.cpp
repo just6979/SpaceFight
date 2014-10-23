@@ -23,6 +23,8 @@ using std::string;
 #include "log4cpp/PatternLayout.hh"
 #include "log4cpp/Priority.hh"
 
+#include "GameSprite.h"
+
 // short names for log4cpp Priorities;
 const int DEBUG = log4cpp::Priority::DEBUG;
 const int INFO = log4cpp::Priority::INFO;
@@ -42,11 +44,9 @@ log4cpp::Category& clog = log4cpp::Category::getInstance("cons");
 log4cpp::Category& flog = log4cpp::Category::getInstance("file");
 
 // game data
-const float logoSpeed = 0.010;
 const float deadZone = 15;
 const float keySpeed = 75;
-sf::Sprite* logo;
-sf::Vector2<float> logoVector;
+GameSprite* logo;
 
 
 // system functions
@@ -55,9 +55,6 @@ void processEvents();
 void updateControls();
 void updateWorld(sf::Time);
 void renderWorld();
-
-// utility functions
-void setOriginCenter(sf::Sprite*);
 
 
 void initializeSystem()
@@ -74,16 +71,9 @@ void initializeSystem()
 	alog.info("Enabling VSync");
 	window->setVerticalSyncEnabled(true);
 
-	sf::Texture* logoTexture = new sf::Texture();
-	if(!logoTexture->loadFromFile("cb.bmp")) {
-		exit(EXIT_FAILURE);
-	}
+	logo = new GameSprite("cb.bmp");
+	logo->setPosition(width / 2, height / 2);
 	alog.info("Loaded sprite");
-	logoTexture->setSmooth(true);
-	logo = new sf::Sprite();
-	logo->setTexture(*logoTexture, true);
-	setOriginCenter(logo);
-	logo->move(width / 2, height / 2);
 }
 
 void processEvents()
@@ -120,32 +110,32 @@ void processEvents()
 
 void updateControls()
 {
-	logoVector.x = 0;
-	logoVector.y = 0;
+	float x, y = 0;
 
 	float joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
 	float joy0_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-	logoVector.x = abs(joy0_X) < deadZone ? 0 : joy0_X;
-	logoVector.y = abs(joy0_y) < deadZone ? 0 : joy0_y;
+	x = abs(joy0_X) < deadZone ? 0 : joy0_X;
+	y = abs(joy0_y) < deadZone ? 0 : joy0_y;
 
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		logoVector.y += -keySpeed;
+		y += -keySpeed;
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		logoVector.x += keySpeed;
+		x += keySpeed;
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		logoVector.y += keySpeed;
+		y += keySpeed;
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		logoVector.x += -keySpeed;
+		x += -keySpeed;
 	}
+	logo->moveBy(x, y);
 }
 
 void updateWorld(sf::Time elapsed)
 {
 	const int millis = elapsed.asMilliseconds();
-	logo->move(logoVector * (logoSpeed * millis));
+	logo->update(millis);
 }
 
 void renderWorld()
@@ -153,12 +143,6 @@ void renderWorld()
 	window->clear(sf::Color::Black);
 	window->draw(*logo);
 	window->display();
-}
-
-
-void setOriginCenter(sf::Sprite* sprite)
-{
-	sprite->setOrigin(sprite->getLocalBounds().width / 2, sprite->getLocalBounds().height / 2);
 }
 
 
