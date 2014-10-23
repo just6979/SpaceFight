@@ -19,20 +19,6 @@ GameSprite::~GameSprite()
 	delete tex;
 }
 
-/*
-GameSprite::GameSprite(const GameSprite& other)
-{
-
-}
-
-GameSprite& GameSprite::operator=(const GameSprite& rhs)
-{
-	if (this == &rhs) return *this; // handle self assignment
-	//assignment operator
-	return *this;
-}
-*/
-
 void GameSprite::update(const int elapsed) {
 	this->move(dir * (speed * elapsed));
 }
