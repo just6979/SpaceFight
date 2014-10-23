@@ -6,12 +6,26 @@ GameSprite::GameSprite(string _texFile, bool _centered)
 	tex = new sf::Texture();
 	if(tex->loadFromFile(texFile)) {
 		tex->setSmooth(true);
-		this->setTexture(*tex, true);
+		this->setTexture(tex, true);
+		this->setSize((sf::Vector2f)tex->getSize());
+	} else {
+		this->setSize(sf::Vector2f(100,100));
+	}
+	if(_centered) {
+		setOriginAtCenter();
+	}
+	speed = 0.010;
+}
+
+GameSprite::GameSprite(sf::Color _color, bool _centered)
+{
+	this->setSize(sf::Vector2f(100,100));
+	this->setFillColor(_color);
 		if(_centered) {
 			setOriginAtCenter();
 		}
-	}
 	speed = 0.010;
+
 }
 
 GameSprite::~GameSprite()

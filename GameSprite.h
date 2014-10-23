@@ -7,10 +7,11 @@ using std::string;
 
 #include <SFML/Graphics.hpp>
 
-class GameSprite : public sf::Sprite
+class GameSprite : public sf::RectangleShape
 {
 	public:
 		GameSprite(string _texFile, bool _centered = true);
+		GameSprite(sf::Color _color, bool _centered = true);
 		virtual ~GameSprite();
 		void update(const int elapsed);
 		void setOriginAtCenter();
