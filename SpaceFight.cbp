@@ -91,7 +91,9 @@
 			<Add library="sfml-system" />
 			<Add library="log4cpp" />
 		</Linker>
-		<Unit filename="main.cpp">
+		<Unit filename="GameSprite.cpp" />
+		<Unit filename="GameSprite.h" />
+		<Unit filename="SpaceFight.cpp">
 			<Option weight="0" />
 		</Unit>
 		<Extensions>
