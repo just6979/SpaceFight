@@ -43,7 +43,6 @@ log4cpp::Category& logger = log4cpp::Category::getRoot();
 const float logoSpeed = 0.010;
 const float deadZone = 15;
 const float keySpeed = 75;
-sf::Texture logoTexture;
 sf::Sprite logo;
 sf::Vector2<float> logoVector;
 
@@ -72,12 +71,14 @@ void initializeSystem()
 	}
 	logger.info("Enabling VSync");
 	window->setVerticalSyncEnabled(true);
-	if(!logoTexture.loadFromFile("cb.bmp")) {
+
+	sf::Texture* logoTexture = new sf::Texture();
+	if(!logoTexture->loadFromFile("cb.bmp")) {
 		exit(EXIT_FAILURE);
 	}
 	logger.info("Loaded sprite");
-	logoTexture.setSmooth(true);
-	logo.setTexture(logoTexture, true);
+	logoTexture->setSmooth(true);
+	logo.setTexture(*logoTexture, true);
 	setOriginCenter(logo);
 	logo.move(width / 2, height / 2);
 }
