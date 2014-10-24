@@ -60,7 +60,11 @@ void renderWorld();
 
 void initializeSystem()
 {
-	window = new sf::RenderWindow(sf::VideoMode(width, height), title, sf::Style::Titlebar | sf::Style::Close);
+	window = new sf::RenderWindow(
+	    sf::VideoMode(width, height),
+	    title,
+	    sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize
+	);
 	if(!window->isOpen()) {
 		alog.error("Could not create main window");
 		exit(EXIT_FAILURE);
@@ -79,6 +83,7 @@ void initializeSystem()
 	        desktop.height / 2 - height / 2 - 36
 	    )
 	);
+	window->setMouseCursorVisible(false);
 
 	screen = new sf::RenderTexture;
 	screen->create(window->getSize().x, window->getSize().y, false);
