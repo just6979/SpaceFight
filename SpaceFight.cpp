@@ -38,6 +38,7 @@ const int width = 1280;
 const int height = 720;
 const string title = "SpaceFight";
 sf::RenderWindow* window;
+sf::RenderTexture* screen;
 string fileLogName = title + ".log";
 log4cpp::Category& alog = log4cpp::Category::getRoot();
 log4cpp::Category& clog = log4cpp::Category::getInstance("cons");
@@ -78,6 +79,9 @@ void initializeSystem()
 	        desktop.height / 2 - height / 2 - 36
 	    )
 	);
+
+	screen = new sf::RenderTexture;
+	screen->create(window->getSize().x, window->getSize().y, false);
 
 	player = new GameSprite(sf::Color::Blue);
 	player->setPosition(width / 2, height / 2);
@@ -148,8 +152,11 @@ void updateWorld(sf::Time elapsed)
 
 void renderWorld()
 {
-	window->clear(sf::Color::Black);
-	window->draw(*player);
+	screen->clear(sf::Color::Black);
+	screen->draw(*player);
+	screen->display();
+
+	window->draw(sf::Sprite(screen->getTexture()));
 	window->display();
 }
 
