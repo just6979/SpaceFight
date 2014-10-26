@@ -3,8 +3,9 @@
 	See included LICENSE file for details.
 */
 
-#include <iostream>
+#include <algorithm>
 #include <fstream>
+#include <iostream>
 
 #include <cstdio>
 #include <cmath>
@@ -42,6 +43,7 @@ bool fullscreen = false;
 const string title = "SpaceFight";
 sf::RenderWindow* window;
 sf::RenderTexture* screen;
+sf::Sprite* screenSprite;
 string fileLogName = title + ".log";
 log4cpp::Category& alog = log4cpp::Category::getRoot();
 log4cpp::Category& clog = log4cpp::Category::getInstance("cons");
@@ -55,8 +57,9 @@ GameSprite* player;
 
 // system functions
 void initializeSystem();
-void processEvents();
 void resizeWindow(bool fullscreen);
+void adjustScale();
+void processEvents();
 void updateControls();
 void updateWorld(sf::Time elapsed);
 void renderWorld();
@@ -69,6 +72,7 @@ void initializeSystem()
 
 	screen = new sf::RenderTexture;
 	screen->create(width, height, false);
+	screenSprite = new sf::Sprite(screen->getTexture());
 
 	resizeWindow(fullscreen);
 
@@ -82,7 +86,7 @@ void initializeSystem()
 
 void resizeWindow(bool go_fullscreen)
 {
-	int w, h, flags = 0;
+	int flags = 0;
 	sf::VideoMode mode;
 
 	if(go_fullscreen) {
@@ -90,7 +94,7 @@ void resizeWindow(bool go_fullscreen)
 		flags = sf::Style::Fullscreen;
 	} else {
 		mode = sf::VideoMode(width, height);
-		flags = sf::Style::Titlebar | sf::Style::Close;
+		flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
 	}
 
 	window->create(mode, title, flags);
@@ -115,9 +119,14 @@ void resizeWindow(bool go_fullscreen)
 	alog.info("Created the main window %dx%d", window->getSize().x, window->getSize().y);
 	window->setVerticalSyncEnabled(true);
 	alog.info("Enabled VSync");
+	adjustScale();
+}
 
+void adjustScale() {
 	xScale = (float)window->getSize().x / width;
 	yScale = (float)window->getSize().y / height;
+
+	screenSprite->setScale(xScale, yScale);
 }
 
 void processEvents()
@@ -130,6 +139,8 @@ void processEvents()
 			alog.info("Window closed");
 			window->close();
 			break;
+		case sf::Event::Resized:
+			adjustScale();
 		case sf::Event::KeyPressed:
 			switch(event.key.code) {
 			case sf::Keyboard::Escape:
@@ -192,9 +203,8 @@ void renderWorld()
 	screen->draw(*player);
 	screen->display();
 
-	sf::Sprite s(screen->getTexture());
-	s.setScale(xScale, yScale);
-	window->draw(s);
+	window->clear(sf::Color(128,128,128));
+	window->draw(*screenSprite);
 	window->display();
 }
 
