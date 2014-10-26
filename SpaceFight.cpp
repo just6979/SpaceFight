@@ -36,6 +36,9 @@ const int version = 0;
 const int revision = 1;
 const int width = 1280;
 const int height = 720;
+float xScale, yScale = 0;
+sf::VideoMode desktop;
+bool fullscreen = false;
 const string title = "SpaceFight";
 sf::RenderWindow* window;
 sf::RenderTexture* screen;
@@ -53,44 +56,68 @@ GameSprite* player;
 // system functions
 void initializeSystem();
 void processEvents();
+void resizeWindow(bool fullscreen);
 void updateControls();
-void updateWorld(sf::Time);
+void updateWorld(sf::Time elapsed);
 void renderWorld();
 
 
 void initializeSystem()
 {
-	window = new sf::RenderWindow(
-	    sf::VideoMode(width, height),
-	    title,
-	    sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize
-	);
+	desktop = sf::VideoMode::getDesktopMode();
+	window = new sf::RenderWindow();
+
+	screen = new sf::RenderTexture;
+	screen->create(width, height, false);
+
+	resizeWindow(fullscreen);
+
+	sf::ContextSettings settings = window->getSettings();
+	alog.info("Using OpenGL v%d.%d", settings.majorVersion, settings.minorVersion);
+
+	player = new GameSprite(sf::Color::Blue);
+	player->setPosition(width / 2, height / 2);
+	alog.info("Loaded sprite");
+}
+
+void resizeWindow(bool go_fullscreen)
+{
+	int w, h, flags = 0;
+	sf::VideoMode mode;
+
+	if(go_fullscreen) {
+		mode = desktop;
+		flags = sf::Style::Fullscreen;
+	} else {
+		mode = sf::VideoMode(width, height);
+		flags = sf::Style::Titlebar | sf::Style::Close;
+	}
+
+	window->create(mode, title, flags);
+
 	if(!window->isOpen()) {
 		alog.error("Could not create main window");
 		exit(EXIT_FAILURE);
 	}
 
-	sf::ContextSettings settings = window->getSettings();
-	alog.info("Using OpenGL v%d.%d", settings.majorVersion, settings.minorVersion);
-	alog.info("Created the main window %dx%d", width, height);
+	fullscreen = go_fullscreen;
+	window->setMouseCursorVisible(!fullscreen);
+
+	if (!go_fullscreen) {
+		// center the window
+		window->setPosition(
+			sf::Vector2i(
+				desktop.width / 2 - window->getSize().x / 2,
+				desktop.height / 2 - window->getSize().y / 2 - 36
+			)
+		);
+	}
+	alog.info("Created the main window %dx%d", window->getSize().x, window->getSize().y);
 	window->setVerticalSyncEnabled(true);
 	alog.info("Enabled VSync");
-	// center the window
-	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-	window->setPosition(
-	    sf::Vector2i(
-	        desktop.width / 2 - width / 2,
-	        desktop.height / 2 - height / 2 - 36
-	    )
-	);
-	window->setMouseCursorVisible(false);
 
-	screen = new sf::RenderTexture;
-	screen->create(window->getSize().x, window->getSize().y, false);
-
-	player = new GameSprite(sf::Color::Blue);
-	player->setPosition(width / 2, height / 2);
-	alog.info("Loaded sprite");
+	xScale = (float)window->getSize().x / width;
+	yScale = (float)window->getSize().y / height;
 }
 
 void processEvents()
@@ -109,6 +136,10 @@ void processEvents()
 				alog.info("Player exited");
 				window->close();
 				break;
+			case sf::Keyboard::Return:
+				if(event.key.alt) {
+					resizeWindow(!fullscreen);
+				}
 			default:
 				break;
 			}
@@ -161,7 +192,9 @@ void renderWorld()
 	screen->draw(*player);
 	screen->display();
 
-	window->draw(sf::Sprite(screen->getTexture()));
+	sf::Sprite s(screen->getTexture());
+	s.setScale(xScale, yScale);
+	window->draw(s);
 	window->display();
 }
 
