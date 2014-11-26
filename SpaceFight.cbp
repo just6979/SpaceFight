@@ -9,7 +9,7 @@
 		<Build>
 			<Target title="Debug Windows">
 				<Option platforms="Windows;Unix;" />
-				<Option output="bin/Debug/SFML_Game" prefix_auto="1" extension_auto="1" />
+				<Option output="SFML_Game-d" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -34,7 +34,7 @@
 			</Target>
 			<Target title="Release Windows">
 				<Option platforms="Windows;Unix;" />
-				<Option output="bin/Release/SFML_Game" prefix_auto="1" extension_auto="1" />
+				<Option output="SFML_Game" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
@@ -58,7 +58,7 @@
 			</Target>
 			<Target title="Debug Unix">
 				<Option platforms="Unix;" />
-				<Option output="bin/Debug/SFML_Game" prefix_auto="1" extension_auto="1" />
+				<Option output="SFML_Game-d" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -72,7 +72,7 @@
 			</Target>
 			<Target title="Release Unix">
 				<Option platforms="Unix;" />
-				<Option output="bin/Release/SFML_Game" prefix_auto="1" extension_auto="1" />
+				<Option output="SFML_Game" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
@@ -95,13 +95,10 @@
 			<Add library="sfml-window" />
 			<Add library="sfml-system" />
 		</Linker>
-		<Unit filename="GameSprite.cpp" />
-		<Unit filename="GameSprite.h" />
-		<Unit filename="SpaceFight.cpp">
-			<Option weight="0" />
-		</Unit>
-		<Unit filename="easylogging++.h" />
-		<Unit filename="logging.conf" />
+		<Unit filename="src/GameSprite.cpp" />
+		<Unit filename="src/GameSprite.h" />
+		<Unit filename="src/SpaceFight.cpp" />
+		<Unit filename="src/easylogging++.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
