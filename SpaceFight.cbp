@@ -13,7 +13,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option use_console_runner="0" />
+				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DDO_DEBUG" />
@@ -25,6 +25,9 @@
 					<Add library="gdi32" />
 					<Add library="winmm" />
 					<Add library="dxguid" />
+					<Add library="sfml-graphics-s-d" />
+					<Add library="sfml-window-s-d" />
+					<Add library="sfml-system-s-d" />
 					<Add library="sfml-main" />
 					<Add directory="$(#sfml.lib)" />
 				</Linker>
@@ -35,6 +38,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="$(#sfml.include)" />
@@ -45,6 +49,9 @@
 					<Add library="gdi32" />
 					<Add library="winmm" />
 					<Add library="dxguid" />
+					<Add library="sfml-graphics-s" />
+					<Add library="sfml-window-s" />
+					<Add library="sfml-system-s" />
 					<Add library="sfml-main" />
 					<Add directory="$(#sfml.lib)" />
 				</Linker>
@@ -55,7 +62,6 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option use_console_runner="0" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DDO_DEBUG" />
@@ -81,21 +87,21 @@
 		</Build>
 		<Compiler>
 			<Add option="-std=c++11" />
-			<Add option="-Wextra" />
-			<Add option="-Wall" />
 			<Add option="-ansi" />
+			<Add option="-DSFML_STATIC" />
 		</Compiler>
 		<Linker>
 			<Add library="sfml-graphics" />
 			<Add library="sfml-window" />
 			<Add library="sfml-system" />
-			<Add library="log4cpp" />
 		</Linker>
 		<Unit filename="GameSprite.cpp" />
 		<Unit filename="GameSprite.h" />
 		<Unit filename="SpaceFight.cpp">
 			<Option weight="0" />
 		</Unit>
+		<Unit filename="easylogging++.h" />
+		<Unit filename="logging.conf" />
 		<Extensions>
 			<code_completion />
 			<envvars />
