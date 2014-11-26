@@ -16,6 +16,7 @@ using std::string;
 #include <SFML/Graphics.hpp>
 
 #include "easylogging++.h"
+#define _ELPP_UNICODE
 
 #include "GameSprite.h"
 

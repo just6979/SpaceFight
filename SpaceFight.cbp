@@ -93,6 +93,7 @@
 			<Add library="sfml-window" />
 			<Add library="sfml-system" />
 		</Linker>
+		<Unit filename="logging.conf" />
 		<Unit filename="src/GameSprite.cpp" />
 		<Unit filename="src/GameSprite.h" />
 		<Unit filename="src/SpaceFight.cpp" />
