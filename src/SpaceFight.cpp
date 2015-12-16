@@ -63,7 +63,7 @@ void initializeSystem()
 	resizeWindow(fullscreen);
 
 	sf::ContextSettings settings = window->getSettings();
-	//LOG(INFO) << "Using OpenGL v%d.%d", settings.majorVersion, settings.minorVersion);
+	LOG(INFO) << "Using OpenGL v" << settings.majorVersion << "." << settings.minorVersion;
 
 	player = new GameSprite(sf::Color::Blue);
 	player->setPosition(width / 2, height / 2);
