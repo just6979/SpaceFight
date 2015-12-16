@@ -9,31 +9,30 @@
 		<Build>
 			<Target title="Debug Windows">
 				<Option platforms="Windows;" />
-				<Option output="SFML_Game-d" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/SFML_Game" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="tdm-gcc_mingw" />
+				<Option compiler="mingw-w64_i686" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
 					<Add directory="$(#sfml.include)" />
 				</Compiler>
 				<Linker>
-					<Add library="mingw32" />
-					<Add library="user32" />
-					<Add library="gdi32" />
+					<Add library="sfml-window-s-d" />
+					<Add library="sfml-graphics-s-d" />
+					<Add library="sfml-system-s-d" />
+					<Add library="opengl32" />
 					<Add library="winmm" />
-					<Add library="dxguid" />
-					<Add library="sfml-graphics-d" />
-					<Add library="sfml-window-d" />
-					<Add library="sfml-system-d" />
-					<Add library="stdc++" />
+					<Add library="gdi32" />
+					<Add library="freetype" />
+					<Add library="jpeg" />
 					<Add directory="$(#sfml.lib)" />
 				</Linker>
 			</Target>
 			<Target title="Release Windows">
 				<Option platforms="Windows;" />
-				<Option output="SFML_Game" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/SFML_Game" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
@@ -42,20 +41,20 @@
 					<Add directory="$(#sfml.include)" />
 				</Compiler>
 				<Linker>
-					<Add library="mingw32" />
-					<Add library="user32" />
-					<Add library="gdi32" />
+					<Add library="sfml-window-s" />
+					<Add library="sfml-graphics-s" />
+					<Add library="sfml-system-s" />
+					<Add library="opengl32" />
 					<Add library="winmm" />
-					<Add library="dxguid" />
-					<Add library="sfml-graphics" />
-					<Add library="sfml-window" />
-					<Add library="sfml-system" />
+					<Add library="gdi32" />
+					<Add library="freetype" />
+					<Add library="jpeg" />
 					<Add directory="$(#sfml.lib)" />
 				</Linker>
 			</Target>
 			<Target title="Debug Unix">
 				<Option platforms="Unix;" />
-				<Option output="SFML_Game-d" prefix_auto="1" extension_auto="1" />
+				<Option output="/bin/Debug/SFML_Game" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -72,7 +71,7 @@
 			</Target>
 			<Target title="Release Unix">
 				<Option platforms="Unix;" />
-				<Option output="SFML_Game" prefix_auto="1" extension_auto="1" />
+				<Option output="/bin/Release/SFML_Game" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
