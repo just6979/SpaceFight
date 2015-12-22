@@ -15,12 +15,12 @@ using std::string;
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "easylogging++.h"
+#include "../contrib/easylogging++.h"
 #define _ELPP_UNICODE
 
 #include "GameSprite.h"
 
-_INITIALIZE_EASYLOGGINGPP
+INITIALIZE_EASYLOGGINGPP
 
 //system data
 const int version = 0;
@@ -189,7 +189,7 @@ void renderWorld() {
 }
 
 int main(int argc, char* argv[]) {
-    _START_EASYLOGGINGPP(argc, argv);
+    START_EASYLOGGINGPP(argc, argv);
     el::Configurations conf("logging.conf");
     el::Loggers::reconfigureAllLoggers(conf);
 
