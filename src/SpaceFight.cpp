@@ -5,24 +5,23 @@
 
 #include <unistd.h>
 
-#include <easylogging++.h>
-
-#define ELPP_UNICODE
 #define ELPP_NO_DEFAULT_LOG_FILE
+#include <easylogging++.h>
 
 #include <Game.h>
 
 INITIALIZE_EASYLOGGINGPP
 
 //system data
-const int version = 0;
-const int revision = 1;
-const int width = 1280;
-const int height = 720;
-const std::string name = "SpaceFight";
+const unsigned int majorVersion = 0;
+const unsigned int minorVersion = 2;
+const unsigned int revision = 0;
+const int width = 1200;
+const int height = 675;
+const std::string gameName = "SpaceFight";
 
 int main(int argc, char *argv[]) {
-    std::string logFilename = name;
+    std::string logFilename = gameName;
     logFilename.append(".log");
     // remove existing log file, easylogging++ doesn't currently support non-append logs
     unlink(logFilename.c_str());
@@ -40,13 +39,13 @@ int main(int argc, char *argv[]) {
     logConf.set(el::Level::Debug, el::ConfigurationType::Format, "%datetime{%H:%m:%s.%g} %level %loc %func %msg");
     el::Loggers::reconfigureAllLoggers(logConf);
 
-    LOG(INFO) << name << " v" << version << "." << revision;
+    LOG(INFO) << gameName << " v" << majorVersion << "." << minorVersion << "." << revision;
     LOG(INFO) << "Built " << __DATE__ << " " << __TIME__;
     LOG(INFO) << "GCC " << __VERSION__;
     LOG(INFO) << "SFML " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR;
 
     Game *game = Game::getGame();
-    game->init(name, width, height);
+    game->init(gameName, width, height);
     game->run();
 
     return EXIT_SUCCESS;
