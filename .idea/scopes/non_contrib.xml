@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="non-contrib" pattern="file[SpaceFight]:include//*||file[SpaceFight]:src//*||file:CMakeLists.txt" />
+</component>

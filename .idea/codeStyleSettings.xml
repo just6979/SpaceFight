@@ -31,11 +31,11 @@
             <pair source="c" header="h" />
           </extensions>
         </Objective-C-extensions>
-        <XML>
-          <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
-        </XML>
+        <codeStyleSettings language="ObjectiveC">
+          <option name="BLANK_LINES_AROUND_METHOD_IN_INTERFACE" value="0" />
+        </codeStyleSettings>
       </value>
     </option>
-    <option name="PREFERRED_PROJECT_CODE_STYLE" value="Default (1)" />
+    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>
 </project>
