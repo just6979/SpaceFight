@@ -17,7 +17,7 @@ class Game {
 public:
     static Game *getGame();
 
-    void init(const std::string &_name, int _width, int _height);
+    void init(const std::string &_name, unsigned int _width, unsigned int _height);
 
     void run();
 
@@ -26,7 +26,7 @@ private:
 
     Game() { };
     std::string name;
-    int width, height = 0;
+    unsigned int width, height = 0;
     float xScale, yScale = 0;
     sf::VideoMode desktop;
     bool fullscreen = false;

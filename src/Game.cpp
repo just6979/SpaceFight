@@ -26,7 +26,7 @@ void Game::run(void) {
     LOG(INFO) << "Stopped";
 }
 
-void Game::init(const std::string &_name, int _width, int _height) {
+void Game::init(const std::string &_name, unsigned int _width, unsigned int _height) {
     name = _name;
     width = _width;
     height = _height;
@@ -49,7 +49,7 @@ void Game::init(const std::string &_name, int _width, int _height) {
 }
 
 void Game::resizeWindow(bool go_fullscreen) {
-    int flags = 0;
+    unsigned int flags = 0;
     sf::VideoMode mode;
 
     if (go_fullscreen) {

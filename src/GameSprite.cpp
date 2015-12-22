@@ -6,7 +6,7 @@ GameSprite::GameSprite(std::string _texFile, bool _lockToScreen, bool _originAtC
     if (tex->loadFromFile(texFile)) {
         tex->setSmooth(true);
         setTexture(tex, true);
-        setSize((sf::Vector2f) tex->getSize());
+        setSize(sf::Vector2f(tex->getSize().x, tex->getSize().y));
     } else {
         setSize(sf::Vector2f(100, 100));
     }
