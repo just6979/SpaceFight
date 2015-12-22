@@ -16,6 +16,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add library="sfml-window-s-d" />
@@ -36,6 +37,7 @@
 				<Option compiler="tdm-gcc-64_510" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add library="sfml-window-s" />
@@ -57,6 +59,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add library="GLEW" />
@@ -73,6 +76,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -86,11 +90,12 @@
 		<Compiler>
 			<Add option="-DSFML_STATIC" />
 		</Compiler>
-		<Unit filename="logging.conf" />
+		<Unit filename="contrib/easylogging++.h" />
+		<Unit filename="include/Game.h" />
+		<Unit filename="include/GameSprite.h" />
+		<Unit filename="src/Game.cpp" />
 		<Unit filename="src/GameSprite.cpp" />
-		<Unit filename="src/GameSprite.h" />
 		<Unit filename="src/SpaceFight.cpp" />
-		<Unit filename="src/easylogging++.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
