@@ -32,6 +32,8 @@
           </extensions>
         </Objective-C-extensions>
         <codeStyleSettings language="ObjectiveC">
+          <option name="BLANK_LINES_BEFORE_IMPORTS" value="0" />
+          <option name="BLANK_LINES_AFTER_IMPORTS" value="0" />
           <option name="BLANK_LINES_AROUND_METHOD_IN_INTERFACE" value="0" />
         </codeStyleSettings>
       </value>
