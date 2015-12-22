@@ -3,6 +3,8 @@
     See included LICENSE file for details.
 */
 
+#include <unistd.h>
+
 #define _ELPP_UNICODE
 #define ELPP_NO_DEFAULT_LOG_FILE
 
