@@ -10,8 +10,6 @@
 #include <cstdio>
 #include <cmath>
 
-using std::string;
-
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -27,10 +25,11 @@ const int version = 0;
 const int revision = 1;
 const int width = 1280;
 const int height = 720;
+
 float xScale, yScale = 0;
 sf::VideoMode desktop;
 bool fullscreen = false;
-const string title = "SpaceFight";
+const std::string title = "SpaceFight";
 sf::RenderWindow* window;
 sf::RenderTexture* screen;
 sf::Sprite* screenSprite;

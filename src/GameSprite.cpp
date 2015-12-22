@@ -1,6 +1,6 @@
 #include "GameSprite.h"
 
-GameSprite::GameSprite(string _texFile, bool _centered) {
+GameSprite::GameSprite(std::string _texFile, bool _centered) {
     texFile = _texFile;
     tex = new sf::Texture();
     if(tex->loadFromFile(texFile)) {
