@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Build All Debug" type="CMakeRunConfiguration" factoryName="Application" singleton="true" WORKING_DIR="" PASS_PARENT_ENVS="FALSE" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="SpaceFight" RUN_TARGET_NAME="SpaceFight" EXPLICIT_BUILD_TARGET_NAME="all">
+    <envs />
+    <method />
+  </configuration>
+</component>

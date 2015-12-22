@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SpaceFight Release" type="CMakeRunConfiguration" factoryName="Application" singleton="true" WORKING_DIR="" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="SpaceFight" TARGET_NAME="SpaceFight" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="SpaceFight" RUN_TARGET_NAME="SpaceFight">
+    <envs />
+    <method />
+  </configuration>
+</component>
