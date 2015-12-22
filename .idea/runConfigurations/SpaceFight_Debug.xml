@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="SpaceFight Debug" type="CMakeRunConfiguration" factoryName="Application" singleton="true" WORKING_DIR="" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="SpaceFight" TARGET_NAME="SpaceFight" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="SpaceFight" RUN_TARGET_NAME="SpaceFight">
+  <configuration default="false" name="SpaceFight Debug" type="CMakeRunConfiguration" factoryName="Application" singleton="true" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="SpaceFight" TARGET_NAME="SpaceFight" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="SpaceFight" RUN_TARGET_NAME="SpaceFight">
     <envs />
     <method />
   </configuration>

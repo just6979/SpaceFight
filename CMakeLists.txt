@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.3)
-project(SpaceFight)
+project("SpaceFight")
 
-set(EXECUTABLE_NAME "SpaceFight")
+set(EXECUTABLE_NAME ${PROJECT_NAME})
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
