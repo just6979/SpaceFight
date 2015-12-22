@@ -1,7 +1,4 @@
 /bin
 /obj
-*.depend
-*.layout
 *.log
 *.exe
-
