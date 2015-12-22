@@ -5,14 +5,14 @@
 
 #include <unistd.h>
 
-#define _ELPP_UNICODE
-#define ELPP_NO_DEFAULT_LOG_FILE
-
 #include <easylogging++.h>
 
-INITIALIZE_EASYLOGGINGPP
+#define ELPP_UNICODE
+#define ELPP_NO_DEFAULT_LOG_FILE
 
 #include <Game.h>
+
+INITIALIZE_EASYLOGGINGPP
 
 //system data
 const int version = 0;
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     el::Loggers::reconfigureAllLoggers(logConf);
 
     LOG(INFO) << name << " v" << version << "." << revision;
-    LOG(INFO) << "Built " << __DATE__ << __TIME__;
+    LOG(INFO) << "Built " << __DATE__ << " " << __TIME__;
     LOG(INFO) << "GCC " << __VERSION__;
     LOG(INFO) << "SFML " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR;
 
