@@ -1,7 +1,7 @@
 
-#include "../contrib/easylogging++.h"
+#include <easylogging++.h>
 
-#include "Game.h"
+#include <Game.h>
 
 Game* Game::instance = NULL;
 

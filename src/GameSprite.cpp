@@ -1,17 +1,17 @@
-#include "GameSprite.h"
+#include <GameSprite.h>
 
 GameSprite::GameSprite(std::string _texFile, bool _lockToScreen, bool _originAtCenter) {
     texFile = _texFile;
     tex = new sf::Texture();
-    if(tex->loadFromFile(texFile)) {
+    if (tex->loadFromFile(texFile)) {
         tex->setSmooth(true);
         setTexture(tex, true);
-        setSize((sf::Vector2f)tex->getSize());
+        setSize((sf::Vector2f) tex->getSize());
     } else {
         setSize(sf::Vector2f(100, 100));
     }
     lockToScreen(_lockToScreen);
-    if(_originAtCenter) {
+    if (_originAtCenter) {
         setOriginAtCenter();
     }
     speed = 0.010;
@@ -21,7 +21,7 @@ GameSprite::GameSprite(sf::Color _color, bool _lockToScreen, bool _originAtCente
     setSize(sf::Vector2f(100, 100));
     setFillColor(_color);
     lockToScreen(_lockToScreen);
-    if(_originAtCenter) {
+    if (_originAtCenter) {
         setOriginAtCenter();
     }
     speed = 0.010;

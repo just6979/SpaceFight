@@ -5,10 +5,10 @@
 
 #define _ELPP_UNICODE
 #define ELPP_NO_DEFAULT_LOG_FILE
-#include "../contrib/easylogging++.h"
+#include <easylogging++.h>
 INITIALIZE_EASYLOGGINGPP
 
-#include "Game.h"
+#include <Game.h>
 
 //system data
 const int version = 0;
