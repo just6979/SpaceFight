@@ -5,7 +5,9 @@
 
 #define _ELPP_UNICODE
 #define ELPP_NO_DEFAULT_LOG_FILE
+
 #include <easylogging++.h>
+
 INITIALIZE_EASYLOGGINGPP
 
 #include <Game.h>
@@ -17,9 +19,9 @@ const int width = 1280;
 const int height = 720;
 const std::string name = "SpaceFight";
 
-int main(int argc, char* argv[])
-{
-    std::string logFilename = name + ".log";
+int main(int argc, char *argv[]) {
+    std::string logFilename = name;
+    logFilename.append(".log");
     // remove existing log file, easylogging++ doesn't currently support non-append logs
     unlink(logFilename.c_str());
 
@@ -36,12 +38,12 @@ int main(int argc, char* argv[])
     logConf.set(el::Level::Debug, el::ConfigurationType::Format, "%datetime{%H:%m:%s.%g} %level %loc %func %msg");
     el::Loggers::reconfigureAllLoggers(logConf);
 
-    LOG(INFO) << name<< " v" << version << "." << revision;
+    LOG(INFO) << name << " v" << version << "." << revision;
     LOG(INFO) << "Built " << __DATE__ << __TIME__;
     LOG(INFO) << "GCC " << __VERSION__;
     LOG(INFO) << "SFML " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR;
 
-    Game* game = Game::getGame();
+    Game *game = Game::getGame();
     game->init(name, width, height);
     game->run();
 

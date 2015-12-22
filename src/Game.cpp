@@ -1,27 +1,22 @@
-
 #include <easylogging++.h>
 
 #include <Game.h>
 
-Game* Game::instance = NULL;
+Game *Game::instance = NULL;
 
-Game* Game::getGame()
-{
-    if (instance == NULL)
-    {
+Game *Game::getGame() {
+    if (instance == NULL) {
         LOG(INFO) << "Creating Game instance";
         instance = new Game();
     }
     return instance;
 }
 
-void Game::run(void)
-{
+void Game::run(void) {
     sf::Clock gameClock;
     sf::Time elapsed;
     LOG(INFO) << "Starting " << name;
-    while(window->isOpen())
-    {
+    while (window->isOpen()) {
         elapsed = gameClock.restart();
         processEvents();
         updateControls();
@@ -31,8 +26,7 @@ void Game::run(void)
     LOG(INFO) << "Stopped";
 }
 
-void Game::init(const std::string& _name, int _width, int _height)
-{
+void Game::init(const std::string &_name, int _width, int _height) {
     name = _name;
     width = _width;
     height = _height;
@@ -54,26 +48,22 @@ void Game::init(const std::string& _name, int _width, int _height)
     LOG(INFO) << "Loaded sprite";
 }
 
-void Game::resizeWindow(bool go_fullscreen)
-{
+void Game::resizeWindow(bool go_fullscreen) {
     int flags = 0;
     sf::VideoMode mode;
 
-    if(go_fullscreen)
-    {
+    if (go_fullscreen) {
         mode = desktop;
         flags = sf::Style::Fullscreen;
     }
-    else
-    {
+    else {
         mode = sf::VideoMode(width, height);
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
 
     window->create(mode, name, flags);
 
-    if(!window->isOpen())
-    {
+    if (!window->isOpen()) {
         LOG(ERROR) << "Could not create main window";
         exit(EXIT_FAILURE);
     }
@@ -81,14 +71,13 @@ void Game::resizeWindow(bool go_fullscreen)
     fullscreen = go_fullscreen;
     window->setMouseCursorVisible(!fullscreen);
 
-    if (!go_fullscreen)
-    {
+    if (!go_fullscreen) {
         // center the window
         window->setPosition(
-            sf::Vector2i(
-                desktop.width / 2 - window->getSize().x / 2,
-                desktop.height / 2 - window->getSize().y / 2 - 36
-            )
+                sf::Vector2i(
+                        desktop.width / 2 - window->getSize().x / 2,
+                        desktop.height / 2 - window->getSize().y / 2 - 36
+                )
         );
     }
     LOG(INFO) << "Created " << window->getSize().x << "x" << window->getSize().y << " main window";
@@ -97,93 +86,79 @@ void Game::resizeWindow(bool go_fullscreen)
     adjustScale();
 }
 
-void Game::adjustScale()
-{
-    xScale = (float)window->getSize().x / width;
-    yScale = (float)window->getSize().y / height;
+void Game::adjustScale() {
+    xScale = (float) window->getSize().x / width;
+    yScale = (float) window->getSize().y / height;
 
     screenSprite->setScale(xScale, yScale);
 }
 
-void Game::processEvents()
-{
+void Game::processEvents() {
     static sf::Event event;
 
-    while(window->pollEvent(event))
-    {
-        switch(event.type)
-        {
-        case sf::Event::Closed:
-            LOG(INFO) << "Window closed";
-            window->close();
-            break;
-        case sf::Event::Resized:
-            adjustScale();
-        case sf::Event::KeyPressed:
-            switch(event.key.code)
-            {
-            case sf::Keyboard::Escape:
-                LOG(INFO) << "Player exited";
+    while (window->pollEvent(event)) {
+        switch (event.type) {
+            case sf::Event::Closed:
+                LOG(INFO) << "Window closed";
                 window->close();
                 break;
-            case sf::Keyboard::Return:
-                if(event.key.alt)
-                {
-                    resizeWindow(!fullscreen);
+            case sf::Event::Resized:
+                adjustScale();
+            case sf::Event::KeyPressed:
+                switch (event.key.code) {
+                    case sf::Keyboard::Escape:
+                        LOG(INFO) << "Player exited";
+                        window->close();
+                        break;
+                    case sf::Keyboard::Return:
+                        if (event.key.alt) {
+                            resizeWindow(!fullscreen);
+                        }
+                    default:
+                        break;
                 }
+                break;
+            case sf::Event::KeyReleased:
+                switch (event.key.code) {
+                    default:
+                        break;
+                }
+                break;
             default:
                 break;
-            }
-            break;
-        case sf::Event::KeyReleased:
-            switch(event.key.code)
-            {
-            default:
-                break;
-            }
-            break;
-        default:
-            break;
         }
     }
 }
 
-void Game::updateControls()
-{
+void Game::updateControls() {
     float x, y = 0;
 
     float joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
     float joy0_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-    x = abs(joy0_X) < deadZone ? 0 : joy0_X;
-    y = abs(joy0_y) < deadZone ? 0 : joy0_y;
+    x = fabs(joy0_X) < deadZone ? 0 : joy0_X;
+    y = fabs(joy0_y) < deadZone ? 0 : joy0_y;
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
         y += -keySpeed;
     }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
         x += keySpeed;
     }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
         y += keySpeed;
     }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         x += -keySpeed;
     }
     player->moveBy(x, y);
 }
 
-void Game::updateWorld(sf::Time elapsed)
-{
+void Game::updateWorld(sf::Time elapsed) {
     const int millis = elapsed.asMilliseconds();
     player->update(millis);
 }
 
-void Game::renderWorld()
-{
+void Game::renderWorld() {
     screen->clear(sf::Color::Black);
     screen->draw(*player);
     screen->display();

@@ -17,7 +17,7 @@ public:
 protected:
     bool lockedToScreen = true;
     std::string texFile;
-    sf::Texture* tex;
+    sf::Texture *tex;
     sf::Vector2<float> dir;
     float speed;
 private:

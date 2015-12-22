@@ -23,10 +23,10 @@ set(SFML_ROOT "D:/lib/SFML-2.3.2/")
 set(CMAKE_MODULE_PATH "${SFML_ROOT}/cmake/modules" ${CMAKE_MODULE_PATH})
 set(SFML_STATIC_LIBRARIES TRUE)
 find_package(SFML 2 REQUIRED graphics window system)
-if(SFML_FOUND)
+if (SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
-endif()
+endif ()
 
 add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
 
-target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES}  ${LIBS})
+target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES} ${LIBS})
