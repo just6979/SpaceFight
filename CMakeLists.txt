@@ -27,7 +27,7 @@ set(SOURCE_FILES
         )
 
 if (WIN32)
-    set(SFML_ROOT "D:/lib/SFML-2.3.2/")
+    set(SFML_ROOT "D:/lib/SFML-2.3.2-x64/")
     set(SFML_STATIC_LIBRARIES TRUE)
 endif ()
 if (UNIX)
