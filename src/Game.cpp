@@ -31,15 +31,20 @@ bool Game::init(const std::string &_name) {
     iniFilename.append(".ini");
 
     INIReader reader(iniFilename);
+    LOG(INFO) << "Reading config from '" << iniFilename << "'";
     if (reader.ParseError() < 0) {
-        LOG(ERROR) << "Can't load '" << iniFilename << "'";
-        return false;
+        LOG(ERROR) << "Can't load '" << iniFilename << "', using defaults.";
+    } else {
+        // 1200x675 is a 16:9 window that fits inside a 1366x768 screen on most systems
+        config.width = (unsigned int) abs(reader.GetInteger("game", "width", config.width));
+        config.height = (unsigned int) abs(reader.GetInteger("game", "height", config.height));
+        config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
+        config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
     }
-    // 1200x675 is a 16:9 window that fits inside a 1366x768 screen on most systems
-    config.width = (unsigned int)abs(reader.GetInteger("game", "width", 1200));
-    config.height = (unsigned int)abs(reader.GetInteger("game", "height", 675));
-    config.fullscreen = reader.GetBoolean("game", "fullscreen", false);
-    LOG(INFO) << "Config loaded from '" << iniFilename << "'";
+    LOG(INFO) << "config.width set to: " << config.width;
+    LOG(INFO) << "config.height set to: " << config.height;
+    LOG(INFO) << "config.fullscreen set to: " << (config.fullscreen ? "true" : "false");
+    LOG(INFO) << "config.useDesktopSize set to: " << (config.useDesktopSize ? "true" : "False");
 
     desktop = sf::VideoMode::getDesktopMode();
     window = new sf::RenderWindow();
@@ -65,7 +70,11 @@ void Game::resizeWindow(bool go_fullscreen) {
     sf::VideoMode mode;
 
     if (go_fullscreen) {
-        mode = desktop;
+        if (config.useDesktopSize) {
+            mode = desktop;
+        } else {
+            mode = sf::VideoMode(config.width, config.height);
+        }
         flags = sf::Style::Fullscreen;
     }
     else {

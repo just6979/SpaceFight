@@ -28,9 +28,10 @@ private:
     Game() { };
     std::string name;
     struct _config {
-        unsigned int height = 0;
-        unsigned int width = 0;
+        unsigned int width = 1200;
+        unsigned int height = 675;
         bool fullscreen = false;
+        bool useDesktopSize = true;
     } config;
     float xScale, yScale = 0;
     sf::VideoMode desktop;
