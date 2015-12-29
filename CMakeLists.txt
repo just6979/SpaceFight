@@ -17,8 +17,11 @@ endif(CCACHE_FOUND)
 INCLUDE_DIRECTORIES(include)
 INCLUDE_DIRECTORIES(contrib/include)
 
+set(CONTRIB_SOURCE_FILES
+        contrib/ini.c
+        contrib/INIReader.cpp
+        )
 set(SOURCE_FILES
-        contrib/include/easylogging++.h
         include/Game.h
         include/GameSprite.h
         src/Game.cpp
@@ -39,6 +42,6 @@ if (SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
 endif ()
 
-add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
+add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} ${CONTRIB_SOURCE_FILES})
 
 target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
