@@ -44,13 +44,15 @@ bool Game::init(const std::string &_name) {
         config.deadZone = reader.GetReal("game", "deadZone", config.deadZone);
         config.keySpeed = reader.GetReal("game", "keySpeed", config.keySpeed);
     }
-    LOG(INFO) << "config.width set to: " << config.width;
-    LOG(INFO) << "config.height set to: " << config.height;
-    LOG(INFO) << "config.fullscreen set to: " << (config.fullscreen ? "true" : "false");
-    LOG(INFO) << "config.useDesktopSize set to: " << (config.useDesktopSize ? "true" : "False");
-    LOG(INFO) << "config.hideMouseFullscreen set to: " << (config.hideMouseFullscreen ? "true" : "False");
+    LOG(INFO) << "--Config--";
+    LOG(INFO) << "width = " << config.width;
+    LOG(INFO) << "height = " << config.height;
+    LOG(INFO) << "fullscreen = " << (config.fullscreen ? "true" : "false");
+    LOG(INFO) << "useDesktopSize = " << (config.useDesktopSize ? "true" : "False");
+    LOG(INFO) << "hideMouseFullscreen = " << (config.hideMouseFullscreen ? "true" : "False");
     LOG(INFO) << "deadZone = " << config.deadZone;
     LOG(INFO) << "keySpeed = " << config.keySpeed;
+    LOG(INFO) << "--End config--";
 
     window = new sf::RenderWindow();
 
