@@ -33,7 +33,7 @@ bool Game::init(const std::string &_name) {
     INIReader reader(iniFilename);
     LOG(INFO) << "Reading config from '" << iniFilename << "'";
     if (reader.ParseError() < 0) {
-        LOG(ERROR) << "Can't load '" << iniFilename << "', using defaults.";
+        LOG(ERROR) << "Can't load '" << iniFilename << "', using defaults";
     } else {
         // 1200x675 is a 16:9 window that fits inside a 1366x768 screen on most systems
         config.width = (unsigned int) abs(reader.GetInteger("game", "width", config.width));
@@ -70,7 +70,9 @@ void Game::resizeWindow(bool go_fullscreen) {
     sf::VideoMode mode;
 
     if (go_fullscreen) {
+        LOG(INFO) << "Going fullscreen";
         if (config.useDesktopSize) {
+            LOG(INFO) << "Ignoring width and height from config, using desktop size";
             mode = desktop;
         } else {
             mode = sf::VideoMode(config.width, config.height);
@@ -78,6 +80,7 @@ void Game::resizeWindow(bool go_fullscreen) {
         flags = sf::Style::Fullscreen;
     }
     else {
+        LOG(INFO) << "Going to windowed mode";
         mode = sf::VideoMode(config.width, config.height);
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
@@ -92,18 +95,13 @@ void Game::resizeWindow(bool go_fullscreen) {
     config.fullscreen = go_fullscreen;
     window->setMouseCursorVisible(!config.fullscreen);
 
-    if (!go_fullscreen) {
-        // center the window
-        window->setPosition(
-                sf::Vector2i(
-                        desktop.width / 2 - window->getSize().x / 2,
-                        desktop.height / 2 - window->getSize().y / 2 - 36
-                )
-        );
+    if (config.fullscreen) {
+        LOG(INFO) << "Set " << window->getSize().x << "x" << window->getSize().y << "fullscreen mode";
+    } else {
+        LOG(INFO) << "Created " << window->getSize().x << "x" << window->getSize().y << " window";
     }
-    LOG(INFO) << "Created " << window->getSize().x << "x" << window->getSize().y << " main window";
+    LOG(INFO) << "Enabling VSync";
     window->setVerticalSyncEnabled(true);
-    LOG(INFO) << "Enabled VSync";
     adjustScale();
 }
 
