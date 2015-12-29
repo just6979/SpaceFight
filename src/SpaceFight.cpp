@@ -15,7 +15,7 @@ INITIALIZE_EASYLOGGINGPP
 int main(int argc, char *argv[]) {
     // version info
     const unsigned int majorVersion = 0;
-    const unsigned int minorVersion = 2;
+    const unsigned int minorVersion = 3;
     const unsigned int revision = 0;
     // our name
     const std::string gameName = "SpaceFight";
