@@ -33,11 +33,10 @@ private:
         bool fullscreen = false;
         bool useDesktopSize = true;
         bool hideMouseFullscreen = true;
+        double deadZone = 15;
+        double keySpeed = 75;
     } config;
     sf::RenderWindow *window;
-// game data
-    const float deadZone = 15;
-    const float keySpeed = 75;
     GameSprite *player;
 // system functions
     void resizeWindow(bool goFullscreen);

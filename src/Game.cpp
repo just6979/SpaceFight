@@ -41,12 +41,16 @@ bool Game::init(const std::string &_name) {
         config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
         config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
         config.hideMouseFullscreen = reader.GetBoolean("game", "hideMouseFullscreen", config.hideMouseFullscreen);
+        config.deadZone = reader.GetReal("game", "deadZone", config.deadZone);
+        config.keySpeed = reader.GetReal("game", "keySpeed", config.keySpeed);
     }
     LOG(INFO) << "config.width set to: " << config.width;
     LOG(INFO) << "config.height set to: " << config.height;
     LOG(INFO) << "config.fullscreen set to: " << (config.fullscreen ? "true" : "false");
     LOG(INFO) << "config.useDesktopSize set to: " << (config.useDesktopSize ? "true" : "False");
     LOG(INFO) << "config.hideMouseFullscreen set to: " << (config.hideMouseFullscreen ? "true" : "False");
+    LOG(INFO) << "deadZone = " << config.deadZone;
+    LOG(INFO) << "keySpeed = " << config.keySpeed;
 
     window = new sf::RenderWindow();
 
@@ -107,7 +111,6 @@ void Game::resizeWindow(bool goFullscreen) {
     }
     LOG(INFO) << "Enabling V-sync";
     window->setVerticalSyncEnabled(true);
-    adjustScale();
 }
 
 void Game::processEvents() {
@@ -120,7 +123,7 @@ void Game::processEvents() {
                 window->close();
                 break;
             case sf::Event::Resized:
-                adjustScale();
+                break;
             case sf::Event::KeyPressed:
                 switch (event.key.code) {
                     case sf::Keyboard::Escape:
@@ -152,20 +155,20 @@ void Game::updateControls() {
 
     float joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
     float joy0_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-    x = fabs(joy0_X) < deadZone ? 0 : joy0_X;
-    y = fabs(joy0_y) < deadZone ? 0 : joy0_y;
+    x = fabs(joy0_X) < config.deadZone ? 0 : joy0_X;
+    y = fabs(joy0_y) < config.deadZone ? 0 : joy0_y;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-        y += -keySpeed;
+        y += -config.keySpeed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        x += keySpeed;
+        x += config.keySpeed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        y += keySpeed;
+        y += config.keySpeed;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        x += -keySpeed;
+        x += -config.keySpeed;
     }
     player->moveBy(x, y);
 }
