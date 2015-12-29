@@ -1,5 +1,3 @@
-#include <easylogging++.h>
-
 #include <Game.h>
 
 Game *Game::instance = NULL;
@@ -26,26 +24,40 @@ void Game::run(void) {
     LOG(INFO) << "Stopped";
 }
 
-void Game::init(const std::string &_name, unsigned int _width, unsigned int _height) {
+bool Game::init(const std::string &_name) {
     name = _name;
-    width = _width;
-    height = _height;
+
+    std::string iniFilename = name;
+    iniFilename.append(".ini");
+
+    INIReader reader(iniFilename);
+    if (reader.ParseError() < 0) {
+        LOG(ERROR) << "Can't load '" << iniFilename << "'";
+        return false;
+    }
+    // 1200x675 is a 16:9 window that fits inside a 1366x768 screen on most systems
+    config.width = (unsigned int)abs(reader.GetInteger("game", "width", 1200));
+    config.height = (unsigned int)abs(reader.GetInteger("game", "height", 675));
+    config.fullscreen = reader.GetBoolean("game", "fullscreen", false);
+    LOG(INFO) << "Config loaded from '" << iniFilename << "'";
 
     desktop = sf::VideoMode::getDesktopMode();
     window = new sf::RenderWindow();
 
     screen = new sf::RenderTexture;
-    screen->create(width, height, false);
+    screen->create(config.width, config.height, false);
     screenSprite = new sf::Sprite(screen->getTexture());
 
-    resizeWindow(fullscreen);
+    resizeWindow(config.fullscreen);
 
     sf::ContextSettings settings = window->getSettings();
     LOG(INFO) << "Using OpenGL v" << settings.majorVersion << "." << settings.minorVersion;
 
     player = new GameSprite(sf::Color::Blue);
-    player->setPosition(width / 2, height / 2);
+    player->setPosition(config.width / 2, config.height / 2);
     LOG(INFO) << "Loaded sprite";
+
+    return true;
 }
 
 void Game::resizeWindow(bool go_fullscreen) {
@@ -57,7 +69,7 @@ void Game::resizeWindow(bool go_fullscreen) {
         flags = sf::Style::Fullscreen;
     }
     else {
-        mode = sf::VideoMode(width, height);
+        mode = sf::VideoMode(config.width, config.height);
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
 
@@ -68,8 +80,8 @@ void Game::resizeWindow(bool go_fullscreen) {
         exit(EXIT_FAILURE);
     }
 
-    fullscreen = go_fullscreen;
-    window->setMouseCursorVisible(!fullscreen);
+    config.fullscreen = go_fullscreen;
+    window->setMouseCursorVisible(!config.fullscreen);
 
     if (!go_fullscreen) {
         // center the window
@@ -87,8 +99,8 @@ void Game::resizeWindow(bool go_fullscreen) {
 }
 
 void Game::adjustScale() {
-    xScale = (float) window->getSize().x / width;
-    yScale = (float) window->getSize().y / height;
+    xScale = (float) window->getSize().x / config.width;
+    yScale = (float) window->getSize().y / config.height;
 
     screenSprite->setScale(xScale, yScale);
 }
@@ -112,7 +124,7 @@ void Game::processEvents() {
                         break;
                     case sf::Keyboard::Return:
                         if (event.key.alt) {
-                            resizeWindow(!fullscreen);
+                            resizeWindow(!config.fullscreen);
                         }
                     default:
                         break;
@@ -167,4 +179,3 @@ void Game::renderWorld() {
     window->draw(*screenSprite);
     window->display();
 }
-

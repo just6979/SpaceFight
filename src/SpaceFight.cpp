@@ -17,9 +17,6 @@ int main(int argc, char *argv[]) {
     const unsigned int majorVersion = 0;
     const unsigned int minorVersion = 2;
     const unsigned int revision = 0;
-    // 16:9 window that fits inside a 1366x768 screen on most systems
-    const unsigned int width = 1200;
-    const unsigned int height = 675;
     // our name
     const std::string gameName = "SpaceFight";
 
@@ -74,7 +71,7 @@ int main(int argc, char *argv[]) {
     // get the Game singleton
     Game *game = Game::getGame();
     // set up the Game with out chosen window size
-    if (!game->init(gameName, width, height)) {
+    if (!game->init(gameName)) {
         LOG(ERROR) << "Could not initialize Game, quitting.";
         return EXIT_FAILURE;
     }

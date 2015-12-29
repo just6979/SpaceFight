@@ -11,22 +11,29 @@
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "GameSprite.h"
+#include <easylogging++.h>
+#include <ini.h>
+#include <INIReader.h>
+
+#include <GameSprite.h>
 
 class Game {
 public:
     static Game *getGame();
-    void init(const std::string &_name, unsigned int _width, unsigned int _height);
+    bool init(const std::string &_name);
     void run();
 private:
     static Game *instance;
 
     Game() { };
     std::string name;
-    unsigned int width, height = 0;
+    struct _config {
+        unsigned int height = 0;
+        unsigned int width = 0;
+        bool fullscreen = false;
+    } config;
     float xScale, yScale = 0;
     sf::VideoMode desktop;
-    bool fullscreen = false;
     sf::RenderWindow *window;
     sf::RenderTexture *screen;
     sf::Sprite *screenSprite;
