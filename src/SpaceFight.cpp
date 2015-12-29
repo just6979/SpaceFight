@@ -12,17 +12,17 @@
 
 INITIALIZE_EASYLOGGINGPP
 
-// version info
-const unsigned int majorVersion = 0;
-const unsigned int minorVersion = 2;
-const unsigned int revision = 0;
-// 16:9 window that fits inside a 1366x768 screen on most systems
-const int width = 1200;
-const int height = 675;
-// our name
-const std::string gameName = "SpaceFight";
-
 int main(int argc, char *argv[]) {
+    // version info
+    const unsigned int majorVersion = 0;
+    const unsigned int minorVersion = 2;
+    const unsigned int revision = 0;
+    // 16:9 window that fits inside a 1366x768 screen on most systems
+    const unsigned int width = 1200;
+    const unsigned int height = 675;
+    // our name
+    const std::string gameName = "SpaceFight";
+
     START_EASYLOGGINGPP(argc, argv);
 
     // name the logFile after the game plus ".log"
@@ -74,9 +74,12 @@ int main(int argc, char *argv[]) {
     // get the Game singleton
     Game *game = Game::getGame();
     // set up the Game with out chosen window size
-    game->init(gameName, width, height);
+    if (!game->init(gameName, width, height)) {
+        LOG(ERROR) << "Could not initialize Game, quitting.";
+        return EXIT_FAILURE;
+    }
     // start the Game
     game->run();
-    // once the Game stops running, we're done.
+    // once the Game stops running, or if it doesn't initialize, we're done.
     return EXIT_SUCCESS;
 }
