@@ -40,11 +40,13 @@ bool Game::init(const std::string &_name) {
         config.height = (unsigned int) abs(reader.GetInteger("game", "height", config.height));
         config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
         config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
+        config.hideMouseFullscreen = reader.GetBoolean("game", "hideMouseFullscreen", config.hideMouseFullscreen);
     }
     LOG(INFO) << "config.width set to: " << config.width;
     LOG(INFO) << "config.height set to: " << config.height;
     LOG(INFO) << "config.fullscreen set to: " << (config.fullscreen ? "true" : "false");
     LOG(INFO) << "config.useDesktopSize set to: " << (config.useDesktopSize ? "true" : "False");
+    LOG(INFO) << "config.hideMouseFullscreen set to: " << (config.hideMouseFullscreen ? "true" : "False");
 
     window = new sf::RenderWindow();
 
@@ -68,17 +70,28 @@ void Game::resizeWindow(bool goFullscreen) {
     unsigned int flags = 0;
     sf::VideoMode mode;
 
-    if (goFullscreen) {
+    config.fullscreen = goFullscreen;
+    if (config.hideMouseFullscreen) {
+        if (config.fullscreen) {
+            LOG(INFO) << "Hiding mouse cursor";
+            window->setMouseCursorVisible(false);
+        }
+        else {
+            LOG(INFO) << "Showing mouse cursor";
+            window->setMouseCursorVisible(true);
+        }
+    }
+
+    if (config.fullscreen) {
         LOG(INFO) << "Going fullscreen";
         if (config.useDesktopSize) {
-            LOG(INFO) << "Ignoring width and height from config, using desktop size";
+            LOG(INFO) << "Using desktop size, ignoring width and height from config";
             mode = sf::VideoMode::getDesktopMode();
         } else {
             mode = sf::VideoMode(config.width, config.height);
         }
         flags = sf::Style::Fullscreen;
-    }
-    else {
+    } else {
         LOG(INFO) << "Going to windowed mode";
         mode = sf::VideoMode(config.width, config.height);
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
@@ -91,15 +104,12 @@ void Game::resizeWindow(bool goFullscreen) {
         exit(EXIT_FAILURE);
     }
 
-    config.fullscreen = goFullscreen;
-    window->setMouseCursorVisible(!config.fullscreen);
-
     if (config.fullscreen) {
         LOG(INFO) << "Set " << window->getSize().x << "x" << window->getSize().y << " fullscreen mode";
     } else {
         LOG(INFO) << "Created " << window->getSize().x << "x" << window->getSize().y << " window";
     }
-    LOG(INFO) << "Enabling VSync";
+    LOG(INFO) << "Enabling V-sync";
     window->setVerticalSyncEnabled(true);
     adjustScale();
 }

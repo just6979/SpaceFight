@@ -32,6 +32,7 @@ private:
         unsigned int height = 675;
         bool fullscreen = false;
         bool useDesktopSize = true;
+        bool hideMouseFullscreen = true;
     } config;
     float xScale, yScale = 0;
     sf::RenderWindow *window;
