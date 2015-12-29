@@ -46,7 +46,6 @@ bool Game::init(const std::string &_name) {
     LOG(INFO) << "config.fullscreen set to: " << (config.fullscreen ? "true" : "false");
     LOG(INFO) << "config.useDesktopSize set to: " << (config.useDesktopSize ? "true" : "False");
 
-    desktop = sf::VideoMode::getDesktopMode();
     window = new sf::RenderWindow();
 
     screen = new sf::RenderTexture;
@@ -65,15 +64,15 @@ bool Game::init(const std::string &_name) {
     return true;
 }
 
-void Game::resizeWindow(bool go_fullscreen) {
+void Game::resizeWindow(bool goFullscreen) {
     unsigned int flags = 0;
     sf::VideoMode mode;
 
-    if (go_fullscreen) {
+    if (goFullscreen) {
         LOG(INFO) << "Going fullscreen";
         if (config.useDesktopSize) {
             LOG(INFO) << "Ignoring width and height from config, using desktop size";
-            mode = desktop;
+            mode = sf::VideoMode::getDesktopMode();
         } else {
             mode = sf::VideoMode(config.width, config.height);
         }
@@ -92,11 +91,11 @@ void Game::resizeWindow(bool go_fullscreen) {
         exit(EXIT_FAILURE);
     }
 
-    config.fullscreen = go_fullscreen;
+    config.fullscreen = goFullscreen;
     window->setMouseCursorVisible(!config.fullscreen);
 
     if (config.fullscreen) {
-        LOG(INFO) << "Set " << window->getSize().x << "x" << window->getSize().y << "fullscreen mode";
+        LOG(INFO) << "Set " << window->getSize().x << "x" << window->getSize().y << " fullscreen mode";
     } else {
         LOG(INFO) << "Created " << window->getSize().x << "x" << window->getSize().y << " window";
     }

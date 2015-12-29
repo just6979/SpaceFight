@@ -34,7 +34,6 @@ private:
         bool useDesktopSize = true;
     } config;
     float xScale, yScale = 0;
-    sf::VideoMode desktop;
     sf::RenderWindow *window;
     sf::RenderTexture *screen;
     sf::Sprite *screenSprite;
@@ -43,7 +42,7 @@ private:
     const float keySpeed = 75;
     GameSprite *player;
 // system functions
-    void resizeWindow(bool fullscreen);
+    void resizeWindow(bool goFullscreen);
     void adjustScale();
     void processEvents();
     void updateControls();
