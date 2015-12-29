@@ -27,7 +27,7 @@ private:
 
     Game() { };
     std::string name;
-    struct _config {
+    struct {
         unsigned int width = 1200;
         unsigned int height = 675;
         bool fullscreen = false;
