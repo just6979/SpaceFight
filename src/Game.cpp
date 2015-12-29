@@ -36,8 +36,8 @@ bool Game::init(const std::string &_name) {
         LOG(ERROR) << "Can't load '" << iniFilename << "', using defaults";
     } else {
         // 1200x675 is a 16:9 window that fits inside a 1366x768 screen on most systems
-        config.width = (unsigned int) abs(reader.GetInteger("game", "width", config.width));
-        config.height = (unsigned int) abs(reader.GetInteger("game", "height", config.height));
+        config.width = (unsigned short) abs(reader.GetInteger("game", "width", config.width));
+        config.height = (unsigned short) abs(reader.GetInteger("game", "height", config.height));
         config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
         config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
         config.hideMouseFullscreen = reader.GetBoolean("game", "hideMouseFullscreen", config.hideMouseFullscreen);
