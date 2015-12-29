@@ -50,10 +50,6 @@ bool Game::init(const std::string &_name) {
 
     window = new sf::RenderWindow();
 
-    screen = new sf::RenderTexture;
-    screen->create(config.width, config.height, false);
-    screenSprite = new sf::Sprite(screen->getTexture());
-
     resizeWindow(config.fullscreen);
 
     sf::ContextSettings settings = window->getSettings();
@@ -112,13 +108,6 @@ void Game::resizeWindow(bool goFullscreen) {
     LOG(INFO) << "Enabling V-sync";
     window->setVerticalSyncEnabled(true);
     adjustScale();
-}
-
-void Game::adjustScale() {
-    xScale = (float) window->getSize().x / config.width;
-    yScale = (float) window->getSize().y / config.height;
-
-    screenSprite->setScale(xScale, yScale);
 }
 
 void Game::processEvents() {
@@ -187,11 +176,7 @@ void Game::updateWorld(sf::Time elapsed) {
 }
 
 void Game::renderWorld() {
-    screen->clear(sf::Color::Black);
-    screen->draw(*player);
-    screen->display();
-
-    window->clear(sf::Color(128, 128, 128));
-    window->draw(*screenSprite);
+    window->clear(sf::Color::Black);
+    window->draw(*player);
     window->display();
 }
