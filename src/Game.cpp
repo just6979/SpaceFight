@@ -58,6 +58,11 @@ bool Game::init(const std::string &_name) {
 
     window = new sf::RenderWindow();
 
+
+    LOG(INFO) << "Getting console";
+    console = Console::getConsole();
+    console->init();
+
     resizeWindow(config.fullscreen);
 
     sf::ContextSettings settings = window->getSettings();
@@ -109,6 +114,8 @@ void Game::resizeWindow(bool shouldFullscreen) {
         LOG(ERROR) << "Could not create main window";
         exit(EXIT_FAILURE);
     }
+
+    console->resize(window->getSize());
 
     if (config.fullscreen) {
         LOG(INFO) << "Set " << window->getSize().x << "x" << window->getSize().y << " fullscreen mode";
@@ -191,6 +198,8 @@ void Game::renderWorld() {
     for (const auto& sprite : sprites) {
         window->draw(*sprite);
     }
+    // draw console last so it overlays
+    window->draw(*console);
     // show everything
     window->display();
 }

@@ -16,6 +16,7 @@
 #include <INIReader.h>
 
 #include <GameSprite.h>
+#include <Console.h>
 
 class Game {
 public:
@@ -37,6 +38,7 @@ private:
         double keySpeed = 75;
     } config;
     sf::RenderWindow* window;
+    Console* console = NULL;
     GameSprite* player;
     std::vector<GameSprite*> sprites;
 // system functions

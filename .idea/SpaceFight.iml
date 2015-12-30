@@ -5,6 +5,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src/GameSprite.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/SpaceFight.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Game.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/Console.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/Console.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/Game.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/GameSprite.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
@@ -34,6 +36,7 @@
           <root url="file://D:/lib/SFML-2.3.2-x64/include" />
         </SOURCES>
         <excluded>
+          <root url="file://$MODULE_DIR$/include/Console.h" />
           <root url="file://$MODULE_DIR$/include/Game.h" />
           <root url="file://$MODULE_DIR$/include/GameSprite.h" />
         </excluded>

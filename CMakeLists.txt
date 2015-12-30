@@ -27,7 +27,7 @@ set(SOURCE_FILES
         src/Game.cpp
         src/GameSprite.cpp
         src/SpaceFight.cpp
-        src/Console.cpp include/Console.h)
+        src/Console.cpp include/Console.h include/common.h)
 
 if (WIN32)
     set(SFML_ROOT "D:/lib/SFML-2.3.2-x64/")
