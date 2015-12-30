@@ -26,8 +26,8 @@ private:
     static Game* instance;
     static bool initialized;
     Game() { };
-    std::string name;
     struct {
+        std::string name;
         unsigned short width = 1200;
         unsigned short height = 675;
         bool fullscreen = false;
@@ -39,7 +39,7 @@ private:
     sf::RenderWindow* window;
     GameSprite* player;
 // system functions
-    void resizeWindow(bool goFullscreen);
+    void resizeWindow(bool shouldFullscreen);
     void processEvents();
     void updateControls();
     void updateWorld(sf::Time elapsed);

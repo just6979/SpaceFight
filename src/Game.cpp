@@ -14,7 +14,7 @@ Game* Game::getGame() {
 void Game::run(void) {
     sf::Clock gameClock;
     sf::Time elapsed;
-    LOG(INFO) << "Starting " << name;
+    LOG(INFO) << "Starting " << config.name;
     while (window->isOpen()) {
         elapsed = gameClock.restart();
         processEvents();
@@ -27,9 +27,9 @@ void Game::run(void) {
 
 bool Game::init(const std::string &_name) {
     if (initialized) { return true; }
-    name = _name;
+    config.name = _name;
 
-    std::string iniFilename = name;
+    std::string iniFilename = config.name;
     iniFilename.append(".ini");
 
     INIReader reader(iniFilename);
@@ -71,11 +71,11 @@ bool Game::init(const std::string &_name) {
     return initialized;
 }
 
-void Game::resizeWindow(bool goFullscreen) {
+void Game::resizeWindow(bool shouldFullscreen) {
     unsigned int flags = 0;
     sf::VideoMode mode;
 
-    config.fullscreen = goFullscreen;
+    config.fullscreen = shouldFullscreen;
     if (config.hideMouseFullscreen) {
         if (config.fullscreen) {
             LOG(INFO) << "Hiding mouse cursor";
@@ -102,7 +102,7 @@ void Game::resizeWindow(bool goFullscreen) {
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
 
-    window->create(mode, name, flags);
+    window->create(mode, config.name, flags);
 
     if (!window->isOpen()) {
         LOG(ERROR) << "Could not create main window";
