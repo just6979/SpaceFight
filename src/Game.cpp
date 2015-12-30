@@ -1,8 +1,8 @@
 #include <Game.h>
 
-Game *Game::instance = NULL;
+Game* Game::instance = NULL;
 
-Game *Game::getGame() {
+Game* Game::getGame() {
     if (instance == NULL) {
         LOG(INFO) << "Creating Game instance";
         instance = new Game();

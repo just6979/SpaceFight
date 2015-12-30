@@ -19,11 +19,11 @@
 
 class Game {
 public:
-    static Game *getGame();
+    static Game* getGame();
     bool init(const std::string &_name);
     void run();
 private:
-    static Game *instance;
+    static Game* instance;
 
     Game() { };
     std::string name;
@@ -36,8 +36,8 @@ private:
         double deadZone = 15;
         double keySpeed = 75;
     } config;
-    sf::RenderWindow *window;
-    GameSprite *player;
+    sf::RenderWindow* window;
+    GameSprite* player;
 // system functions
     void resizeWindow(bool goFullscreen);
     void processEvents();
