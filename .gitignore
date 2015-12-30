@@ -2,3 +2,4 @@
 /obj
 *.log
 *.exe
+/.idea/workspace.xml
