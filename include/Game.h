@@ -24,7 +24,7 @@ public:
     void run();
 private:
     static Game* instance;
-
+    static bool initialized;
     Game() { };
     std::string name;
     struct {

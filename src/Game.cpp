@@ -1,6 +1,7 @@
 #include <Game.h>
 
 Game* Game::instance = NULL;
+bool Game::initialized = false;
 
 Game* Game::getGame() {
     if (instance == NULL) {
@@ -25,6 +26,7 @@ void Game::run(void) {
 }
 
 bool Game::init(const std::string &_name) {
+    if (initialized) { return true; }
     name = _name;
 
     std::string iniFilename = name;
@@ -65,7 +67,8 @@ bool Game::init(const std::string &_name) {
     player->setPosition(config.width / 2, config.height / 2);
     LOG(INFO) << "Loaded sprite";
 
-    return true;
+    initialized = true;
+    return initialized;
 }
 
 void Game::resizeWindow(bool goFullscreen) {
