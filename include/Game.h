@@ -38,6 +38,7 @@ private:
     } config;
     sf::RenderWindow* window;
     GameSprite* player;
+    std::vector<GameSprite*> sprites;
 // system functions
     void resizeWindow(bool shouldFullscreen);
     void processEvents();

@@ -65,7 +65,8 @@ bool Game::init(const std::string &_name) {
 
     player = new GameSprite(sf::Color::Blue);
     player->setPosition(config.width / 2, config.height / 2);
-    LOG(INFO) << "Loaded sprite";
+    sprites.push_back(player);
+    LOG(INFO) << "Loaded player sprite";
 
     initialized = true;
     return initialized;
@@ -184,7 +185,12 @@ void Game::updateWorld(sf::Time elapsed) {
 }
 
 void Game::renderWorld() {
+    // blank the screen
     window->clear(sf::Color::Black);
-    window->draw(*player);
+    // draw all the normal sprites
+    for (const auto& sprite : sprites) {
+        window->draw(*sprite);
+    }
+    // show everything
     window->display();
 }
