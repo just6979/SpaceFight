@@ -25,7 +25,7 @@ void Game::run(void) {
     LOG(INFO) << "Stopped";
 }
 
-bool Game::init(const std::string &_name) {
+bool Game::init(const std::string& _name) {
     if (initialized) { return true; }
     config.name = _name;
 

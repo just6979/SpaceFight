@@ -21,11 +21,12 @@
 class Game {
 public:
     static Game* getGame();
-    bool init(const std::string &_name);
+    bool init(const std::string& _name);
     void run();
 private:
     static Game* instance;
     static bool initialized;
+
     Game() { };
     struct {
         std::string name;

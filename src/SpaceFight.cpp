@@ -12,7 +12,7 @@
 
 INITIALIZE_EASYLOGGINGPP
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     // version info
     const unsigned int majorVersion = 0;
     const unsigned int minorVersion = 3;
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
     LOG(INFO) << "SFML " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR;
 
     // get the Game singleton
-    Game *game = Game::getGame();
+    Game* game = Game::getGame();
     // set up the Game with out chosen window size
     if (!game->init(gameName)) {
         LOG(ERROR) << "Could not initialize Game, quitting.";
