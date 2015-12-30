@@ -9,10 +9,10 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 
 find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
+if (CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-endif(CCACHE_FOUND)
+endif (CCACHE_FOUND)
 
 INCLUDE_DIRECTORIES(include)
 INCLUDE_DIRECTORIES(contrib/include)
@@ -23,11 +23,13 @@ set(CONTRIB_SOURCE_FILES
         )
 set(SOURCE_FILES
         include/Game.h
+        include/Console.h
         include/GameSprite.h
+        src/SpaceFight.cpp
         src/Game.cpp
         src/GameSprite.cpp
-        src/SpaceFight.cpp
-        src/Console.cpp include/Console.h include/common.h)
+        src/Console.cpp
+        )
 
 if (WIN32)
     set(SFML_ROOT "D:/lib/SFML-2.3.2-x64/")
