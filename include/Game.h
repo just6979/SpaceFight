@@ -38,11 +38,13 @@ private:
         double deadZone = 15;
         double keySpeed = 75;
     } config;
-    sf::RenderWindow* window;
+    sf::RenderWindow window;
+    sf::View view;
     Console* console = NULL;
     GameSprite* player;
     std::vector<GameSprite*> sprites;
 // system functions
+    void adjustAspect(unsigned int width, unsigned int height);
     void resizeWindow(bool shouldFullscreen);
     void processEvents();
     void updateControls();

@@ -15,7 +15,7 @@ void Game::run(void) {
     sf::Clock gameClock;
     sf::Time elapsed;
     LOG(INFO) << "Starting " << config.name;
-    while (window->isOpen()) {
+    while (window.isOpen()) {
         elapsed = gameClock.restart();
         processEvents();
         updateControls();
@@ -56,8 +56,6 @@ bool Game::init(const std::string& _name) {
     LOG(INFO) << "keySpeed = " << config.keySpeed;
     LOG(INFO) << "--End config--";
 
-    window = new sf::RenderWindow();
-
 
     LOG(INFO) << "Getting console";
     console = Console::getConsole();
@@ -65,7 +63,9 @@ bool Game::init(const std::string& _name) {
 
     resizeWindow(config.fullscreen);
 
-    sf::ContextSettings settings = window->getSettings();
+    view = window.getDefaultView();
+
+    sf::ContextSettings settings = window.getSettings();
     LOG(INFO) << "Using OpenGL v" << settings.majorVersion << "." << settings.minorVersion;
 
     player = new GameSprite(sf::Color::Blue);
@@ -77,6 +77,28 @@ bool Game::init(const std::string& _name) {
     return initialized;
 }
 
+void Game::adjustAspect(unsigned int newWidth, unsigned int newHeight) {
+    float widthScale = 1.0f;
+    float widthOffset = 0.0f;
+    float heightScale = 1.0f;
+    float heightOffset = 0.0f;
+
+    const float sixteenNine = 16.0f / 9.0f;
+    const float nineSixteen = 9.0f / 16.0f;
+    float currentRatio = (float) newWidth / (float) newHeight;
+
+    if (currentRatio > sixteenNine) {
+        widthScale = newHeight * sixteenNine / newWidth;
+        widthOffset = (1.0f - widthScale) / 2.0f;
+    } else if (currentRatio < sixteenNine) {
+        heightScale = newWidth * nineSixteen / newHeight;
+        heightOffset = (1.0f - heightScale) / 2.0f;
+    }
+
+    view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
+    window.setView(view);
+}
+
 void Game::resizeWindow(bool shouldFullscreen) {
     unsigned int flags = 0;
     sf::VideoMode mode;
@@ -85,11 +107,11 @@ void Game::resizeWindow(bool shouldFullscreen) {
     if (config.hideMouseFullscreen) {
         if (config.fullscreen) {
             LOG(INFO) << "Hiding mouse cursor";
-            window->setMouseCursorVisible(false);
+            window.setMouseCursorVisible(false);
         }
         else {
             LOG(INFO) << "Showing mouse cursor";
-            window->setMouseCursorVisible(true);
+            window.setMouseCursorVisible(true);
         }
     }
 
@@ -108,40 +130,44 @@ void Game::resizeWindow(bool shouldFullscreen) {
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
 
-    window->create(mode, config.name, flags);
+    window.create(mode, config.name, flags);
+    window.setView(view);
 
-    if (!window->isOpen()) {
+    if (!window.isOpen()) {
         LOG(ERROR) << "Could not create main window";
         exit(EXIT_FAILURE);
     }
 
-    console->resize(window->getSize());
+    console->resize(window.getSize());
 
     if (config.fullscreen) {
-        LOG(INFO) << "Set " << window->getSize().x << "x" << window->getSize().y << " fullscreen mode";
+        LOG(INFO) << "Set " << window.getSize().x << "x" << window.getSize().y << " fullscreen mode";
     } else {
-        LOG(INFO) << "Created " << window->getSize().x << "x" << window->getSize().y << " window";
+        LOG(INFO) << "Created " << window.getSize().x << "x" << window.getSize().y << " window";
     }
     LOG(INFO) << "Enabling V-sync";
-    window->setVerticalSyncEnabled(true);
+    window.setVerticalSyncEnabled(true);
+
+    adjustAspect(window.getSize().x, window.getSize().y);
 }
 
 void Game::processEvents() {
     static sf::Event event;
 
-    while (window->pollEvent(event)) {
+    while (window.pollEvent(event)) {
         switch (event.type) {
             case sf::Event::Closed:
                 LOG(INFO) << "Window closed";
-                window->close();
+                window.close();
                 break;
             case sf::Event::Resized:
+                adjustAspect(event.size.width, event.size.height);
                 break;
             case sf::Event::KeyPressed:
                 switch (event.key.code) {
                     case sf::Keyboard::Escape:
                         LOG(INFO) << "Player exited";
-                        window->close();
+                        window.close();
                         break;
                     case sf::Keyboard::Return:
                         if (event.key.alt) {
@@ -193,13 +219,13 @@ void Game::updateWorld(sf::Time elapsed) {
 
 void Game::renderWorld() {
     // blank the screen
-    window->clear(sf::Color::Black);
+    window.clear(sf::Color::Black);
     // draw all the normal sprites
     for (const auto& sprite : sprites) {
-        window->draw(*sprite);
+        window.draw(*sprite);
     }
     // draw console last so it overlays
-    window->draw(*console);
+    window.draw(*console);
     // show everything
-    window->display();
+    window.display();
 }
