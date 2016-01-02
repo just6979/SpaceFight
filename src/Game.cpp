@@ -58,6 +58,8 @@ bool Game::init(const std::string& _name) {
     LOG(INFO) << "keySpeed = " << config.keySpeed;
     LOG(INFO) << "--End config--";
 
+    LOG(INFO) << "Creating " << renderWidth << "x" << renderHeight << " render target";
+    screen.create(renderWidth, renderHeight);
 
     LOG(INFO) << "Getting console";
     console = Console::getConsole();
@@ -65,7 +67,6 @@ bool Game::init(const std::string& _name) {
 
     // initialize the view
     view = window.getDefaultView();
-    window.setView(view);
 
     createWindow(config.fullscreen);
 
@@ -111,7 +112,7 @@ void Game::createWindow(bool shouldFullscreen) {
     // scale the viewport to maintain good aspect
     adjustAspect(window.getSize());
     // make sure the console fits too
-    console->resize(window.getSize());
+    console->resize(screen.getSize());
 }
 
 void Game::adjustAspect(sf::Event::SizeEvent newSize) {
@@ -219,14 +220,20 @@ void Game::updateWorld(sf::Time elapsed) {
 }
 
 void Game::renderWorld() {
-    // blank the screen
-    window.clear(sf::Color::Black);
-    // draw all the normal sprites
+    // blank the window to gray
+    window.clear(sf::Color(128, 128, 128));
+    // blank the render target
+    screen.clear(sf::Color::Black);
+    // render all the normal sprites
     for (const auto& sprite : sprites) {
-        window.draw(*sprite);
+        screen.draw(*sprite);
     }
-    // draw console last so it overlays
-    window.draw(*console);
-    // show everything
+    // render console last so it overlays
+    screen.draw(*console);
+    // show everything rendered so far
+    screen.display();
+    // copy render target to window
+    window.draw(sf::Sprite(screen.getTexture()));
+    // display everything
     window.display();
 }
