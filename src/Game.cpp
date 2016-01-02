@@ -85,8 +85,8 @@ void Game::createWindow(bool shouldFullscreen) {
         window.setMouseCursorVisible(false);
         if (config.useDesktopSize) {
             LOG(INFO) << "Setting fullscreen mode (using desktop size): " << \
-                                sf::VideoMode::getDesktopMode().width << "x" << \
-                                sf::VideoMode::getDesktopMode().height;
+                sf::VideoMode::getDesktopMode().width << "x" << \
+                sf::VideoMode::getDesktopMode().height;
             mode = sf::VideoMode::getDesktopMode();
         } else {
             LOG(INFO) << "Setting fullscreen mode: " << config.width << "x" << config.height;
@@ -148,9 +148,9 @@ void Game::adjustAspect(sf::Vector2u newSize) {
         heightScale = config.width * nineSixteen / config.height;
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
-    LOG(INFO) << "Setting " << isSixteenNine << " viewport " << widthOffset << ", " << heightOffset << "; " <<
-    widthScale << ", " << heightScale;
-    LOG(INFO) << "Using window size of " << config.width << "x" << config.height;
+    LOG(INFO) << "Adjusting aspect for window size " << config.width << "x" << config.height;
+    LOG(INFO) << "Setting " << isSixteenNine << " viewport (wo:" << \
+        widthOffset << ", ho:" << heightOffset << "; ws:" << widthScale << ", hs:" << heightScale << ")";
     view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
     window.setView(view);
 }
