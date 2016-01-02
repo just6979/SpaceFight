@@ -40,7 +40,6 @@ private:
         bool fullscreen = false;
         // but do use desktop size when going fullscreen
         bool useDesktopSize = true;
-        bool hideMouseFullscreen = true;
         double deadZone = 15;
         double keySpeed = 75;
     } config;

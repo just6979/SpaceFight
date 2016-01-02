@@ -46,7 +46,6 @@ bool Game::init(const std::string& _name) {
         config.height = (unsigned int) abs(reader.GetInteger("game", "height", config.height));
         config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
         config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
-        config.hideMouseFullscreen = reader.GetBoolean("game", "hideMouseFullscreen", config.hideMouseFullscreen);
         config.deadZone = reader.GetReal("game", "deadZone", config.deadZone);
         config.keySpeed = reader.GetReal("game", "keySpeed", config.keySpeed);
     }
@@ -55,7 +54,6 @@ bool Game::init(const std::string& _name) {
     LOG(INFO) << "height = " << config.height;
     LOG(INFO) << "fullscreen = " << (config.fullscreen ? "true" : "false");
     LOG(INFO) << "useDesktopSize = " << (config.useDesktopSize ? "true" : "False");
-    LOG(INFO) << "hideMouseFullscreen = " << (config.hideMouseFullscreen ? "true" : "False");
     LOG(INFO) << "deadZone = " << config.deadZone;
     LOG(INFO) << "keySpeed = " << config.keySpeed;
     LOG(INFO) << "--End config--";
@@ -84,19 +82,9 @@ void Game::createWindow(bool shouldFullscreen) {
     unsigned int flags = 0;
     sf::VideoMode mode;
     config.fullscreen = shouldFullscreen;
-    if (config.hideMouseFullscreen) {
-        if (config.fullscreen) {
-            LOG(INFO) << "Hiding mouse cursor";
-            window.setMouseCursorVisible(false);
-        }
-        else {
-            LOG(INFO) << "Showing mouse cursor";
-            window.setMouseCursorVisible(true);
-        }
-    }
-
     if (config.fullscreen) {
         LOG(INFO) << "Going fullscreen";
+        window.setMouseCursorVisible(false);
         if (config.useDesktopSize) {
             LOG(INFO) << "Setting fullscreen mode (using desktop size): " << \
                                 sf::VideoMode::getDesktopMode().width << "x" << \
@@ -109,6 +97,7 @@ void Game::createWindow(bool shouldFullscreen) {
         flags = sf::Style::Fullscreen;
     } else {
         LOG(INFO) << "Setting windowed mode: " << config.width << "x" << config.height;
+        window.setMouseCursorVisible(true);
         mode = sf::VideoMode(config.width, config.height);
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
