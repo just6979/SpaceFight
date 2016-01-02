@@ -12,8 +12,8 @@
 #include <SFML/Graphics.hpp>
 
 #include <easylogging++.h>
-#include <ini.h>
-#include <INIReader.h>
+#include <inih/ini.h>
+#include <inih/cpp/INIReader.h>
 
 #include <GameSprite.h>
 #include <Console.h>
@@ -37,6 +37,9 @@ private:
         bool fullscreen = false;
         // but do use desktop size when going fullscreen
         bool useDesktopSize = true;
+        // show the console
+        bool showConsole = false;
+
         double deadZone = 15;
         double keySpeed = 75;
     } config;

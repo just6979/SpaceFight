@@ -10,8 +10,10 @@
       <sourceFolder url="file://$MODULE_DIR$/include/Game.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/include/GameSprite.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/contrib/INIReader.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/contrib/ini.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/contrib/inih/ini.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/contrib/inih/cpp/INIReader.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/contrib/inih/cpp/INIReader.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/contrib/inih/ini.c" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/bin" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
@@ -23,7 +25,7 @@
           <root url="file://C:/Lang/TDM-GCC/TDM-64/x86_64-w64-mingw32/include" />
           <root url="file://C:/Lang/TDM-GCC/TDM-64/include" />
           <root url="file://$MODULE_DIR$/include" />
-          <root url="file://$MODULE_DIR$/contrib/include" />
+          <root url="file://$MODULE_DIR$/contrib" />
           <root url="file://D:/lib/SFML-2.3.2-x64/include" />
         </CLASSES>
         <SOURCES>
@@ -32,13 +34,17 @@
           <root url="file://C:/Lang/TDM-GCC/TDM-64/x86_64-w64-mingw32/include" />
           <root url="file://C:/Lang/TDM-GCC/TDM-64/include" />
           <root url="file://$MODULE_DIR$/include" />
-          <root url="file://$MODULE_DIR$/contrib/include" />
+          <root url="file://$MODULE_DIR$/contrib" />
           <root url="file://D:/lib/SFML-2.3.2-x64/include" />
         </SOURCES>
         <excluded>
           <root url="file://$MODULE_DIR$/include/Console.h" />
           <root url="file://$MODULE_DIR$/include/Game.h" />
           <root url="file://$MODULE_DIR$/include/GameSprite.h" />
+          <root url="file://$MODULE_DIR$/contrib/inih/ini.h" />
+          <root url="file://$MODULE_DIR$/contrib/inih/cpp/INIReader.h" />
+          <root url="file://$MODULE_DIR$/contrib/inih/cpp/INIReader.cpp" />
+          <root url="file://$MODULE_DIR$/contrib/inih/ini.c" />
         </excluded>
       </library>
     </orderEntry>

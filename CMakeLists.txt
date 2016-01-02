@@ -15,12 +15,11 @@ if (CCACHE_FOUND)
 endif (CCACHE_FOUND)
 
 INCLUDE_DIRECTORIES(include)
-INCLUDE_DIRECTORIES(contrib/include)
 
-set(CONTRIB_SOURCE_FILES
-        contrib/ini.c
-        contrib/INIReader.cpp
-        )
+INCLUDE_DIRECTORIES(contrib)
+file(GLOB_RECURSE CONTRIB_SOURCE_C contrib *.c)
+file(GLOB_RECURSE CONTRIB_SOURCE_CPP contrib *.cpp)
+
 set(SOURCE_FILES
         include/Game.h
         include/Console.h
@@ -44,6 +43,6 @@ if (SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
 endif ()
 
-add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} ${CONTRIB_SOURCE_FILES})
+add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} ${CONTRIB_SOURCE_C} ${CONTRIB_SOURCE_CPP})
 
 target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
