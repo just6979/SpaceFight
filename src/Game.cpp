@@ -109,17 +109,21 @@ void Game::createWindow(bool shouldFullscreen) {
     LOG(INFO) << "Enabling V-sync";
     window.setVerticalSyncEnabled(true);
     // scale the viewport to maintain good aspect
-    adjustAspect(window.getSize().x, window.getSize().y);
+    adjustAspect(window.getSize());
     // make sure the console fits too
     console->resize(window.getSize());
 }
 
-void Game::adjustAspect(unsigned int newWidth, unsigned int newHeight) {
+void Game::adjustAspect(sf::Event::SizeEvent newSize) {
+    adjustAspect(sf::Vector2u(newSize.width, newSize.height));
+}
+
+void Game::adjustAspect(sf::Vector2u newSize) {
     // save the new window size
-    config.width = newWidth;
-    config.height = newHeight;
+    config.width = newSize.x;
+    config.height = newSize.y;
     // compute the current aspect
-    float currentRatio = (float) newWidth / (float) newHeight;
+    float currentRatio = (float) config.width / (float) config.height;
     // used to offset and scale the viewport to maintain 16:9 aspect
     float widthScale = 1.0f;
     float widthOffset = 0.0f;
@@ -133,16 +137,17 @@ void Game::adjustAspect(unsigned int newWidth, unsigned int newHeight) {
     if (currentRatio > sixteenNine) {
         // we are wider
         isSixteenNine = "wide";
-        widthScale = newHeight * sixteenNine / newWidth;
+        widthScale = config.height * sixteenNine / config.width;
         widthOffset = (1.0f - widthScale) / 2.0f;
     } else if (currentRatio < sixteenNine) {
         // we are narrower
         isSixteenNine = "narrow";
-        heightScale = newWidth * nineSixteen / newHeight;
+        heightScale = config.width * nineSixteen / config.height;
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
-    LOG(INFO) << "Setting " << isSixteenNine << " viewport " << widthOffset << ", " << heightOffset << "; " << widthScale << ", " << heightScale;
-    LOG(INFO) << "Using window size of " << newWidth << "x" << newHeight;
+    LOG(INFO) << "Setting " << isSixteenNine << " viewport " << widthOffset << ", " << heightOffset << "; " <<
+    widthScale << ", " << heightScale;
+    LOG(INFO) << "Using window size of " << config.width << "x" << config.height;
     view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
     window.setView(view);
 }
@@ -157,7 +162,7 @@ void Game::processEvents() {
                 window.close();
                 break;
             case sf::Event::Resized:
-                adjustAspect(event.size.width, event.size.height);
+                adjustAspect(event.size);
                 break;
             case sf::Event::KeyPressed:
                 switch (event.key.code) {

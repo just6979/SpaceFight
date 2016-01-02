@@ -55,7 +55,8 @@ private:
     GameSprite* player;
 
     // change the viewport to maintain 16:9 aspect ratio
-    void adjustAspect(unsigned int width, unsigned int height);
+    void adjustAspect(sf::Event::SizeEvent newSize);
+    void adjustAspect(sf::Vector2u newSize);
     // [re]create the rendering window, possibly fullscreen
     void createWindow(bool shouldFullscreen = false);
     void processEvents();
