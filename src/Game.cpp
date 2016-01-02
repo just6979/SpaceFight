@@ -80,6 +80,8 @@ bool Game::init(const std::string& _name) {
 }
 
 void Game::resizeWindow(unsigned int width, unsigned int height, bool shouldFullscreen) {
+    config.width = width;
+    config.height = height;
     unsigned int flags = 0;
     sf::VideoMode mode;
 
