@@ -118,13 +118,15 @@ void Game::createWindow(bool shouldFullscreen) {
 }
 
 void Game::adjustAspect(sf::Event::SizeEvent newSize) {
+    // save the new window size since this came from a resize event
+    // not from initialization or a fullscreen toggle
+    config.width = newSize.width;
+    config.height = newSize.height;
+    // do the calculation
     adjustAspect(sf::Vector2u(newSize.width, newSize.height));
 }
 
 void Game::adjustAspect(sf::Vector2u newSize) {
-    // save the new window size
-    config.width = newSize.x;
-    config.height = newSize.y;
     // compute the current aspect
     float currentRatio = (float) config.width / (float) config.height;
     // used to offset and scale the viewport to maintain 16:9 aspect
