@@ -30,21 +30,34 @@ private:
     Game() { };
     struct {
         std::string name;
+        // this size fits in most screens in windowed mode
         unsigned int width = 1200;
         unsigned int height = 675;
+        // render internally to 720p widescreen
+        unsigned int renderWidth = 1280;
+        unsigned int renderHeight = 720;
+        // don't start fullscreen
         bool fullscreen = false;
+        // but do use desktop size when going fullscreen
         bool useDesktopSize = true;
         bool hideMouseFullscreen = true;
         double deadZone = 15;
         double keySpeed = 75;
     } config;
+    // where everything is drawn
     sf::RenderWindow window;
+    // controls the 2D camera, used for rendering internally at a set size
     sf::View view;
+    // displays messages over the playing screen
     Console* console = NULL;
-    GameSprite* player;
+    // all normal sprites to draw
     std::vector<GameSprite*> sprites;
-// system functions
+    // the player's ship sprite
+    GameSprite* player;
+
+    // change the viewport to maintain 16:9 aspect ratio
     void adjustAspect(unsigned int width, unsigned int height);
+    // [re]create the rendering window, possibly fullscreen
     void createWindow(bool shouldFullscreen = false);
     void processEvents();
     void updateControls();
