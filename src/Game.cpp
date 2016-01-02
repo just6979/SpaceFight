@@ -27,6 +27,10 @@ void Game::run(void) {
 
 bool Game::init(const std::string& _name) {
     if (initialized) { return true; }
+
+    sf::ContextSettings settings = window.getSettings();
+    LOG(INFO) << "Using OpenGL v" << settings.majorVersion << "." << settings.minorVersion;
+
     config.name = _name;
 
     std::string iniFilename = config.name;
@@ -65,8 +69,6 @@ bool Game::init(const std::string& _name) {
 
     view = window.getDefaultView();
 
-    sf::ContextSettings settings = window.getSettings();
-    LOG(INFO) << "Using OpenGL v" << settings.majorVersion << "." << settings.minorVersion;
 
     player = new GameSprite(sf::Color::Blue);
     player->setPosition(config.width / 2, config.height / 2);
