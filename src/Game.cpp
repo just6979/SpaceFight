@@ -127,8 +127,10 @@ void Game::adjustAspect(sf::Event::SizeEvent newSize) {
 }
 
 void Game::adjustAspect(sf::Vector2u newSize) {
+    unsigned int newWidth = newSize.x;
+    unsigned int newHeight = newSize.y;
     // compute the current aspect
-    float currentRatio = (float) config.width / (float) config.height;
+    float currentRatio = (float) newWidth / (float) newHeight;
     // used to offset and scale the viewport to maintain 16:9 aspect
     float widthScale = 1.0f;
     float widthOffset = 0.0f;
@@ -142,15 +144,15 @@ void Game::adjustAspect(sf::Vector2u newSize) {
     if (currentRatio > sixteenNine) {
         // we are wider
         isSixteenNine = "wide";
-        widthScale = config.height * sixteenNine / config.width;
+        widthScale = newHeight * sixteenNine / newWidth;
         widthOffset = (1.0f - widthScale) / 2.0f;
     } else if (currentRatio < sixteenNine) {
         // we are narrower
         isSixteenNine = "narrow";
-        heightScale = config.width * nineSixteen / config.height;
+        heightScale = newWidth * nineSixteen / newHeight;
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
-    LOG(INFO) << "Adjusting aspect for window size " << config.width << "x" << config.height;
+    LOG(INFO) << "Adjusting aspect for window size " << newWidth << "x" << newHeight;
     LOG(INFO) << "Setting " << isSixteenNine << " viewport (wo:" << \
         widthOffset << ", ho:" << heightOffset << "; ws:" << widthScale << ", hs:" << heightScale << ")";
     view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
