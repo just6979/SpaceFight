@@ -83,7 +83,6 @@ bool Game::init(const std::string& _name) {
 void Game::createWindow(bool shouldFullscreen) {
     unsigned int flags = 0;
     sf::VideoMode mode;
-
     config.fullscreen = shouldFullscreen;
     if (config.hideMouseFullscreen) {
         if (config.fullscreen) {
@@ -113,46 +112,48 @@ void Game::createWindow(bool shouldFullscreen) {
         mode = sf::VideoMode(config.width, config.height);
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
-
     window.create(mode, config.name, flags);
-
     if (!window.isOpen()) {
         LOG(ERROR) << "Could not create main window";
         exit(EXIT_FAILURE);
     }
-
     LOG(INFO) << "Enabling V-sync";
     window.setVerticalSyncEnabled(true);
-
+    // scale the viewport to maintain good aspect
     adjustAspect(window.getSize().x, window.getSize().y);
-
+    // make sure the console fits too
     console->resize(window.getSize());
 }
 
 void Game::adjustAspect(unsigned int newWidth, unsigned int newHeight) {
+    // save the new window size
+    config.width = newWidth;
+    config.height = newHeight;
+    // compute the current aspect
+    float currentRatio = (float) newWidth / (float) newHeight;
+    // used to offset and scale the viewport to maintain 16:9 aspect
     float widthScale = 1.0f;
     float widthOffset = 0.0f;
     float heightScale = 1.0f;
     float heightOffset = 0.0f;
-
+    // used to compare and compute aspect ratios
     const float sixteenNine = 16.0f / 9.0f;
     const float nineSixteen = 9.0f / 16.0f;
-
-    float currentRatio = (float) newWidth / (float) newHeight;
-
+    // for logging
     std::string isSixteenNine = "16:9";
     if (currentRatio > sixteenNine) {
+        // we are wider
         isSixteenNine = "wide";
         widthScale = newHeight * sixteenNine / newWidth;
         widthOffset = (1.0f - widthScale) / 2.0f;
     } else if (currentRatio < sixteenNine) {
+        // we are narrower
         isSixteenNine = "narrow";
         heightScale = newWidth * nineSixteen / newHeight;
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
-
-    LOG(INFO) << "Using window size of " << newWidth << "x" << newHeight;
     LOG(INFO) << "Setting " << isSixteenNine << " viewport " << widthOffset << ", " << heightOffset << "; " << widthScale << ", " << heightScale;
+    LOG(INFO) << "Using window size of " << newWidth << "x" << newHeight;
     view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
     window.setView(view);
 }
