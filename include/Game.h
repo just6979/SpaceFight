@@ -54,11 +54,11 @@ private:
     // the player's ship sprite
     GameSprite* player;
 
+    // [re]create the rendering window, possibly fullscreen
+    void createWindow(bool shouldFullscreen = false);
     // change the viewport to maintain 16:9 aspect ratio
     void adjustAspect(sf::Event::SizeEvent newSize);
     void adjustAspect(sf::Vector2u newSize);
-    // [re]create the rendering window, possibly fullscreen
-    void createWindow(bool shouldFullscreen = false);
     void processEvents();
     void updateControls();
     void updateWorld(sf::Time elapsed);
