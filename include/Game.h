@@ -30,8 +30,8 @@ private:
     Game() { };
     struct {
         std::string name;
-        unsigned short width = 1200;
-        unsigned short height = 675;
+        unsigned int width = 1200;
+        unsigned int height = 675;
         bool fullscreen = false;
         bool useDesktopSize = true;
         bool hideMouseFullscreen = true;

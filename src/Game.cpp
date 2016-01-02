@@ -42,8 +42,8 @@ bool Game::init(const std::string& _name) {
         LOG(ERROR) << "Can't load '" << iniFilename << "', using defaults";
     } else {
         // 1200x675 is a 16:9 window that fits inside a 1366x768 screen on most systems
-        config.width = (unsigned short) abs(reader.GetInteger("game", "width", config.width));
-        config.height = (unsigned short) abs(reader.GetInteger("game", "height", config.height));
+        config.width = (unsigned int) abs(reader.GetInteger("game", "width", config.width));
+        config.height = (unsigned int) abs(reader.GetInteger("game", "height", config.height));
         config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
         config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
         config.hideMouseFullscreen = reader.GetBoolean("game", "hideMouseFullscreen", config.hideMouseFullscreen);
@@ -65,10 +65,10 @@ bool Game::init(const std::string& _name) {
     console = Console::getConsole();
     console->init();
 
-    resizeWindow(config.width, config.height, config.fullscreen);
-
+    // initialize the view
     view = window.getDefaultView();
 
+    resizeWindow(config.width, config.height, config.fullscreen);
 
     player = new GameSprite(sf::Color::Blue);
     player->setPosition(config.width / 2, config.height / 2);
@@ -77,28 +77,6 @@ bool Game::init(const std::string& _name) {
 
     initialized = true;
     return initialized;
-}
-
-void Game::adjustAspect(unsigned int newWidth, unsigned int newHeight) {
-    float widthScale = 1.0f;
-    float widthOffset = 0.0f;
-    float heightScale = 1.0f;
-    float heightOffset = 0.0f;
-
-    const float sixteenNine = 16.0f / 9.0f;
-    const float nineSixteen = 9.0f / 16.0f;
-    float currentRatio = (float) newWidth / (float) newHeight;
-
-    if (currentRatio > sixteenNine) {
-        widthScale = newHeight * sixteenNine / newWidth;
-        widthOffset = (1.0f - widthScale) / 2.0f;
-    } else if (currentRatio < sixteenNine) {
-        heightScale = newWidth * nineSixteen / newHeight;
-        heightOffset = (1.0f - heightScale) / 2.0f;
-    }
-
-    view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
-    window.setView(view);
 }
 
 void Game::resizeWindow(unsigned int width, unsigned int height, bool shouldFullscreen) {
@@ -120,37 +98,57 @@ void Game::resizeWindow(unsigned int width, unsigned int height, bool shouldFull
     if (config.fullscreen) {
         LOG(INFO) << "Going fullscreen";
         if (config.useDesktopSize) {
-            LOG(INFO) << "Using desktop size, ignoring width and height from config";
+            LOG(INFO) << "Setting fullscreen mode (using desktop size): " << \
+                                sf::VideoMode::getDesktopMode().width << "x" << \
+                                sf::VideoMode::getDesktopMode().height;
             mode = sf::VideoMode::getDesktopMode();
         } else {
+            LOG(INFO) << "Setting fullscreen mode: " << config.width << "x" << config.height;
             mode = sf::VideoMode(config.width, config.height);
         }
         flags = sf::Style::Fullscreen;
     } else {
-        LOG(INFO) << "Going to windowed mode";
+        LOG(INFO) << "Setting windowed mode: " << config.width << "x" << config.height;
         mode = sf::VideoMode(config.width, config.height);
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
 
     window.create(mode, config.name, flags);
-    window.setView(view);
 
     if (!window.isOpen()) {
         LOG(ERROR) << "Could not create main window";
         exit(EXIT_FAILURE);
     }
 
-    console->resize(window.getSize());
-
-    if (config.fullscreen) {
-        LOG(INFO) << "Set " << window.getSize().x << "x" << window.getSize().y << " fullscreen mode";
-    } else {
-        LOG(INFO) << "Created " << window.getSize().x << "x" << window.getSize().y << " window";
-    }
     LOG(INFO) << "Enabling V-sync";
     window.setVerticalSyncEnabled(true);
 
     adjustAspect(window.getSize().x, window.getSize().y);
+
+    console->resize(window.getSize());
+}
+
+void Game::adjustAspect(unsigned int newWidth, unsigned int newHeight) {
+    float widthScale = 1.0f;
+    float widthOffset = 0.0f;
+    float heightScale = 1.0f;
+    float heightOffset = 0.0f;
+
+    const float sixteenNine = 16.0f / 9.0f;
+    const float nineSixteen = 9.0f / 16.0f;
+
+    float currentRatio = (float) newWidth / (float) newHeight;
+
+    if (currentRatio > sixteenNine) {
+        widthScale = newHeight * sixteenNine / newWidth;
+        widthOffset = (1.0f - widthScale) / 2.0f;
+    } else if (currentRatio < sixteenNine) {
+        heightScale = newWidth * nineSixteen / newHeight;
+        heightOffset = (1.0f - heightScale) / 2.0f;
+    }
+
+    view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
+    window.setView(view);
 }
 
 void Game::processEvents() {
