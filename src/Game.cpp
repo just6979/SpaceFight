@@ -177,6 +177,10 @@ void Game::processEvents() {
                         if (event.key.alt) {
                             createWindow(!config.fullscreen);
                         }
+                        break;
+                    case sf::Keyboard::Tilde:
+                        config.showConsole = !config.showConsole;
+                        break;
                     default:
                         break;
                 }
@@ -230,8 +234,10 @@ void Game::renderWorld() {
     for (const auto& sprite : sprites) {
         screen.draw(*sprite);
     }
-    // render console last so it overlays
-    screen.draw(*console);
+    // if active, render console last so it overlays
+    if (config.showConsole) {
+        screen.draw(*console);
+    }
     // show everything rendered so far
     screen.display();
     // copy render target to window
