@@ -65,9 +65,6 @@ bool Game::init(const std::string& _name) {
     console = Console::getConsole();
     console->init();
 
-    // initialize the view
-    view = window.getDefaultView();
-
     createWindow(config.fullscreen);
 
     player = new GameSprite(sf::Color::Blue);
@@ -107,6 +104,11 @@ void Game::createWindow(bool shouldFullscreen) {
         LOG(ERROR) << "Could not create main window";
         exit(EXIT_FAILURE);
     }
+    // initialize the view
+    view = window.getDefaultView();
+    view.setSize(renderWidth, renderHeight);
+    view.setCenter(renderWidth / 2, renderHeight / 2);
+    window.setView(view);
     LOG(INFO) << "Enabling V-sync";
     window.setVerticalSyncEnabled(true);
     // scale the viewport to maintain good aspect
