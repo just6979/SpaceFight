@@ -67,8 +67,9 @@ bool Game::init(const std::string& _name) {
 
     // initialize the view
     view = window.getDefaultView();
+    window.setView(view);
 
-    resizeWindow(config.width, config.height, config.fullscreen);
+    createWindow(config.fullscreen);
 
     player = new GameSprite(sf::Color::Blue);
     player->setPosition(config.width / 2, config.height / 2);
@@ -79,9 +80,7 @@ bool Game::init(const std::string& _name) {
     return initialized;
 }
 
-void Game::resizeWindow(unsigned int width, unsigned int height, bool shouldFullscreen) {
-    config.width = width;
-    config.height = height;
+void Game::createWindow(bool shouldFullscreen) {
     unsigned int flags = 0;
     sf::VideoMode mode;
 
@@ -141,14 +140,19 @@ void Game::adjustAspect(unsigned int newWidth, unsigned int newHeight) {
 
     float currentRatio = (float) newWidth / (float) newHeight;
 
+    std::string isSixteenNine = "16:9";
     if (currentRatio > sixteenNine) {
+        isSixteenNine = "wide";
         widthScale = newHeight * sixteenNine / newWidth;
         widthOffset = (1.0f - widthScale) / 2.0f;
     } else if (currentRatio < sixteenNine) {
+        isSixteenNine = "narrow";
         heightScale = newWidth * nineSixteen / newHeight;
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
 
+    LOG(INFO) << "Using window size of " << newWidth << "x" << newHeight;
+    LOG(INFO) << "Setting " << isSixteenNine << " viewport " << widthOffset << ", " << heightOffset << "; " << widthScale << ", " << heightScale;
     view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
     window.setView(view);
 }
@@ -163,7 +167,7 @@ void Game::processEvents() {
                 window.close();
                 break;
             case sf::Event::Resized:
-                resizeWindow(event.size.width, event.size.height);
+                adjustAspect(event.size.width, event.size.height);
                 break;
             case sf::Event::KeyPressed:
                 switch (event.key.code) {
@@ -173,7 +177,7 @@ void Game::processEvents() {
                         break;
                     case sf::Keyboard::Return:
                         if (event.key.alt) {
-                            resizeWindow(config.width, config.height, !config.fullscreen);
+                            createWindow(!config.fullscreen);
                         }
                     default:
                         break;
