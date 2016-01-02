@@ -45,7 +45,7 @@ private:
     std::vector<GameSprite*> sprites;
 // system functions
     void adjustAspect(unsigned int width, unsigned int height);
-    void resizeWindow(bool shouldFullscreen);
+    void resizeWindow(unsigned int width, unsigned int height, bool shouldFullscreen = false);
     void processEvents();
     void updateControls();
     void updateWorld(sf::Time elapsed);

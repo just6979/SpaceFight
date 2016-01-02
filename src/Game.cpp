@@ -61,7 +61,7 @@ bool Game::init(const std::string& _name) {
     console = Console::getConsole();
     console->init();
 
-    resizeWindow(config.fullscreen);
+    resizeWindow(config.width, config.height, config.fullscreen);
 
     view = window.getDefaultView();
 
@@ -99,7 +99,7 @@ void Game::adjustAspect(unsigned int newWidth, unsigned int newHeight) {
     window.setView(view);
 }
 
-void Game::resizeWindow(bool shouldFullscreen) {
+void Game::resizeWindow(unsigned int width, unsigned int height, bool shouldFullscreen) {
     unsigned int flags = 0;
     sf::VideoMode mode;
 
@@ -161,7 +161,7 @@ void Game::processEvents() {
                 window.close();
                 break;
             case sf::Event::Resized:
-                adjustAspect(event.size.width, event.size.height);
+                resizeWindow(event.size.width, event.size.height);
                 break;
             case sf::Event::KeyPressed:
                 switch (event.key.code) {
@@ -171,7 +171,7 @@ void Game::processEvents() {
                         break;
                     case sf::Keyboard::Return:
                         if (event.key.alt) {
-                            resizeWindow(!config.fullscreen);
+                            resizeWindow(config.width, config.height, !config.fullscreen);
                         }
                     default:
                         break;
