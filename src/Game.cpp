@@ -68,7 +68,7 @@ bool Game::init(const std::string& _name) {
     createWindow(config.fullscreen);
 
     player = new GameSprite(sf::Color::Blue);
-    player->setPosition(config.width / 2, config.height / 2);
+    player->setPosition(renderWidth / 2, renderHeight / 2);
     sprites.push_back(player);
     LOG(INFO) << "Loaded player sprite";
 
