@@ -19,22 +19,25 @@ int main(int argc, char* argv[]) {
     const unsigned int revision = 0;
     // our name
     const std::string gameName = "SpaceFight";
-
+    // setup easylogging++
     START_EASYLOGGINGPP(argc, argv);
-
-    // name the logFile after the game plus ".log"
+    // configure easylogging++ from file
+    el::Configurations logConf("easylogging.cfg");
+    // but make sure we're logging to a known filename if file logging is on.
     std::string logFilename = gameName;
+    // name the logFile after the game plus ".log"
     logFilename.append(".log");
     // remove existing log file, easylogging++ doesn't currently support non-append logs
     unlink(logFilename.c_str());
-    // configure easylogging++ from file
-    el::Configurations logConf("easylogging.cfg");
+    // and give that filename to easylogging++
+    logConf.setGlobally(el::ConfigurationType::Filename, logFilename);
     // use this config in all loggers
     el::Loggers::reconfigureAllLoggers(logConf);
-
     // log some system info
-    LOG(INFO) << gameName << " " << majorVersion << "." << minorVersion << "." << revision;
-    LOG(INFO) << "Built on " << __DATE__ << " at " << __TIME__;
+    LOG(INFO) << gameName << " " << majorVersion << "." << minorVersion << "." << revision << " " << __DATE__  << " " << __TIME__;
+    LOG(INFO) << "SFML " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR;
+    LOG(INFO) << "EasyLogging++ " << el::VersionInfo::version();
+    // what compiler are we using? just because
 #ifdef __MINGW32__
 #ifdef __MINGW64__
     LOG(INFO) << "MinGW-w64 " << __MINGW64_VERSION_MAJOR << "." << __MINGW64_VERSION_MINOR;
@@ -51,8 +54,7 @@ int main(int argc, char* argv[]) {
 #ifdef MSC_VER
     LOG(INFO) << "Visual C++ " << _MCS_VER;
 #endif
-    LOG(INFO) << "SFML " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR;
-
+    LOG(INFO) << "Ready to start!";
     // get the Game singleton
     Game* game = Game::getGame();
     // set up the Game with out chosen window size
