@@ -27,23 +27,8 @@ int main(int argc, char* argv[]) {
     logFilename.append(".log");
     // remove existing log file, easylogging++ doesn't currently support non-append logs
     unlink(logFilename.c_str());
-    // configure easylogging++
-    el::Configurations logConf;
-    // reset config
-    logConf.setToDefault();
-    // turn on logging
-    logConf.setGlobally(el::ConfigurationType::Enabled, "true");
-    // log to file named logFilename
-    logConf.setGlobally(el::ConfigurationType::ToFile, "true");
-    logConf.setGlobally(el::ConfigurationType::Filename, logFilename);
-    // also log to console
-    logConf.setGlobally(el::ConfigurationType::ToStandardOutput, "true");
-    // allow 3 digits for milliseconds when logging times
-    logConf.setGlobally(el::ConfigurationType::MillisecondsWidth, "3");
-    // use format of "date time log-level message"
-    logConf.setGlobally(el::ConfigurationType::Format, "%datetime{%H:%m:%s.%g} %level %msg");
-    // add the file and function location in debug logs
-    logConf.set(el::Level::Debug, el::ConfigurationType::Format, "%datetime{%H:%m:%s.%g} %level %loc %func %msg");
+    // configure easylogging++ from file
+    el::Configurations logConf("easylogging.cfg");
     // use this config in all loggers
     el::Loggers::reconfigureAllLoggers(logConf);
 
