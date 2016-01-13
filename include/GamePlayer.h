@@ -7,20 +7,15 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-class GamePlayer : public sf::Drawable, public sf::Transformable {
+#include <GameSprite.h>
+
+class GamePlayer : public GameSprite {
 public:
-    GamePlayer(int size = 100, sf::Color color = sf::Color::Blue);
+    GamePlayer();
     ~GamePlayer();
-    void update(const int elapsed);
-    void moveBy(float x = 0, float y = 0);
 private:
     int size;
     sf::Color color;
-    sf::VertexArray vertices;
-    sf::Vector2<float> dir;
-    float speed;
-    //sf::Texture texture;
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
 #endif //SPACEFIGHT_PLAYER_H
