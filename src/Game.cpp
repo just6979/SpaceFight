@@ -54,7 +54,8 @@ bool Game::init(const std::string& _name) {
     createWindow(config.fullscreen);
 
     player = new Player();
-    player->setPosition(renderWidth / 2, renderHeight / 2);
+    player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
+    sprites.push_back(player);
     LOG(INFO) << "Loaded player";
 
     initialized = true;
@@ -219,8 +220,6 @@ void Game::renderWorld() {
     for (const auto& sprite : sprites) {
         screen.draw(*sprite);
     }
-    // render the Player
-    screen.draw(*player);
     // if active, render console last so it overlays
     if (config.showConsole) {
         screen.draw(*console);
