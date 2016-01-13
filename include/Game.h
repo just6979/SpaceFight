@@ -16,7 +16,6 @@
 #include <inih/cpp/INIReader.h>
 
 #include <GameSprite.h>
-#include <Player.h>
 #include <Console.h>
 #include <Player.h>
 
