@@ -11,20 +11,6 @@ Game* Game::getGame() {
     return instance;
 }
 
-void Game::run(void) {
-    sf::Clock gameClock;
-    sf::Time elapsed;
-    LOG(INFO) << "Starting " << config.name;
-    while (window.isOpen()) {
-        elapsed = gameClock.restart();
-        processEvents();
-        updateControls();
-        updateWorld(elapsed);
-        renderWorld();
-    }
-    LOG(INFO) << "Stopped";
-}
-
 bool Game::init(const std::string& _name) {
     if (initialized) { return true; }
 
@@ -244,4 +230,18 @@ void Game::renderWorld() {
     window.draw(sf::Sprite(screen.getTexture()));
     // display everything
     window.display();
+}
+
+void Game::run(void) {
+    sf::Clock gameClock;
+    sf::Time elapsed;
+    LOG(INFO) << "Starting " << config.name;
+    while (window.isOpen()) {
+        elapsed = gameClock.restart();
+        processEvents();
+        updateControls();
+        updateWorld(elapsed);
+        renderWorld();
+    }
+    LOG(INFO) << "Stopped";
 }

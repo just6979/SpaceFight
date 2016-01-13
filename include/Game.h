@@ -16,7 +16,9 @@
 #include <inih/cpp/INIReader.h>
 
 #include <GameSprite.h>
+#include <Player.h>
 #include <Console.h>
+#include <Player.h>
 
 class Game {
 public:
@@ -58,6 +60,7 @@ private:
     std::vector<GameSprite*> sprites;
     // the player's ship sprite
     GameSprite* player;
+    Player* newPlayer;
 
     // [re]create the rendering window, possibly fullscreen
     void createWindow(bool shouldFullscreen = false);
