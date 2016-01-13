@@ -5,22 +5,26 @@
 
 #include <SFML/Graphics.hpp>
 
-class GameSprite : public sf::RectangleShape {
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
+
+class GameSprite : public sf::Drawable, public sf::Transformable {
 public:
-    GameSprite(std::string _texFile, bool _lockToScreen = true, bool _originAtCenter = true);
-    GameSprite(sf::Color _color, bool _lockToScreen = true, bool _originAtCenter = true);
-    virtual ~GameSprite();
+    GameSprite(sf::Texture* texture);
+    ~GameSprite();
     void update(const int elapsed);
-    void lockToScreen(bool _lockToScreen = true);
-    void setOriginAtCenter();
     void moveBy(float x = 0, float y = 0);
-protected:
-    bool lockedToScreen = true;
-    std::string texFile;
-    sf::Texture* tex;
-    sf::Vector2<float> dir;
-    float speed;
 private:
+    int size;
+    sf::Color color;
+    sf::VertexArray vertices;
+    sf::Vector2<float> dir;
+    float speed = 0.10;
+    sf::Texture* texture = NULL;
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
 #endif // GAMESPRITE_H

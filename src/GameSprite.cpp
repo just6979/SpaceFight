@@ -1,56 +1,39 @@
 #include <GameSprite.h>
 
-GameSprite::GameSprite(std::string _texFile, bool _lockToScreen, bool _originAtCenter) {
-    texFile = _texFile;
-    tex = new sf::Texture();
-    if (tex->loadFromFile(texFile)) {
-        tex->setSmooth(true);
-        setTexture(tex, true);
-        setSize(sf::Vector2f(tex->getSize().x, tex->getSize().y));
-    } else {
-        setSize(sf::Vector2f(100, 100));
-    }
-    lockToScreen(_lockToScreen);
-    if (_originAtCenter) {
-        setOriginAtCenter();
-    }
-    speed = 0.010;
-}
+GameSprite::GameSprite(sf::Texture* _texture) {
+    texture = _texture;
 
-GameSprite::GameSprite(sf::Color _color, bool _lockToScreen, bool _originAtCenter) {
-    setSize(sf::Vector2f(100, 100));
-    setFillColor(_color);
-    lockToScreen(_lockToScreen);
-    if (_originAtCenter) {
-        setOriginAtCenter();
-    }
-    speed = 0.010;
+    sf::Vector2u size = texture->getSize();
 
+    vertices.setPrimitiveType(sf::Quads);
+    vertices.resize(4);
+    vertices[0].position = sf::Vector2f(-size.x/2, -size.y/2);
+    vertices[1].position = sf::Vector2f(size.x/2, -size.y/2);
+    vertices[2].position = sf::Vector2f(size.x/2, size.y/2);
+    vertices[3].position = sf::Vector2f(-size.x/2, size.y/2);
+
+    vertices[0].texCoords = sf::Vector2f(0, 0);
+    vertices[1].texCoords = sf::Vector2f(size.x, 0);
+    vertices[2].texCoords = sf::Vector2f(size.x, size.y);
+    vertices[3].texCoords = sf::Vector2f(0, size.y);
 }
 
 GameSprite::~GameSprite() {
-    delete tex;
+    delete(texture);
 }
 
 void GameSprite::update(const int elapsed) {
     move(dir * (speed * elapsed));
 }
-
-void GameSprite::lockToScreen(bool _lockToScreen) {
-    lockedToScreen = _lockToScreen;
-}
-
-void GameSprite::setOriginAtCenter() {
-    setOrigin(getLocalBounds().width / 2, getLocalBounds().height / 2);
-}
-
 void GameSprite::moveBy(float x, float y) {
-//    if (x + getSize().x > screen.x) {
-//        x = 0;
-//    }
-//    if (x + getSize().x < 0) {
-//        x = 0;
-//    }
     dir.x = x;
     dir.y = y;
+}
+
+void GameSprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    states.transform *= getTransform();
+    if (texture) {
+        states.texture = texture;
+    }
+    target.draw(vertices, states);
 }
