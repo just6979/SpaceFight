@@ -1,6 +1,6 @@
-#include <Player.h>
+#include <GamePlayer.h>
 
-Player::Player(int _size, sf::Color _color) {
+GamePlayer::GamePlayer(int _size, sf::Color _color) {
     size = _size;
     color = _color;
     speed = 0.010;
@@ -17,21 +17,21 @@ Player::Player(int _size, sf::Color _color) {
     }
 }
 
-Player::~Player() {
+GamePlayer::~GamePlayer() {
 
 }
 
-void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void GamePlayer::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
     //states.texture = &texture;
     target.draw(vertices, states);
 }
 
-void Player::update(const int elapsed) {
+void GamePlayer::update(const int elapsed) {
     move(dir * (speed * elapsed));
 }
 
-void Player::moveBy(float x, float y) {
+void GamePlayer::moveBy(float x, float y) {
     dir.x = x;
     dir.y = y;
 }

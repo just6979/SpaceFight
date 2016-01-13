@@ -28,7 +28,7 @@ set(SOURCE_FILES
         src/Game.cpp
         src/GameSprite.cpp
         src/Console.cpp
-        src/Player.cpp include/Player.h)
+        src/GamePlayer.cpp include/GamePlayer.h)
 
 if (WIN32)
     set(SFML_ROOT "D:/lib/SFML-2.3.2-x64/")

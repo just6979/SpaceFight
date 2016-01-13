@@ -7,10 +7,10 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-class Player : public sf::Drawable, public sf::Transformable {
+class GamePlayer : public sf::Drawable, public sf::Transformable {
 public:
-    Player(int size = 100, sf::Color color = sf::Color::Blue);
-    ~Player();
+    GamePlayer(int size = 100, sf::Color color = sf::Color::Blue);
+    ~GamePlayer();
     void update(const int elapsed);
     void moveBy(float x = 0, float y = 0);
 private:
@@ -22,6 +22,5 @@ private:
     //sf::Texture texture;
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
-
 
 #endif //SPACEFIGHT_PLAYER_H

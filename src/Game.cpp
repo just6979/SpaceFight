@@ -53,7 +53,7 @@ bool Game::init(const std::string& _name) {
 
     createWindow(config.fullscreen);
 
-    player = new Player();
+    player = new GamePlayer();
     player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
     LOG(INFO) << "Loaded player";
@@ -156,7 +156,7 @@ void Game::processEvents() {
             case sf::Event::KeyPressed:
                 switch (event.key.code) {
                     case sf::Keyboard::Escape:
-                        LOG(INFO) << "Player exited";
+                        LOG(INFO) << "GamePlayer exited";
                         window.close();
                         break;
                     case sf::Keyboard::Return:

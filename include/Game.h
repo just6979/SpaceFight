@@ -17,7 +17,7 @@
 
 #include <GameSprite.h>
 #include <Console.h>
-#include <Player.h>
+#include <GamePlayer.h>
 
 class Game {
 public:
@@ -58,7 +58,7 @@ private:
     // all normal sprites to draw
     std::vector<sf::Drawable*> sprites;
     // the player's ship sprite
-    Player* player;
+    GamePlayer* player;
 
     // [re]create the rendering window, possibly fullscreen
     void createWindow(bool shouldFullscreen = false);
