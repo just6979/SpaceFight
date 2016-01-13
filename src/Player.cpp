@@ -3,6 +3,7 @@
 Player::Player(int _size, sf::Color _color) {
     size = _size;
     color = _color;
+    speed = 0.010;
 
     vertices.setPrimitiveType(sf::Quads);
     vertices.resize(4);
@@ -24,4 +25,13 @@ void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
     //states.texture = &texture;
     target.draw(vertices, states);
+}
+
+void Player::update(const int elapsed) {
+    move(dir * (speed * elapsed));
+}
+
+void Player::moveBy(float x, float y) {
+    dir.x = x;
+    dir.y = y;
 }
