@@ -1,6 +1,18 @@
 #include <GameSprite.h>
 
+GameSprite::GameSprite() {
+    texture = NULL;
+}
+
 GameSprite::GameSprite(sf::Texture* _texture) {
+    setTexture(_texture);
+}
+
+GameSprite::~GameSprite() {
+    delete(texture);
+}
+
+void GameSprite::setTexture(sf::Texture* _texture) {
     texture = _texture;
 
     sf::Vector2u size = texture->getSize();
@@ -18,13 +30,10 @@ GameSprite::GameSprite(sf::Texture* _texture) {
     vertices[3].texCoords = sf::Vector2f(0, size.y);
 }
 
-GameSprite::~GameSprite() {
-    delete(texture);
-}
-
 void GameSprite::update(const int elapsed) {
     move(dir * (speed * elapsed));
 }
+
 void GameSprite::moveBy(float x, float y) {
     dir.x = x;
     dir.y = y;
@@ -32,8 +41,6 @@ void GameSprite::moveBy(float x, float y) {
 
 void GameSprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
-    if (texture) {
-        states.texture = texture;
-    }
+    states.texture = texture;
     target.draw(vertices, states);
 }
