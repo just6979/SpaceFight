@@ -58,8 +58,8 @@ private:
     // all normal sprites to draw
     std::vector<GameSprite*> sprites;
     // the player's ship sprite
-    GameSprite* player;
-    Player* newPlayer;
+//    GameSprite* player;
+    Player* player;
 
     // [re]create the rendering window, possibly fullscreen
     void createWindow(bool shouldFullscreen = false);
