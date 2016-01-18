@@ -14,18 +14,16 @@
 class GameSprite : public sf::Drawable, public sf::Transformable {
 public:
     GameSprite();
-    GameSprite(sf::Texture* _texture);
+    GameSprite(const sf::Texture* _texture);
     ~GameSprite();
-    void setTexture(sf::Texture* _texture);
+    void setTexture(const sf::Texture* _texture);
     void update(const int elapsed);
-    void moveBy(float x = 0, float y = 0);
+    void moveBy(const float x = 0, const float y = 0);
 private:
-    int size;
-    sf::Color color;
     sf::VertexArray vertices;
     sf::Vector2<float> dir;
     float speed = 0.10;
-    sf::Texture const* texture = NULL;
+    sf::Texture* texture = NULL;
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 

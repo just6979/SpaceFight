@@ -4,13 +4,17 @@ GamePlayer::GamePlayer() {
     size = 100;
     color = sf::Color::Blue;
 
-    sf::RectangleShape* tmp = new sf::RectangleShape();
-    tmp->setSize(sf::Vector2f(size, size));
-    tmp->setFillColor(color);
+    image = new sf::Image();
+    image->create(size, size, color);
 
-    sf::Texture* tex = new sf::Texture(*(tmp->getTexture()));
+    tex = new sf::Texture();
+    tex->create(size, size);
+    tex->loadFromImage(*image);
 
     setTexture(tex);
+
+    delete(image);
+    delete(tex);
 }
 
 GamePlayer::~GamePlayer() {

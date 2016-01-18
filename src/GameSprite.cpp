@@ -4,7 +4,7 @@ GameSprite::GameSprite() {
     texture = NULL;
 }
 
-GameSprite::GameSprite(sf::Texture* _texture) {
+GameSprite::GameSprite(const sf::Texture* _texture) {
     setTexture(_texture);
 }
 
@@ -12,13 +12,14 @@ GameSprite::~GameSprite() {
     delete(texture);
 }
 
-void GameSprite::setTexture(sf::Texture* _texture) {
-    texture = _texture;
+void GameSprite::setTexture(const sf::Texture* _texture) {
+    texture = new sf::Texture(*_texture);
 
     sf::Vector2u size = texture->getSize();
 
     vertices.setPrimitiveType(sf::Quads);
     vertices.resize(4);
+
     vertices[0].position = sf::Vector2f(-size.x/2, -size.y/2);
     vertices[1].position = sf::Vector2f(size.x/2, -size.y/2);
     vertices[2].position = sf::Vector2f(size.x/2, size.y/2);
@@ -34,7 +35,7 @@ void GameSprite::update(const int elapsed) {
     move(dir * (speed * elapsed));
 }
 
-void GameSprite::moveBy(float x, float y) {
+void GameSprite::moveBy(const float x, const float y) {
     dir.x = x;
     dir.y = y;
 }

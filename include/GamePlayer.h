@@ -16,6 +16,8 @@ public:
 private:
     int size;
     sf::Color color;
+    sf::Image* image;
+    sf::Texture* tex;
 };
 
 #endif //SPACEFIGHT_PLAYER_H
