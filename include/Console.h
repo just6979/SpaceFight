@@ -1,5 +1,4 @@
-#ifndef SPACEFIGHT_CONSOLE_H
-#define SPACEFIGHT_CONSOLE_H
+#pragma once
 
 #include <SFML/Graphics/RectangleShape.hpp>
 
@@ -21,5 +20,3 @@ public:
     Console(const Console&) = delete;
     void operator=(const Console&) = delete;
 };
-
-#endif //SPACEFIGHT_CONSOLE_H

@@ -1,5 +1,4 @@
-#ifndef GAME_H
-#define GAME_H
+#pragma once
 
 #include <algorithm>
 #include <fstream>
@@ -70,5 +69,3 @@ private:
     void updateWorld(sf::Time elapsed);
     void renderWorld();
 };
-
-#endif // GAME_H

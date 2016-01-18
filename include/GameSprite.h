@@ -1,5 +1,4 @@
-#ifndef GAMESPRITE_H
-#define GAMESPRITE_H
+#pragma once
 
 #include <string>
 
@@ -29,5 +28,3 @@ private:
     void setVertices();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
-
-#endif // GAMESPRITE_H

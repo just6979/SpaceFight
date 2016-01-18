@@ -1,5 +1,4 @@
-#ifndef SPACEFIGHT_PLAYER_H
-#define SPACEFIGHT_PLAYER_H
+#pragma once
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -17,5 +16,3 @@ private:
     uint32_t size;
     sf::Color color;
 };
-
-#endif //SPACEFIGHT_PLAYER_H
