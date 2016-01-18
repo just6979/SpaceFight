@@ -47,9 +47,7 @@ bool Game::init(const std::string& _name) {
     LOG(INFO) << "Creating " << renderWidth << "x" << renderHeight << " render target";
     screen.create(renderWidth, renderHeight);
 
-//    LOG(INFO) << "Getting console";
-//    console = Console::getConsole();
-//    console->init();
+    console.init();
 
     createWindow(config.fullscreen);
 
@@ -99,7 +97,7 @@ void Game::createWindow(bool shouldFullscreen) {
     // scale the viewport to maintain good aspect
     adjustAspect(window.getSize());
     // make sure the console fits too
-//    console->resize(screen.getSize());
+    console.resize(screen.getSize());
 }
 
 void Game::adjustAspect(sf::Event::SizeEvent newSize) {
@@ -220,9 +218,9 @@ void Game::renderWorld() {
         screen.draw(sprite);
     }
     // if active, render console last so it overlays
-//    if (config.showConsole) {
-//        screen.draw(*console);
-//    }
+    if (config.showConsole) {
+        screen.draw(console);
+    }
     // show everything rendered so far
     screen.display();
     // copy render target to window

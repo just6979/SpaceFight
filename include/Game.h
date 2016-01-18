@@ -54,7 +54,7 @@ private:
     unsigned int renderWidth = 1280;
     unsigned int renderHeight = 720;
     // displays messages over the playing screen
-//    Console console;
+    Console& console = Console::getConsole();
     // all normal sprites to draw
     std::vector<GameSprite> sprites;
     // the player's ship sprite

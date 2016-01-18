@@ -1,12 +1,7 @@
 #include <Console.h>
 
-Console* Console::instance = NULL;
-
-Console* Console::getConsole() {
-    if (instance == NULL) {
-        LOG(INFO) << "Creating Console instance";
-        instance = new Console();
-    }
+Console& Console::getConsole() {
+    static Console instance;
     return instance;
 }
 
