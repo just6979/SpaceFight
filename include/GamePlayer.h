@@ -14,7 +14,7 @@ public:
     GamePlayer();
     ~GamePlayer();
 private:
-    int size;
+    uint32_t size;
     sf::Color color;
     sf::Image* image;
     sf::Texture* tex;
