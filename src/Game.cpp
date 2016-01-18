@@ -47,14 +47,13 @@ bool Game::init(const std::string& _name) {
     LOG(INFO) << "Creating " << renderWidth << "x" << renderHeight << " render target";
     screen.create(renderWidth, renderHeight);
 
-    LOG(INFO) << "Getting console";
-    console = Console::getConsole();
-    console->init();
+//    LOG(INFO) << "Getting console";
+//    console = Console::getConsole();
+//    console->init();
 
     createWindow(config.fullscreen);
 
-    player = new GamePlayer();
-    player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
+    player.setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
     LOG(INFO) << "Loaded player";
 
@@ -100,7 +99,7 @@ void Game::createWindow(bool shouldFullscreen) {
     // scale the viewport to maintain good aspect
     adjustAspect(window.getSize());
     // make sure the console fits too
-    console->resize(screen.getSize());
+//    console->resize(screen.getSize());
 }
 
 void Game::adjustAspect(sf::Event::SizeEvent newSize) {
@@ -203,12 +202,12 @@ void Game::updateControls() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         x += -config.keySpeed;
     }
-    player->moveBy(x, y);
+    player.moveBy(x, y);
 }
 
 void Game::updateWorld(sf::Time elapsed) {
     const int millis = elapsed.asMilliseconds();
-    player->update(millis);
+    player.update(millis);
 }
 
 void Game::renderWorld() {
@@ -218,12 +217,12 @@ void Game::renderWorld() {
     screen.clear(sf::Color::Black);
     // render all the normal sprites
     for (const auto& sprite : sprites) {
-        screen.draw(*sprite);
+        screen.draw(sprite);
     }
     // if active, render console last so it overlays
-    if (config.showConsole) {
-        screen.draw(*console);
-    }
+//    if (config.showConsole) {
+//        screen.draw(*console);
+//    }
     // show everything rendered so far
     screen.display();
     // copy render target to window

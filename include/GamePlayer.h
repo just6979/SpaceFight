@@ -16,7 +16,6 @@ public:
 private:
     uint32_t size;
     sf::Color color;
-    sf::Image* image;
 };
 
 #endif //SPACEFIGHT_PLAYER_H

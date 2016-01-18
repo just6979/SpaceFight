@@ -22,10 +22,10 @@ public:
     void update(const int elapsed);
     void moveBy(const float x = 0, const float y = 0);
 private:
-    sf::VertexArray* vertices;
+    sf::VertexArray vertices;
     sf::Vector2<float> dir;
     float speed = 0.10;
-    sf::Texture* texture = NULL;
+    sf::Texture texture;
     void setVertices();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

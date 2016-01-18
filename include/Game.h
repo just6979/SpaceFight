@@ -54,11 +54,11 @@ private:
     unsigned int renderWidth = 1280;
     unsigned int renderHeight = 720;
     // displays messages over the playing screen
-    Console* console = NULL;
+//    Console console;
     // all normal sprites to draw
-    std::vector<sf::Drawable*> sprites;
+    std::vector<GameSprite> sprites;
     // the player's ship sprite
-    GamePlayer* player;
+    GamePlayer player;
 
     // [re]create the rendering window, possibly fullscreen
     void createWindow(bool shouldFullscreen = false);
