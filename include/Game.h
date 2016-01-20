@@ -64,8 +64,14 @@ private:
     // change the viewport to maintain 16:9 aspect ratio
     void adjustAspect(sf::Event::SizeEvent newSize);
     void adjustAspect(sf::Vector2u newSize);
+    // main event loop
     void processEvents();
+    // event handlers
+    void handleKeyPress(const sf::Event& event);
+    void handleKeyRelease(const sf::Event& event) const;
+    // update the simulation
     void updateControls();
     void updateWorld(sf::Time elapsed);
+    // render graphics based on simulation
     void renderWorld();
 };

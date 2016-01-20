@@ -138,6 +138,7 @@ void Game::adjustAspect(sf::Vector2u newSize) {
     window.setView(view);
 }
 
+
 void Game::processEvents() {
     static sf::Event event;
 
@@ -151,7 +152,19 @@ void Game::processEvents() {
                 adjustAspect(event.size);
                 break;
             case sf::Event::KeyPressed:
-                switch (event.key.code) {
+                handleKeyPress(event);
+                break;
+            case sf::Event::KeyReleased:
+                handleKeyRelease(event);
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void Game::handleKeyPress(const sf::Event& event) {
+    switch (event.key.code) {
                     case sf::Keyboard::Escape:
                         LOG(INFO) << "GamePlayer exited";
                         window.close();
@@ -167,16 +180,12 @@ void Game::processEvents() {
                     default:
                         break;
                 }
-                break;
-            case sf::Event::KeyReleased:
-                switch (event.key.code) {
-                    default:
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
+}
+
+void Game::handleKeyRelease(const sf::Event& event) const {
+    switch (event.key.code) {
+        default:
+            break;
     }
 }
 
@@ -228,6 +237,7 @@ void Game::renderWorld() {
     // display everything
     window.display();
 }
+
 
 void Game::run(void) {
     sf::Clock gameClock;
