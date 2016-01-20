@@ -159,21 +159,21 @@ void Game::processEvents() {
 
 void Game::handleKeyPress(const sf::Event& event) {
     switch (event.key.code) {
-                    case sf::Keyboard::Escape:
-                        LOG(INFO) << "GamePlayer exited";
-                        window.close();
-                        break;
-                    case sf::Keyboard::Return:
-                        if (event.key.alt) {
-                            createWindow(!config.fullscreen);
-                        }
-                        break;
-                    case sf::Keyboard::Tilde:
-                        config.showConsole = !config.showConsole;
-                        break;
-                    default:
-                        break;
-                }
+        case sf::Keyboard::Escape:
+            LOG(INFO) << "GamePlayer exited";
+            window.close();
+            break;
+        case sf::Keyboard::Return:
+            if (event.key.alt) {
+                createWindow(!config.fullscreen);
+            }
+            break;
+        case sf::Keyboard::Tilde:
+            config.showConsole = !config.showConsole;
+            break;
+        default:
+            break;
+    }
 }
 
 void Game::handleKeyRelease(const sf::Event& event) const {

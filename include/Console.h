@@ -15,7 +15,8 @@ private:
     bool initialized = false;
     sf::Vector2f offset;
     sf::Vector2f size;
-    Console() {};
+
+    Console() { };
 public:
     Console(const Console&) = delete;
     void operator=(const Console&) = delete;

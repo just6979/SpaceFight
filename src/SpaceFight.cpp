@@ -34,7 +34,8 @@ int main(int argc, char* argv[]) {
     // use this config in all loggers
     el::Loggers::reconfigureAllLoggers(logConf);
     // log some system info
-    LOG(INFO) << gameName << " " << majorVersion << "." << minorVersion << "." << revision << " " << __DATE__  << " " << __TIME__;
+    LOG(INFO) << gameName << " " << majorVersion << "." << minorVersion << "." << revision << " " << __DATE__ << " " <<
+    __TIME__;
     LOG(INFO) << "SFML " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR;
     LOG(INFO) << "EasyLogging++ " << el::VersionInfo::version();
     // what compiler are we using? just because
