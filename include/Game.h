@@ -31,8 +31,8 @@ private:
     struct {
         std::string name;
         // this size fits in most screens in windowed mode
-        unsigned int width = 1200;
-        unsigned int height = 675;
+        uint32_t width = 1200;
+        uint32_t height = 675;
         // don't start fullscreen
         bool fullscreen = false;
         // but do use desktop size when going fullscreen
@@ -50,8 +50,8 @@ private:
     // where we render the game before copying it to the window
     sf::RenderTexture screen;
     // render internally to 720p widescreen
-    unsigned int renderWidth = 1280;
-    unsigned int renderHeight = 720;
+    uint32_t renderWidth = 1280;
+    uint32_t renderHeight = 720;
     // displays messages over the playing screen
     Console& console = Console::getConsole();
     // all normal sprites to draw
