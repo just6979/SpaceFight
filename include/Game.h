@@ -24,7 +24,7 @@ public:
     bool init(const std::string& _name);
     void run();
 private:
-    static bool initialized;
+    bool initialized = false;
     struct {
         std::string name;
         // this size fits in most screens in windowed mode
