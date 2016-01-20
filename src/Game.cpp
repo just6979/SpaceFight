@@ -1,13 +1,7 @@
 #include <Game.h>
 
-Game* Game::instance = NULL;
-bool Game::initialized = false;
-
-Game* Game::getGame() {
-    if (instance == NULL) {
-        LOG(INFO) << "Creating Game instance";
-        instance = new Game();
-    }
+Game& Game::getGame() {
+    static Game instance;
     return instance;
 }
 

@@ -56,14 +56,14 @@ int main(int argc, char* argv[]) {
 #endif
     LOG(INFO) << "Ready to start!";
     // get the Game singleton
-    Game* game = Game::getGame();
+    Game& game = Game::getGame();
     // set up the Game with out chosen window size
-    if (!game->init(gameName)) {
+    if (!game.init(gameName)) {
         LOG(ERROR) << "Could not initialize Game, quitting.";
         return EXIT_FAILURE;
     }
     // start the Game
-    game->run();
+    game.run();
     // once the Game stops running, or if it doesn't initialize, we're done.
     return EXIT_SUCCESS;
 }

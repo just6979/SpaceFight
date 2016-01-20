@@ -20,14 +20,11 @@
 
 class Game {
 public:
-    static Game* getGame();
+    static Game& getGame();
     bool init(const std::string& _name);
     void run();
 private:
-    static Game* instance;
     static bool initialized;
-
-    Game() { };
     struct {
         std::string name;
         // this size fits in most screens in windowed mode
@@ -59,6 +56,7 @@ private:
     // the player's ship sprite
     GamePlayer player;
 
+    Game() { };
     // [re]create the rendering window, possibly fullscreen
     void createWindow(bool shouldFullscreen = false);
     // change the viewport to maintain 16:9 aspect ratio
