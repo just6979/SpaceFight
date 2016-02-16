@@ -33,7 +33,7 @@ set(SOURCE_FILES
 if (WIN32)
     set(SFML_STATIC_LIBRARIES TRUE)
 endif ()
-set(CMAKE_MODULE_PATH "${SFML_ROOT}/cmake/Modules" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${SFML_DIR}/cmake/Modules" ${CMAKE_MODULE_PATH})
 find_package(SFML 2 REQUIRED graphics window system)
 if (SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
