@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
         // build the list of sinks: console and simple file
         std::vector<spdlog::sink_ptr> sinks;
         sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());
-        sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_st>(logFilename, true));
+        sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_st>(logFilename, false));
         // make and register the logger using those sinks
         auto combined_logger = std::make_shared<spdlog::logger>(LOG_NAME, begin(sinks), end(sinks));
         spdlog::register_logger(combined_logger);

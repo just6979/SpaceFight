@@ -27,14 +27,14 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Uncomment if thread id logging is not needed (i.e. no %t in the log pattern).
 // This will prevent spdlog from quering the thread id on each log call.
-// #define SPDLOG_NO_THREAD_ID
+#define SPDLOG_NO_THREAD_ID
 ///////////////////////////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////////////////////////
 // Uncomment if logger name logging is not needed.
 // This will prevent spdlog from copying the logger name  on each log call.
-// #define SPDLOG_NO_NAME
+#define SPDLOG_NO_NAME
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -49,5 +49,5 @@
 // Uncomment to avoid locking in the registry operations (spdlog::get(), spdlog::drop() spdlog::register()).
 // Use only if your code never modifes concurrently the registry.
 // Note that upon creating a logger the registry is modified by spdlog..
-// #define SPDLOG_NO_REGISTRY_MUTEX
+#define SPDLOG_NO_REGISTRY_MUTEX
 ///////////////////////////////////////////////////////////////////////////////
