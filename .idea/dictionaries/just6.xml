@@ -4,6 +4,7 @@
       <w>easylogging</w>
       <w>fullscreen</w>
       <w>sfml</w>
+      <w>spdlog</w>
       <w>widescreen</w>
     </words>
   </dictionary>

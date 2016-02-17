@@ -8,7 +8,7 @@ Console& Console::getConsole() {
 bool Console::init() {
     if (initialized) { return true; }
 
-    LOG(INFO) << "Initializing console";
+    QINFO << "Initializing console";
     setFillColor(sf::Color(128, 128, 128, 128));
 
     initialized = true;
@@ -20,7 +20,7 @@ void Console::resize(sf::Vector2u newSize) {
     offset.y = newSize.y * offsetPercent;
     size.x = newSize.x - (offset.x * 2);
     size.y = newSize.y - (offset.y * 2);
-    LOG(INFO) << "Resizing console to " << size.x << "x" << size.y;
+    QINFO << "Resizing console to " << size.x << "x" << size.y;
     setSize(size);
     setPosition(offset);
 }
