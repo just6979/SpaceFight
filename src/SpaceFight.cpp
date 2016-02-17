@@ -23,6 +23,8 @@ int main(int argc, char* argv[]) {
         logFilename.append(".log");
         // remove existing log file, easylogging++ doesn't currently support non-append logs
         unlink(logFilename.c_str());
+        // use async mode for _moar speed_!
+        spdlog::set_async_mode(4096);
         // build the list of sinks: console and simple file
         std::vector<spdlog::sink_ptr> sinks;
         sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());
@@ -30,6 +32,7 @@ int main(int argc, char* argv[]) {
         // make and register the logger using those sinks
         auto combined_logger = std::make_shared<spdlog::logger>(LOG_NAME, begin(sinks), end(sinks));
         spdlog::register_logger(combined_logger);
+        spdlog::set_pattern("%H:%M:%S.%f %l %v");
     }
     catch (const spdlog::spdlog_ex& ex) {
         std::cout << "Log failed: " << ex.what() << std::endl;
