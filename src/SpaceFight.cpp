@@ -5,7 +5,7 @@
 
 #include <unistd.h>
 
-#include <logger.h>
+#include <Logging.h>
 
 #include <Game.h>
 

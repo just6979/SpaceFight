@@ -10,7 +10,7 @@
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 
-#include <logger.h>
+#include <Logging.h>
 #include <inih/ini.h>
 #include <inih/cpp/INIReader.h>
 

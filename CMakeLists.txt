@@ -21,7 +21,7 @@ file(GLOB_RECURSE CONTRIB_SOURCE_C contrib *.c)
 file(GLOB_RECURSE CONTRIB_SOURCE_CPP contrib *.cpp)
 
 set(SOURCE_FILES
-        include/logger.h
+        include/Logging.h
         include/Game.h
         include/Console.h
         include/GameSprite.h
