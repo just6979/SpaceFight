@@ -11,20 +11,20 @@
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
-          <root url="file://C:/Lib/SFML-2.3.2-local-tdm64/include" />
+          <root url="file://C:/Lang/TDM-GCC/TDM-64/lib/gcc/x86_64-w64-mingw32/5.1.0/include" />
+          <root url="file://C:/Lang/TDM-GCC/TDM-64/lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed" />
+          <root url="file://C:/Lang/TDM-GCC/TDM-64/x86_64-w64-mingw32/include" />
+          <root url="file://C:/Lang/TDM-GCC/TDM-64/include" />
           <root url="file://$MODULE_DIR$/contrib" />
-          <root url="file://C:/Lang/GCC/TDM-64/include" />
-          <root url="file://C:/Lang/GCC/TDM-64/x86_64-w64-mingw32/include" />
-          <root url="file://C:/Lang/GCC/TDM-64/lib/gcc/x86_64-w64-mingw32/5.1.0/include" />
-          <root url="file://C:/Lang/GCC/TDM-64/lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed" />
+          <root url="file://D:/lib/SFML-2.3.2-x64/include" />
         </CLASSES>
         <SOURCES>
-          <root url="file://C:/Lib/SFML-2.3.2-local-tdm64/include" />
+          <root url="file://C:/Lang/TDM-GCC/TDM-64/lib/gcc/x86_64-w64-mingw32/5.1.0/include" />
+          <root url="file://C:/Lang/TDM-GCC/TDM-64/lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed" />
+          <root url="file://C:/Lang/TDM-GCC/TDM-64/x86_64-w64-mingw32/include" />
+          <root url="file://C:/Lang/TDM-GCC/TDM-64/include" />
           <root url="file://$MODULE_DIR$/contrib" />
-          <root url="file://C:/Lang/GCC/TDM-64/include" />
-          <root url="file://C:/Lang/GCC/TDM-64/x86_64-w64-mingw32/include" />
-          <root url="file://C:/Lang/GCC/TDM-64/lib/gcc/x86_64-w64-mingw32/5.1.0/include" />
-          <root url="file://C:/Lang/GCC/TDM-64/lib/gcc/x86_64-w64-mingw32/5.1.0/include-fixed" />
+          <root url="file://D:/lib/SFML-2.3.2-x64/include" />
         </SOURCES>
       </library>
     </orderEntry>
