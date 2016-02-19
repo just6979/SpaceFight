@@ -22,14 +22,14 @@ int main(int argc, char* argv[]) {
     const uint32_t minorVersion = 4;
     const uint32_t revision = 0;
     // our name
-    const char* gameName = "SpaceFight";
+    std::string gameName = "SpaceFight";
 
     LOGOG_INITIALIZE();
-    const char* logFilename = "SpaceFight.log";
+    const std::string logFilename = gameName + ".log";
     // remove existing log file
-    unlink(logFilename);
+    unlink(logFilename.c_str());
     // create the log's  file sink
-    logog::LogFile outFile(logFilename);
+    logog::LogFile outFile(logFilename.c_str());
     // create the log's console sink
     logog::Cout out;
     // create custom format
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
     out.SetFormatter(customFormat);
     outFile.SetFormatter(customFormat);
 
-    INFO("%s %d.%d.%d %s %s", gameName.c_str(), majorVersion, minorVersion, revision, __DATE__, __TIME__);
+    INFO("%s %d.%d.%d %s %s", gameName, majorVersion, minorVersion, revision, __DATE__, __TIME__);
     INFO("SFML %d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR);
     // what compiler are we using? just because
 #ifdef __MINGW32__
