@@ -214,7 +214,9 @@ void Game::updateControls() {
 
 void Game::updateWorld(sf::Time elapsed) {
     const int millis = elapsed.asMilliseconds();
-    player.update(millis);
+    for (auto& sprite : sprites) {
+        sprite.update(millis);
+    }
 }
 
 void Game::renderWorld() {
