@@ -37,8 +37,8 @@ private:
         // show the console
         bool showConsole = false;
 
-        double deadZone = 15;
-        double keySpeed = 75;
+        float deadZone = 15.0;
+        float keySpeed = 75.0;
     } config;
     // where everything is drawn
     sf::RenderWindow window;

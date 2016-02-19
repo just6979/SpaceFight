@@ -22,7 +22,7 @@ public:
     void moveBy(const float x = 0, const float y = 0);
 private:
     sf::VertexArray vertices;
-    sf::Vector2<float> dir;
+    sf::Vector2f dir;
     float speed = 0.10;
     sf::Texture texture;
     void setVertices();

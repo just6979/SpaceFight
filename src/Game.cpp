@@ -31,8 +31,8 @@ bool Game::init(const std::string& _name) {
         config.height = (uint32_t) abs(reader.GetInteger("game", "height", static_cast<long>(config.height)));
         config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
         config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
-        config.deadZone = reader.GetReal("game", "deadZone", config.deadZone);
-        config.keySpeed = reader.GetReal("game", "keySpeed", config.keySpeed);
+        config.deadZone = static_cast<float>(reader.GetReal("game", "deadZone", config.deadZone));
+        config.keySpeed = static_cast<float>(reader.GetReal("game", "keySpeed", config.keySpeed));
     }
     INFO("--Config--");
     INFO("width = %d", config.width);
