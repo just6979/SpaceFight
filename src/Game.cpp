@@ -2,15 +2,19 @@
 
 Game& Game::getGame() {
     static Game instance;
+    INFO("Getting Game instance");
     return instance;
 }
 
 bool Game::init(const std::string& _name) {
-    if (initialized) { return true; }
+    if (initialized) {
+        INFO("Reusing Game instance");
+        return true;
+    }
+    INFO("Initializing new Game instance");
 
-    logger = getLogger();
     sf::ContextSettings settings = window.getSettings();
-    INFO << "Using OpenGL v" << settings.majorVersion << "." << settings.minorVersion;
+    INFO("Using OpenGL %d.%d", settings.majorVersion, settings.minorVersion);
 
     config.name = _name;
 
@@ -18,9 +22,9 @@ bool Game::init(const std::string& _name) {
     iniFilename.append(".ini");
 
     INIReader reader(iniFilename);
-    INFO << "Reading config from '" << iniFilename << "'";
+    INFO("Reading config from '%s'", iniFilename.c_str());
     if (reader.ParseError() < 0) {
-        ERR << "Can't load '" << iniFilename << "', using defaults";
+        ERR("Can't load '%s', using defaults", iniFilename.c_str());
     } else {
         // 1200x675 is a 16:9 window that fits inside a 1366x768 screen on most systems
         config.width = (uint32_t) abs(reader.GetInteger("game", "width", static_cast<long>(config.width)));
@@ -30,16 +34,16 @@ bool Game::init(const std::string& _name) {
         config.deadZone = reader.GetReal("game", "deadZone", config.deadZone);
         config.keySpeed = reader.GetReal("game", "keySpeed", config.keySpeed);
     }
-    INFO << "--Config--";
-    INFO << "width = " << config.width;
-    INFO << "height = " << config.height;
-    INFO << "fullscreen = " << (config.fullscreen ? "true" : "false");
-    INFO << "useDesktopSize = " << (config.useDesktopSize ? "true" : "False");
-    INFO << "deadZone = " << config.deadZone;
-    INFO << "keySpeed = " << config.keySpeed;
-    INFO << "--End config--";
+    INFO("--Config--");
+    INFO("width = %d", config.width);
+    INFO("height = %d", config.height);
+    INFO("fullscreen = %s", (config.fullscreen ? "true" : "false"));
+    INFO("useDesktopSize = %s", (config.useDesktopSize ? "true" : "false"));
+    INFO("deadZone = %f", config.deadZone);
+    INFO("keySpeed = %f", config.keySpeed);
+    INFO("--End config--");
 
-    INFO << "Creating " << renderWidth << "x" << renderHeight << " render target";
+    INFO("Creating %dx%d render target", renderWidth, renderHeight);
     screen.create(renderWidth, renderHeight);
 
     console.init();
@@ -48,9 +52,10 @@ bool Game::init(const std::string& _name) {
 
     player.setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
-    INFO << "Loaded player";
+    INFO("Loaded player");
 
     initialized = true;
+    INFO("Initialized");
     return initialized;
 }
 
@@ -59,27 +64,27 @@ void Game::createWindow(bool shouldFullscreen) {
     sf::VideoMode mode;
     config.fullscreen = shouldFullscreen;
     if (config.fullscreen) {
-        INFO << "Going fullscreen";
+        INFO("Going fullscreen");
         window.setMouseCursorVisible(false);
         if (config.useDesktopSize) {
-            INFO << "Setting fullscreen mode (using desktop size): " << \
-                sf::VideoMode::getDesktopMode().width << "x" << \
-                sf::VideoMode::getDesktopMode().height;
+            INFO("Setting fullscreen mode (using desktop size): %dx%d",
+                 sf::VideoMode::getDesktopMode().width,
+                 sf::VideoMode::getDesktopMode().height);
             mode = sf::VideoMode::getDesktopMode();
         } else {
-            INFO << "Setting fullscreen mode: " << config.width << "x" << config.height;
+            INFO("Setting fullscreen mode: %dx%d", config.width, config.height);
             mode = sf::VideoMode(config.width, config.height);
         }
         flags = sf::Style::Fullscreen;
     } else {
-        INFO << "Setting windowed mode: " << config.width << "x" << config.height;
+        INFO("Setting windowed mode: %dx%d", config.width, config.height);
         window.setMouseCursorVisible(true);
         mode = sf::VideoMode(config.width, config.height);
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
     window.create(mode, config.name, flags);
     if (!window.isOpen()) {
-        ERR << "Could not create main window";
+        ERR("Could not create main window");
         exit(EXIT_FAILURE);
     }
     // initialize the view
@@ -87,7 +92,7 @@ void Game::createWindow(bool shouldFullscreen) {
     view.setSize(renderWidth, renderHeight);
     view.setCenter(renderWidth / 2, renderHeight / 2);
     window.setView(view);
-    INFO << "Enabling V-sync";
+    INFO("Enabling V-sync");
     window.setVerticalSyncEnabled(true);
     // scale the viewport to maintain good aspect
     adjustAspect(window.getSize());
@@ -126,9 +131,9 @@ void Game::adjustAspect(sf::Vector2u newSize) {
         heightScale = newSize.x * (9.0f / 16.0f) / newSize.y;
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
-    INFO << "Adjusting aspect for window size " << newSize.x << "x" << newSize.y;
-    INFO << "Setting " << isSixteenNine << " viewport (wo:" << \
-        widthOffset << ", ho:" << heightOffset << "; ws:" << widthScale << ", hs:" << heightScale << ")";
+    INFO("Adjusting aspect for window size ", newSize.x, newSize.y);
+    INFO("Setting %s viewport (wo:%f, ho:%f; ws:%f, hs: %f", isSixteenNine.c_str(),
+         widthOffset, heightOffset, widthScale, heightScale);
     view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
     window.setView(view);
 }
@@ -140,7 +145,7 @@ void Game::processEvents() {
     while (window.pollEvent(event)) {
         switch (event.type) {
             case sf::Event::Closed:
-                INFO << "Window closed";
+                INFO("Window closed");
                 window.close();
                 break;
             case sf::Event::Resized:
@@ -161,7 +166,7 @@ void Game::processEvents() {
 void Game::handleKeyPress(const sf::Event& event) {
     switch (event.key.code) {
         case sf::Keyboard::Escape:
-            INFO << "GamePlayer exited";
+            INFO("GamePlayer exited");
             window.close();
             break;
         case sf::Keyboard::Return:
@@ -237,7 +242,7 @@ void Game::renderWorld() {
 void Game::run(void) {
     sf::Clock gameClock;
     sf::Time elapsed;
-    INFO << "Starting " << config.name;
+    INFO("Starting %s", config.name.c_str());
     while (window.isOpen()) {
         elapsed = gameClock.restart();
         processEvents();
@@ -245,5 +250,5 @@ void Game::run(void) {
         updateWorld(elapsed);
         renderWorld();
     }
-    INFO << "Stopped";
+    INFO("Stopped");
 }

@@ -17,11 +17,11 @@ endif (CCACHE_FOUND)
 INCLUDE_DIRECTORIES(include)
 
 INCLUDE_DIRECTORIES(contrib)
+INCLUDE_DIRECTORIES(contrib/logog/include)
 file(GLOB_RECURSE CONTRIB_SOURCE_C contrib *.c)
 file(GLOB_RECURSE CONTRIB_SOURCE_CPP contrib *.cpp)
 
 set(SOURCE_FILES
-        include/logger.h
         include/Game.h
         include/Console.h
         include/GameSprite.h
