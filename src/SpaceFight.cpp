@@ -22,13 +22,20 @@ int main(int argc, char* argv[]) {
     const uint32_t minorVersion = 4;
     const uint32_t revision = 0;
     // our name
-    const std::string gameName = "SpaceFight";
+    const char* gameName = "SpaceFight";
 
     LOGOG_INITIALIZE();
+    const char* logFilename = "SpaceFight.log";
+    // remove existing log file
+    unlink(logFilename);
+    // create the log's  file sink
+    logog::LogFile outFile(logFilename);
+    // create the log's console sink
     logog::Cout out;
-    logog::LogFile outFile("SpaceFight.log");
+    // create custom format
     FormatterCustom customFormat;
     customFormat.SetShowTimeOfDay(true);
+    // use custom format
     out.SetFormatter(customFormat);
     outFile.SetFormatter(customFormat);
 
