@@ -23,15 +23,11 @@ file(GLOB_RECURSE CONTRIB_SOURCE_C contrib *.c)
 file(GLOB_RECURSE CONTRIB_SOURCE_CPP contrib *.cpp)
 
 set(SOURCE_FILES
-        include/Game.h
-        include/Console.h
-        include/GameSprite.h
         src/SpaceFight.cpp
-        src/Game.cpp
-        src/GameSprite.cpp
-        src/Console.cpp
-        src/GamePlayer.cpp
-        include/GamePlayer.h
+        src/Game.cpp include/Game.h
+        src/Console.cpp include/Console.h
+        src/GameSprite.cpp include/GameSprite.h
+        src/GamePlayer.cpp include/GamePlayer.h
         )
 
 if (WIN32)
