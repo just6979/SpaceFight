@@ -11,8 +11,8 @@
 #include <SFML/Graphics.hpp>
 
 #include <logog.hpp>
-#include <inih/ini.h>
-#include <inih/cpp/INIReader.h>
+#include <ini.h>
+#include <cpp/INIReader.h>
 
 #include <GameSprite.h>
 #include <Console.h>

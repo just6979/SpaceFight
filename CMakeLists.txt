@@ -16,8 +16,9 @@ endif (CCACHE_FOUND)
 
 INCLUDE_DIRECTORIES(include)
 
-INCLUDE_DIRECTORIES(contrib)
+INCLUDE_DIRECTORIES(contrib/inih)
 INCLUDE_DIRECTORIES(contrib/logog/include)
+
 file(GLOB_RECURSE CONTRIB_SOURCE_C contrib *.c)
 file(GLOB_RECURSE CONTRIB_SOURCE_CPP contrib *.cpp)
 
@@ -29,7 +30,9 @@ set(SOURCE_FILES
         src/Game.cpp
         src/GameSprite.cpp
         src/Console.cpp
-        src/GamePlayer.cpp include/GamePlayer.h)
+        src/GamePlayer.cpp
+        include/GamePlayer.h
+        )
 
 if (WIN32)
     set(SFML_STATIC_LIBRARIES TRUE)
