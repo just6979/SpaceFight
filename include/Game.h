@@ -10,9 +10,9 @@
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 
-#include <Logging.h>
-#include <inih/ini.h>
-#include <inih/cpp/INIReader.h>
+#include <logog.hpp>
+#include <ini.h>
+#include <cpp/INIReader.h>
 
 #include <GameSprite.h>
 #include <Console.h>
@@ -25,7 +25,6 @@ public:
     void run();
 private:
     bool initialized = false;
-    Logger logger;
     struct {
         std::string name;
         // this size fits in most screens in windowed mode

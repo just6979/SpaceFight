@@ -3,6 +3,8 @@
     <words>
       <w>easylogging</w>
       <w>fullscreen</w>
+      <w>logog</w>
+      <w>patchlevel</w>
       <w>sfml</w>
       <w>spdlog</w>
       <w>widescreen</w>
