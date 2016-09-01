@@ -22,8 +22,8 @@ Game::Game(const std::string& _name) {
         ERR("Can't load '%s', using defaults", iniFilename.c_str());
     } else {
         // 1200x675 is a 16:9 window that fits inside a 1366x768 screen on most systems
-        config.width = std::abs(reader.GetInteger("game", "width", config.width));
-        config.height = std::abs(reader.GetInteger("game", "height", config.height));
+        config.width = (unsigned int) std::abs(reader.GetInteger("game", "width", config.width));
+        config.height = (unsigned int) std::abs(reader.GetInteger("game", "height", config.height));
         config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
         config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
         config.deadZone = static_cast<float>(reader.GetReal("game", "deadZone", config.deadZone));

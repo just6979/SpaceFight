@@ -13,6 +13,6 @@ public:
     GamePlayer();
     ~GamePlayer();
 private:
-    uint32_t size;
+    unsigned int size;
     sf::Color color;
 };
