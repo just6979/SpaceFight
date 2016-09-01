@@ -48,8 +48,8 @@ void GameSprite::update(const int elapsed) {
     //move(dir * (speed * elapsed));
     auto pos = getPosition();
     pos.x = pos.x + (this->dir.x * speed * static_cast<float>(elapsed));
-    INFO("Moving by %fx%f", this->dir.x, dir.y);
-    INFO("Pos: %fx%f", pos.x, pos.y);
+//    INFO("Moving by %fx%f", this->dir.x, dir.y);
+//    INFO("Pos: %fx%f", pos.x, pos.y);
     setPosition(pos);
     move(dir * (speed * elapsed));
 }
