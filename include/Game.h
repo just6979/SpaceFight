@@ -21,8 +21,10 @@
 class Game {
 public:
     static Game& getGame(const std::string& _name = NULL);
+    bool ready();
     void run();
 private:
+    bool isReady = false;
     struct {
         std::string name;
         // this size fits in most screens in windowed mode

@@ -13,8 +13,7 @@ Game::Game(const std::string& _name) {
     sf::ContextSettings settings = window.getSettings();
     INFO("Using OpenGL %d.%d", settings.majorVersion, settings.minorVersion);
 
-
-    string iniFilename = config.name;
+    std::string iniFilename = config.name;
     iniFilename.append(".ini");
 
     INIReader reader(iniFilename);
@@ -48,7 +47,12 @@ Game::Game(const std::string& _name) {
     sprites.push_back(player);
     INFO("Loaded player");
 
+    isReady = true;
     INFO("Initialized");
+}
+
+bool Game::ready() {
+    return isReady;
 }
 
 void Game::createWindow(bool shouldFullscreen) {
