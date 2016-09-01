@@ -28,8 +28,8 @@ private:
     struct {
         std::string name;
         // this size fits in most screens in windowed mode
-        uint32_t width = 1200;
-        uint32_t height = 675;
+        long width = 1200;
+        long height = 675;
         // don't start fullscreen
         bool fullscreen = false;
         // but do use desktop size when going fullscreen
