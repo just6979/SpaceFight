@@ -60,9 +60,8 @@ int main(int argc, char* argv[]) {
 #endif
     INFO("Ready to start!");
     // get the Game singleton
-    Game& game = Game::getGame();
-    // set up the Game with out chosen window size
-    if (!game.init(gameName)) {
+    Game& game = Game::getGame(gameName);
+    if (&game == NULL) {
         ERR("Could not initialize Game, quitting.");
         return EXIT_FAILURE;
     }

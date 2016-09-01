@@ -1,24 +1,20 @@
 #include <Game.h>
 
-Game& Game::getGame() {
-    static Game instance;
+Game& Game::getGame(const std::string& _name) {
+    static Game* instance = new Game(_name);
     INFO("Getting Game instance");
-    return instance;
+    return *instance;
 }
 
-bool Game::init(const std::string& _name) {
-    if (initialized) {
-        INFO("Reusing Game instance");
-        return true;
-    }
-    INFO("Initializing new Game instance");
+Game::Game(const std::string& _name) {
+    INFO("Initializing new Game: %s", _name.c_str());
+    config.name = _name;
 
     sf::ContextSettings settings = window.getSettings();
     INFO("Using OpenGL %d.%d", settings.majorVersion, settings.minorVersion);
 
-    config.name = _name;
 
-    std::string iniFilename = config.name;
+    string iniFilename = config.name;
     iniFilename.append(".ini");
 
     INIReader reader(iniFilename);
@@ -46,17 +42,13 @@ bool Game::init(const std::string& _name) {
     INFO("Creating %dx%d render target", renderWidth, renderHeight);
     screen.create(renderWidth, renderHeight);
 
-    console.init();
-
     createWindow(config.fullscreen);
 
     player.setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
     INFO("Loaded player");
 
-    initialized = true;
     INFO("Initialized");
-    return initialized;
 }
 
 void Game::createWindow(bool shouldFullscreen) {

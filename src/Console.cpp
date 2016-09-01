@@ -1,18 +1,14 @@
 #include <Console.h>
 
 Console& Console::getConsole() {
-    static Console instance;
-    return instance;
+    static Console* instance = new Console();
+    return *instance;
 }
 
-bool Console::init() {
-    if (initialized) { return true; }
-
+Console::Console() {
     LOGOG_INFO("Initializing console");
     setFillColor(sf::Color(128, 128, 128, 128));
-
-    initialized = true;
-    return true;
+    return;
 }
 
 void Console::resize(sf::Vector2u newSize) {
