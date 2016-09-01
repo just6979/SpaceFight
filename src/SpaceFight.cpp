@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
     out.SetFormatter(customFormat);
     outFile.SetFormatter(customFormat);
 
-    INFO("%s %d.%d.%d %s %s", gameName, majorVersion, minorVersion, revision, __DATE__, __TIME__);
+    INFO("%s %d.%d.%d %s %s", gameName.c_str(), majorVersion, minorVersion, revision, __DATE__, __TIME__);
     INFO("SFML %d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR);
     // what compiler are we using? just because
 #ifdef __MINGW32__
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 #endif
 #endif
 #ifdef __clang__
-    INFO("CLang %d.%d.%d", __clang_major, __clang_minor, __clang_patchlevel);
+    INFO("CLang %d.%d.%d", __clang_major__, __clang_minor__, __clang_patchlevel__);
 #endif
 #ifdef __GNUG__
     INFO("GCC %s", __VERSION__);
