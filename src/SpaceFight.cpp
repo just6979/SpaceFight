@@ -5,8 +5,6 @@
 
 #include <unistd.h>
 
-#include <logog.hpp>
-
 #include <Game.h>
 
 void setup_logging(const std::string& gameName) {

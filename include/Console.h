@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics/RectangleShape.hpp>
 
-#include <logog.hpp>
+#include <logog/include/logog.hpp>
 
 const float offsetPercent = 0.01;
 

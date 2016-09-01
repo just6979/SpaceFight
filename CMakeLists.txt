@@ -16,7 +16,9 @@ endif (CCACHE_FOUND)
 
 INCLUDE_DIRECTORIES(include)
 
-INCLUDE_DIRECTORIES(contrib/inih)
+INCLUDE_DIRECTORIES(contrib)
+# logog expects its headers to be in a top level include directory
+# but we'll be explicit in our own sources
 INCLUDE_DIRECTORIES(contrib/logog/include)
 
 file(GLOB_RECURSE CONTRIB_SOURCE_C contrib *.c)

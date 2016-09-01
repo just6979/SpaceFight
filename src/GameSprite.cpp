@@ -1,5 +1,4 @@
 #include <GameSprite.h>
-#include <logog.hpp>
 
 GameSprite::GameSprite() {
 }

@@ -1,22 +1,15 @@
 #pragma once
 
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-
-#include <cstdio>
-#include <cmath>
-
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 
-#include <logog.hpp>
-#include <ini.h>
-#include <cpp/INIReader.h>
+#include <inih/ini.h>
+#include <inih/cpp/INIReader.h>
+#include <logog/include/logog.hpp>
 
-#include <GameSprite.h>
 #include <Console.h>
 #include <GamePlayer.h>
+#include <GameSprite.h>
 
 class Game {
 public:
