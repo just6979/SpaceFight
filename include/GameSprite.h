@@ -24,7 +24,7 @@ public:
 private:
     sf::VertexArray vertices;
     sf::Vector2f dir;
-    float speed = 0.10;
+    float speed = 0.01;
     sf::Texture texture;
     void setVertices();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
