@@ -45,9 +45,9 @@ private:
     // displays messages over the playing screen
     Console& console = Console::getConsole();
     // all normal sprites to draw
-    std::vector<GameSprite> sprites;
+    std::vector<GameSprite*> sprites;
     // the player's ship sprite
-    GamePlayer player;
+    GamePlayer* player;
 
     Game(const std::string&);
     // [re]create the rendering window, possibly fullscreen

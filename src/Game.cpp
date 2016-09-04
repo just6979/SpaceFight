@@ -43,7 +43,8 @@ Game::Game(const std::string& _name) {
 
     createWindow(config.fullscreen);
 
-    player.setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
+    player = new GamePlayer;
+    player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
     INFO("Loaded player");
 
@@ -205,13 +206,13 @@ void Game::updateControls() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         x += -config.keySpeed;
     }
-    player.moveBy(x, y);
+    player->moveBy(x, y);
 }
 
 void Game::updateWorld(sf::Time elapsed) {
     const int millis = elapsed.asMilliseconds();
-    for (auto& sprite : sprites) {
-        sprite.update(millis);
+    for (auto sprite : sprites) {
+        sprite->update(millis);
     }
 }
 
@@ -221,8 +222,8 @@ void Game::renderWorld() {
     // blank the render target
     screen.clear(sf::Color::Black);
     // render all the normal sprites
-    for (const auto& sprite : sprites) {
-        screen.draw(sprite);
+    for (const auto sprite : sprites) {
+        screen.draw(*sprite);
     }
     // if active, render console last so it overlays
     if (config.showConsole) {
