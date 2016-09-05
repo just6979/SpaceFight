@@ -1,13 +1,5 @@
 #include <Game.h>
 
-Game& Game::getGame(const std::string& _name) {
-#undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Initialization"
-    static Game* instance = new Game(_name);
-    INFO("Getting Game instance");
-    return *instance;
-}
-
 Game::Game(const std::string& _name) {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Initialization"
@@ -33,12 +25,49 @@ Game::Game(const std::string& _name) {
     INFO("Initialization Complete");
 }
 
-void inline Game::releaseWindow(bool log) {
+Game& Game::getGame(const std::string& _name) {
 #undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Window Control"
-    if (log) DBUG("Releasing window lock");
-    window.setActive(false);
-    windowMutex.unlock();
+#define LOGOG_CATEGORY  "Initialization"
+    static Game* instance = new Game(_name);
+    INFO("Getting Game instance");
+    return *instance;
+}
+
+bool Game::ready() {
+    return isReady;
+}
+
+void Game::run(void) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Event Loop"
+    releaseWindow();
+    sf::Thread renderThread(&Game::renderLoop, this);
+    renderThread.launch();
+
+    INFO("Initializing eventLoop");
+    sf::Clock gameClock;
+    sf::Time elapsedTime;
+    sf::Int32 lastUpdateTime;
+    sf::Int32 totalUpdateTime = 0;
+    sf::Int32 averageUpdateTime;
+    sf::Int32 updateCount = 0;
+    INFO("Starting eventLoop");
+    while (window.isOpen()) {
+        elapsedTime = gameClock.restart();
+        processEvents();
+        updateControls();
+        updateWorld(elapsedTime);
+        lastUpdateTime = gameClock.getElapsedTime().asMilliseconds();
+        totalUpdateTime += lastUpdateTime;
+        averageUpdateTime = totalUpdateTime / ++updateCount;
+        // log the average time per update every seconds
+        if (updateCount % (60 * 1) == 0) {
+            DBUG("Average update time: %d ms", averageUpdateTime);
+        }
+        // update at approximately 60 Hz
+        sf::sleep(sf::milliseconds(16));
+    }
+    INFO("Stopped eventLoop");
 }
 
 void inline Game::lockWindow(bool log) {
@@ -49,8 +78,12 @@ void inline Game::lockWindow(bool log) {
     window.setActive(true);
 }
 
-bool Game::ready() {
-    return isReady;
+void inline Game::releaseWindow(bool log) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Window Control"
+    if (log) DBUG("Releasing window lock");
+    window.setActive(false);
+    windowMutex.unlock();
 }
 
 void Game::readConfig() {
@@ -270,40 +303,6 @@ void Game::updateWorld(sf::Time elapsed) {
         sprite->update(millis);
     }
     spritesMutex.unlock();
-}
-
-
-void Game::run(void) {
-#undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Event Loop"
-    releaseWindow();
-    sf::Thread renderThread(&Game::renderLoop, this);
-    renderThread.launch();
-
-    INFO("Initializing eventLoop");
-    sf::Clock gameClock;
-    sf::Time elapsedTime;
-    sf::Int32 lastUpdateTime;
-    sf::Int32 totalUpdateTime = 0;
-    sf::Int32 averageUpdateTime;
-    sf::Int32 updateCount = 0;
-    INFO("Starting eventLoop");
-    while (window.isOpen()) {
-        elapsedTime = gameClock.restart();
-        processEvents();
-        updateControls();
-        updateWorld(elapsedTime);
-        lastUpdateTime = gameClock.getElapsedTime().asMilliseconds();
-        totalUpdateTime += lastUpdateTime;
-        averageUpdateTime = totalUpdateTime / ++updateCount;
-        // log the average time per update every seconds
-        if (updateCount % (60 * 1) == 0) {
-            DBUG("Average update time: %d ms", averageUpdateTime);
-        }
-        // update at approximately 60 Hz
-        sf::sleep(sf::milliseconds(16));
-    }
-    INFO("Stopped eventLoop");
 }
 
 void Game::renderLoop(void) {

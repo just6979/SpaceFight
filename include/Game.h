@@ -16,11 +16,35 @@
 #include <GameSprite.h>
 
 class Game {
+private:
+    // private ctor for singleton
+    Game(const std::string&);
 public:
     static Game& getGame(const std::string& _name = NULL);
     bool ready();
     void run();
 private:
+    // control the window mutex and active window
+    void inline lockWindow(bool log = true);
+    void inline releaseWindow(bool log = true);
+    // get the configuration from an INI file
+    void readConfig();
+    // [re]create the rendering window, possibly fullscreen
+    void createWindow(bool shouldFullscreen = false);
+    // change the viewport to maintain 16:9 aspect ratio
+    void adjustAspect(sf::Event::SizeEvent newSize);
+    void adjustAspect(sf::Vector2u newSize);
+    // main event loop
+    void processEvents();
+    // event handlers
+    void handleKeyPress(const sf::Event& event);
+    void handleKeyRelease(const sf::Event& event) const;
+    // update the simulation
+    void updateControls();
+    void updateWorld(sf::Time elapsed);
+    // render everything, runs in separate thread
+    void renderLoop(void);
+
     bool isReady = false;
     struct {
         std::string name;
@@ -54,25 +78,4 @@ private:
     std::vector<GameSprite*> sprites;
     // the player's ship sprite
     GamePlayer* player;
-
-    Game(const std::string&);
-    // control the window mutex and active window
-    void inline lockWindow(bool log = true);
-    void inline releaseWindow(bool log = true);
-    // get the configuration from an INI file
-    void readConfig();
-    // [re]create the rendering window, possibly fullscreen
-    void createWindow(bool shouldFullscreen = false);
-    // change the viewport to maintain 16:9 aspect ratio
-    void adjustAspect(sf::Event::SizeEvent newSize);
-    void adjustAspect(sf::Vector2u newSize);
-    // main event loop
-    void processEvents();
-    // event handlers
-    void handleKeyPress(const sf::Event& event);
-    void handleKeyRelease(const sf::Event& event) const;
-    // update the simulation
-    void updateControls();
-    void updateWorld(sf::Time elapsed);
-    void renderLoop(void);
 };
