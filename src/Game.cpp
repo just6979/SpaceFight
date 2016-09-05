@@ -249,9 +249,11 @@ void Game::run(void) {
         lastUpdateTime = gameClock.getElapsedTime().asMilliseconds();
         totalUpdateTime += lastUpdateTime;
         averageUpdateTime = totalUpdateTime / ++updateCount;
-        if (updateCount % 100 == 0) {
+        // log the average time per update every seconds
+        if (updateCount % (60 * 1) == 0) {
             DBUG("Average update time: %d ms", averageUpdateTime);
         }
+        // update at approximately 60 Hz
         sf::sleep(sf::milliseconds(16));
     }
     INFO("Stopped eventLoop");
@@ -289,7 +291,8 @@ void Game::renderLoop(void) {
         lastFrameTime = frameClock.getElapsedTime().asMilliseconds();
         totalFrameTime += lastFrameTime;
         averageFrameTime = totalFrameTime / ++frameCount;
-        if (frameCount % 100 == 0) {
+        // log the time per frame every 60 frames (every second if at 60 Hz)
+        if (frameCount % (60 * 1) == 0) {
             DBUG("Average frame time: %d ms", averageFrameTime);
         }
     }

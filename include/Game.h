@@ -5,6 +5,11 @@
 
 #include <ini.h>
 #include <cpp/INIReader.h>
+#ifdef DO_DEBUG
+    #define LOGOG_LEVEL LOGOG_LEVEL_ALL
+#else
+    #define LOGOG_LEVEL LOGOG_LEVEL_INFO
+#endif
 #include <logog.hpp>
 
 #include <GamePlayer.h>
