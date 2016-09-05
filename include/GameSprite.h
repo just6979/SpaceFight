@@ -9,7 +9,7 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-#include <logog/include/logog.hpp>
+#include <logog.hpp>
 
 class GameSprite : public sf::Drawable, public sf::Transformable {
 public:

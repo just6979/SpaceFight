@@ -3,9 +3,9 @@
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 
-#include <inih/ini.h>
-#include <inih/cpp/INIReader.h>
-#include <logog/include/logog.hpp>
+#include <ini.h>
+#include <cpp/INIReader.h>
+#include <logog.hpp>
 
 #include <GamePlayer.h>
 #include <GameSprite.h>

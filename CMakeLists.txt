@@ -16,11 +16,11 @@ endif (CCACHE_FOUND)
 
 INCLUDE_DIRECTORIES(include)
 
-INCLUDE_DIRECTORIES(contrib)
-# logog expects its headers to be in a top level include directory
-# but we'll be explicit in our own sources
+# find the headers in contrib
+INCLUDE_DIRECTORIES(contrib/inih)
 INCLUDE_DIRECTORIES(contrib/logog/include)
 
+# get all the source files in contrib
 file(GLOB_RECURSE CONTRIB_SOURCE_C contrib *.c)
 file(GLOB_RECURSE CONTRIB_SOURCE_CPP contrib *.cpp)
 
