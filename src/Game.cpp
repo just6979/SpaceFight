@@ -40,9 +40,11 @@ Game::Game(const std::string& _name) {
 
     createWindow(config.fullscreen);
 
+    spritesMutex.lock();
     player = new GamePlayer;
     player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
+    spritesMutex.unlock();
     INFO("Loaded player");
 
     isReady = true;
@@ -76,6 +78,7 @@ void Game::createWindow(bool shouldFullscreen) {
         mode = sf::VideoMode(config.width, config.height);
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
+    windowMutex.lock();
     window.create(mode, config.name, flags);
     if (!window.isOpen()) {
         ERR("Could not create main window");
@@ -93,6 +96,7 @@ void Game::createWindow(bool shouldFullscreen) {
     window.setVerticalSyncEnabled(true);
     // scale the viewport to maintain good aspect
     adjustAspect(window.getSize());
+    windowMutex.unlock();
 }
 
 void Game::adjustAspect(sf::Event::SizeEvent newSize) {
@@ -130,7 +134,10 @@ void Game::adjustAspect(sf::Vector2u newSize) {
     INFO("Setting %s viewport (wo:%f, ho:%f; ws:%f, hs: %f", isSixteenNine.c_str(),
          widthOffset, heightOffset, widthScale, heightScale);
     view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
+    windowMutex.lock();
     window.setView(view);
+    windowMutex.unlock();
+
 }
 
 
@@ -201,35 +208,27 @@ void Game::updateControls() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         x += -config.keySpeed;
     }
+    spritesMutex.lock();
     player->moveBy(x, y);
+    spritesMutex.unlock();
+
 }
 
 void Game::updateWorld(sf::Time elapsed) {
+    spritesMutex.lock();
     const int millis = elapsed.asMilliseconds();
     for (auto sprite : sprites) {
         sprite->update(millis);
     }
-}
-
-void Game::renderWorld() {
-    // blank the window to gray
-    window.clear(sf::Color(128, 128, 128));
-    // blank the render target
-    screen.clear(sf::Color::Black);
-    // render all the normal sprites
-    for (const auto sprite : sprites) {
-        screen.draw(*sprite);
-    }
-    // show everything rendered so far
-    screen.display();
-    // copy render target to window
-    window.draw(sf::Sprite(screen.getTexture()));
-    // display everything
-    window.display();
+    spritesMutex.unlock();
 }
 
 
 void Game::run(void) {
+    window.setActive(false);
+    sf::Thread renderThread(&Game::renderLoop, this);
+    renderThread.launch();
+
     sf::Clock gameClock;
     sf::Time elapsed;
     INFO("Starting %s", config.name.c_str());
@@ -238,7 +237,30 @@ void Game::run(void) {
         processEvents();
         updateControls();
         updateWorld(elapsed);
-        renderWorld();
     }
     INFO("Stopped");
+}
+
+void Game::renderLoop(void) {
+    window.setActive(true);
+    while (window.isOpen()) {
+        // blank the render target to black
+        screen.clear(sf::Color::Black);
+        // render all the normal sprites
+        spritesMutex.lock();
+        for (const auto sprite : sprites) {
+            screen.draw(*sprite);
+        }
+        spritesMutex.unlock();
+        // update the target
+        screen.display();
+        windowMutex.lock();
+        // blank the window to gray
+        window.clear(sf::Color(128, 128, 128));
+        // copy render target to window
+        window.draw(sf::Sprite(screen.getTexture()));
+        // update thw window
+        window.display();
+        windowMutex.unlock();
+    }
 }

@@ -38,6 +38,9 @@ private:
     sf::View view;
     // where we render the game before copying it to the window
     sf::RenderTexture screen;
+    // mutexes for the window and sprite list
+    sf::Mutex windowMutex;
+    sf::Mutex spritesMutex;
     // render internally to 720p widescreen
     unsigned int renderWidth = 1280;
     unsigned int renderHeight = 720;
@@ -60,6 +63,5 @@ private:
     // update the simulation
     void updateControls();
     void updateWorld(sf::Time elapsed);
-    // render graphics based on simulation
-    void renderWorld();
+    void renderLoop(void);
 };
