@@ -230,19 +230,26 @@ void Game::run(void) {
     renderThread.launch();
 
     sf::Clock gameClock;
-    sf::Time elapsed;
+    sf::Time elapsedTime;
+//    sf::Int32 updateTime;
     INFO("Starting %s", config.name.c_str());
     while (window.isOpen()) {
-        elapsed = gameClock.restart();
+        elapsedTime = gameClock.restart();
         processEvents();
         updateControls();
-        updateWorld(elapsed);
+        updateWorld(elapsedTime);
+        sf::sleep(sf::milliseconds(16));
+//        updateTime = elapsedTime.asMilliseconds();
+//        DBUG("Update time: %d ms", updateTime);
     }
     INFO("Stopped");
 }
 
 void Game::renderLoop(void) {
+    sf::Int32 frameTime;
+    sf::Clock renderClock;
     window.setActive(true);
+    renderClock.restart();
     while (window.isOpen()) {
         // blank the render target to black
         screen.clear(sf::Color::Black);
@@ -262,5 +269,7 @@ void Game::renderLoop(void) {
         // update thw window
         window.display();
         windowMutex.unlock();
+        frameTime = renderClock.restart().asMilliseconds();
+        DBUG("Frame time: %d ms", frameTime);
     }
 }
