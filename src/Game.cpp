@@ -93,8 +93,6 @@ void Game::createWindow(bool shouldFullscreen) {
     window.setVerticalSyncEnabled(true);
     // scale the viewport to maintain good aspect
     adjustAspect(window.getSize());
-    // make sure the console fits too
-    console.resize(screen.getSize());
 }
 
 void Game::adjustAspect(sf::Event::SizeEvent newSize) {
@@ -171,9 +169,6 @@ void Game::handleKeyPress(const sf::Event& event) {
                 createWindow(!config.fullscreen);
             }
             break;
-        case sf::Keyboard::Tilde:
-            config.showConsole = !config.showConsole;
-            break;
         default:
             break;
     }
@@ -224,10 +219,6 @@ void Game::renderWorld() {
     // render all the normal sprites
     for (const auto sprite : sprites) {
         screen.draw(*sprite);
-    }
-    // if active, render console last so it overlays
-    if (config.showConsole) {
-        screen.draw(console);
     }
     // show everything rendered so far
     screen.display();

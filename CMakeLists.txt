@@ -27,7 +27,6 @@ file(GLOB_RECURSE CONTRIB_SOURCE_CPP contrib *.cpp)
 set(SOURCE_FILES
         src/SpaceFight.cpp
         src/Game.cpp include/Game.h
-        src/Console.cpp include/Console.h
         src/GameSprite.cpp include/GameSprite.h
         src/GamePlayer.cpp include/GamePlayer.h
         )

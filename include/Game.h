@@ -7,7 +7,6 @@
 #include <inih/cpp/INIReader.h>
 #include <logog/include/logog.hpp>
 
-#include <Console.h>
 #include <GamePlayer.h>
 #include <GameSprite.h>
 
@@ -42,8 +41,6 @@ private:
     // render internally to 720p widescreen
     unsigned int renderWidth = 1280;
     unsigned int renderHeight = 720;
-    // displays messages over the playing screen
-    Console& console = Console::getConsole();
     // all normal sprites to draw
     std::vector<GameSprite*> sprites;
     // the player's ship sprite
