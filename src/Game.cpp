@@ -21,15 +21,32 @@ Game::Game(const std::string& _name) {
 
     createWindow(config.fullscreen);
 
+    INFO("Creating gameplay entities");
     spritesMutex.lock();
     player = new GamePlayer;
     player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
     spritesMutex.unlock();
-    INFO("Loaded player");
+    INFO("Created player");
 
     isReady = true;
-    INFO("Initialized");
+    INFO("Initialization Complete");
+}
+
+void inline Game::releaseWindow(bool log) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Window Control"
+    if (log) DBUG("Releasing window lock");
+    window.setActive(false);
+    windowMutex.unlock();
+}
+
+void inline Game::lockWindow(bool log) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Window Control"
+    if (log) DBUG("Grabbing window lock");
+    windowMutex.lock();
+    window.setActive(true);
 }
 
 bool Game::ready() {
@@ -70,6 +87,10 @@ void Game::createWindow(bool shouldFullscreen) {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Window Creation"
     unsigned int flags = 0;
+
+    lockWindow();
+
+    INFO("Reading config");
     sf::VideoMode mode;
     config.fullscreen = shouldFullscreen;
     if (config.fullscreen) {
@@ -91,7 +112,7 @@ void Game::createWindow(bool shouldFullscreen) {
         mode = sf::VideoMode(config.width, config.height);
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
-    windowMutex.lock();
+    INFO("Creating the main window");
     window.create(mode, config.name, flags);
     if (!window.isOpen()) {
         ERR("Could not create main window");
@@ -101,6 +122,7 @@ void Game::createWindow(bool shouldFullscreen) {
     INFO("Using OpenGL %d.%d", settings.majorVersion, settings.minorVersion);
 
     // initialize the view
+    INFO("Setting window view");
     view = window.getDefaultView();
     view.setSize(renderWidth, renderHeight);
     view.setCenter(renderWidth / 2, renderHeight / 2);
@@ -109,16 +131,21 @@ void Game::createWindow(bool shouldFullscreen) {
         INFO("Enabling V-sync");
         window.setVerticalSyncEnabled(true);
     }
+
+    releaseWindow();
+
     // scale the viewport to maintain good aspect
     adjustAspect(window.getSize());
-    windowMutex.unlock();
 }
 
 void Game::adjustAspect(sf::Event::SizeEvent newSize) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Aspect Adjustment"
     // save the new window size since this came from a resize event
-    // not from initialization or a fullscreen toggle
+    // not from a window creation event (initialization or fullscreen toggle)
     config.width = newSize.width;
     config.height = newSize.height;
+    INFO("Window resized to: %dx%d", config.width, config.height);
     // do the calculation
     adjustAspect(sf::Vector2u(newSize.width, newSize.height));
 }
@@ -126,6 +153,7 @@ void Game::adjustAspect(sf::Event::SizeEvent newSize) {
 void Game::adjustAspect(sf::Vector2u newSize) {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Aspect Adjustment"
+    INFO("Adjusting aspect for window size ", newSize.x, newSize.y);
     // compute the current aspect
     float currentRatio = (float) newSize.x / (float) newSize.y;
     // used to offset and scale the viewport to maintain 16:9 aspect
@@ -147,14 +175,12 @@ void Game::adjustAspect(sf::Vector2u newSize) {
         heightScale = newSize.x * (9.0f / 16.0f) / newSize.y;
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
-    INFO("Adjusting aspect for window size ", newSize.x, newSize.y);
+    lockWindow();
     INFO("Setting %s viewport (wo:%f, ho:%f; ws:%f, hs: %f", isSixteenNine.c_str(),
          widthOffset, heightOffset, widthScale, heightScale);
     view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
-    windowMutex.lock();
     window.setView(view);
-    windowMutex.unlock();
-
+    releaseWindow();
 }
 
 
@@ -250,7 +276,7 @@ void Game::updateWorld(sf::Time elapsed) {
 void Game::run(void) {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Event Loop"
-    window.setActive(false);
+    releaseWindow();
     sf::Thread renderThread(&Game::renderLoop, this);
     renderThread.launch();
 
@@ -289,7 +315,6 @@ void Game::renderLoop(void) {
     sf::Int32 averageFrameTime;
     sf::Int32 totalFrameTime = 0;
     sf::Int32 frameCount = 0;
-    window.setActive(true);
     INFO("Starting renderLoop");
     while (window.isOpen()) {
         frameClock.restart();
@@ -303,14 +328,14 @@ void Game::renderLoop(void) {
         spritesMutex.unlock();
         // update the target
         screen.display();
-        windowMutex.lock();
+        lockWindow(false);
         // blank the window to gray
         window.clear(sf::Color(128, 128, 128));
         // copy render target to window
         window.draw(sf::Sprite(screen.getTexture()));
         // update thw window
         window.display();
-        windowMutex.unlock();
+        releaseWindow(false);
         lastFrameTime = frameClock.getElapsedTime().asMilliseconds();
         totalFrameTime += lastFrameTime;
         averageFrameTime = totalFrameTime / ++frameCount;

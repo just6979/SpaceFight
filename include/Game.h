@@ -56,6 +56,9 @@ private:
     GamePlayer* player;
 
     Game(const std::string&);
+    // control the window mutex and active window
+    void inline lockWindow(bool log = true);
+    void inline releaseWindow(bool log = true);
     // get the configuration from an INI file
     void readConfig();
     // [re]create the rendering window, possibly fullscreen
