@@ -8,6 +8,8 @@
 #include <Game.h>
 
 void dump_sys_info(const char* gameName) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "System Info"
     const uint32_t majorVersion = 0;
     const uint32_t minorVersion = 4;
     const uint32_t revision = 1;
@@ -40,6 +42,8 @@ void dump_sys_info(const char* gameName) {
 }
 
 int main(int argc, char* argv[]) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Main"
     std::string gameName = "SpaceFight";
 
     LOGOG_INITIALIZE();
@@ -67,7 +71,6 @@ int main(int argc, char* argv[]) {
 
     Game& game = Game::getGame(gameName);
     if (game.ready()) {
-        INFO("Ready to start!");
         game.run();
         return EXIT_SUCCESS;
     } else {

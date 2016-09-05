@@ -1,12 +1,16 @@
 #include <Game.h>
 
 Game& Game::getGame(const std::string& _name) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Initialization"
     static Game* instance = new Game(_name);
     INFO("Getting Game instance");
     return *instance;
 }
 
 Game::Game(const std::string& _name) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Initialization"
     INFO("Initializing new Game: %s", _name.c_str());
     config.name = _name;
 
@@ -58,6 +62,8 @@ bool Game::ready() {
 }
 
 void Game::createWindow(bool shouldFullscreen) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Window Creation"
     unsigned int flags = 0;
     sf::VideoMode mode;
     config.fullscreen = shouldFullscreen;
@@ -113,6 +119,8 @@ void Game::adjustAspect(sf::Event::SizeEvent newSize) {
 }
 
 void Game::adjustAspect(sf::Vector2u newSize) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Aspect Adjustment"
     // compute the current aspect
     float currentRatio = (float) newSize.x / (float) newSize.y;
     // used to offset and scale the viewport to maintain 16:9 aspect
@@ -146,6 +154,8 @@ void Game::adjustAspect(sf::Vector2u newSize) {
 
 
 void Game::processEvents() {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Event Processing"
     static sf::Event event;
 
     while (window.pollEvent(event)) {
@@ -170,9 +180,11 @@ void Game::processEvents() {
 }
 
 void Game::handleKeyPress(const sf::Event& event) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Event Processing"
     switch (event.key.code) {
         case sf::Keyboard::Escape:
-            INFO("GamePlayer exited");
+            INFO("Key: Escape: exiting");
             window.close();
             break;
         case sf::Keyboard::Return:
@@ -186,6 +198,8 @@ void Game::handleKeyPress(const sf::Event& event) {
 }
 
 void Game::handleKeyRelease(const sf::Event& event) const {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Event Processing"
     switch (event.key.code) {
         default:
             break;
@@ -229,6 +243,8 @@ void Game::updateWorld(sf::Time elapsed) {
 
 
 void Game::run(void) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Event Loop"
     window.setActive(false);
     sf::Thread renderThread(&Game::renderLoop, this);
     renderThread.launch();
@@ -260,6 +276,8 @@ void Game::run(void) {
 }
 
 void Game::renderLoop(void) {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Render Loop"
     INFO("Initializing renderLoop");
     sf::Clock frameClock;
     sf::Int32 lastFrameTime;
