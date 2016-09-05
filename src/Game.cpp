@@ -23,6 +23,7 @@ Game::Game(const std::string& _name) {
         config.height = (unsigned int) std::abs(reader.GetInteger("game", "height", (long) config.height));
         config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
         config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
+        config.vsync = reader.GetBoolean("game", "vsync", config.useDesktopSize);
         config.deadZone = static_cast<float>(reader.GetReal("game", "deadZone", config.deadZone));
         config.keySpeed = static_cast<float>(reader.GetReal("game", "keySpeed", config.keySpeed));
     }
@@ -31,6 +32,7 @@ Game::Game(const std::string& _name) {
     INFO("height = %d", config.height);
     INFO("fullscreen = %s", (config.fullscreen ? "true" : "false"));
     INFO("useDesktopSize = %s", (config.useDesktopSize ? "true" : "false"));
+    INFO("vsync = %s", (config.vsync ? "true" : "false"));
     INFO("deadZone = %f", config.deadZone);
     INFO("keySpeed = %f", config.keySpeed);
     INFO("--End config--");
@@ -92,8 +94,10 @@ void Game::createWindow(bool shouldFullscreen) {
     view.setSize(renderWidth, renderHeight);
     view.setCenter(renderWidth / 2, renderHeight / 2);
     window.setView(view);
-    INFO("Enabling V-sync");
-    window.setVerticalSyncEnabled(true);
+    if (config.vsync) {
+        INFO("Enabling V-sync");
+        window.setVerticalSyncEnabled(true);
+    }
     // scale the viewport to maintain good aspect
     adjustAspect(window.getSize());
     windowMutex.unlock();

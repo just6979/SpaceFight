@@ -26,9 +26,10 @@ private:
         bool fullscreen = false;
         // but do use desktop size when going fullscreen
         bool useDesktopSize = true;
+        bool vsync = true;
+
         // show the console
         bool showConsole = false;
-
         float deadZone = 15.0;
         float keySpeed = 75.0;
     } config;

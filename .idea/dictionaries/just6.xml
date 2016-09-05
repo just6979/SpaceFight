@@ -7,6 +7,7 @@
       <w>patchlevel</w>
       <w>sfml</w>
       <w>spdlog</w>
+      <w>vsync</w>
       <w>widescreen</w>
     </words>
   </dictionary>
