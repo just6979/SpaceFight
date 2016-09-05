@@ -1,6 +1,21 @@
-Simple space battle game, ported from memory from a game I made in high school using Borland Turbo C++ and BGI.
+# Space Fight
 
-Uses:
-http://www.sfml-dev.org/
-https://github.com/easylogging/easyloggingpp
-https://github.com/benhoyt/inih
+Simple space battle game.
+
+A port, from memory, of a game I made in high school using Borland Turbo C++ and BGI.
+
+Now using modern technology:
+- C++14
+- OpenGL
+- multi-threading
+- more...
+
+## Libraries
+
+### Compiled In:
+- [logog](http://www.logog.org/)
+- [inih](https://github.com/benhoyt/inih)
+
+### Linked:
+- [SFML](http://www.sfml-dev.org/)
+
