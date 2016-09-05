@@ -37,7 +37,7 @@ bool Game::ready() {
     return isReady;
 }
 
-void Game::run(void) {
+void Game::run() {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Event Loop"
     releaseWindow();
@@ -261,7 +261,7 @@ void Game::handleKeyPress(const sf::Event& event) {
     }
 }
 
-void Game::handleKeyRelease(const sf::Event& event) const {
+void Game::handleKeyRelease(const sf::Event& event) {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Event Processing"
     switch (event.key.code) {
@@ -305,7 +305,7 @@ void Game::updateWorld(sf::Time elapsed) {
     spritesMutex.unlock();
 }
 
-void Game::renderLoop(void) {
+void Game::renderLoop() {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Render Loop"
     INFO("Initializing renderLoop");

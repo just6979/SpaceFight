@@ -5,10 +5,11 @@
 
 #include <ini.h>
 #include <cpp/INIReader.h>
+
 #ifdef DO_DEBUG
-    #define LOGOG_LEVEL LOGOG_LEVEL_ALL
+#define LOGOG_LEVEL LOGOG_LEVEL_ALL
 #else
-    #define LOGOG_LEVEL LOGOG_LEVEL_INFO
+#define LOGOG_LEVEL LOGOG_LEVEL_INFO
 #endif
 #include <logog.hpp>
 
@@ -38,12 +39,12 @@ private:
     void processEvents();
     // event handlers
     void handleKeyPress(const sf::Event& event);
-    void handleKeyRelease(const sf::Event& event) const;
+    void handleKeyRelease(const sf::Event& event);
     // update the simulation
     void updateControls();
     void updateWorld(sf::Time elapsed);
     // render everything, runs in separate thread
-    void renderLoop(void);
+    void renderLoop();
 
     bool isReady = false;
     struct {
