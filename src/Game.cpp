@@ -14,32 +14,7 @@ Game::Game(const std::string& _name) {
     INFO("Initializing new Game: %s", _name.c_str());
     config.name = _name;
 
-    std::string iniFilename = config.name;
-    iniFilename.append(".ini");
-
-    INIReader reader(iniFilename);
-    INFO("Reading config from '%s'", iniFilename.c_str());
-    if (reader.ParseError() < 0) {
-        ERR("Can't load '%s', using defaults", iniFilename.c_str());
-    } else {
-        // 1200x675 is a 16:9 window that fits inside a 1366x768 screen on most systems
-        config.width = (unsigned int) std::abs(reader.GetInteger("game", "width", (long) config.width));
-        config.height = (unsigned int) std::abs(reader.GetInteger("game", "height", (long) config.height));
-        config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
-        config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
-        config.vsync = reader.GetBoolean("game", "vsync", config.useDesktopSize);
-        config.deadZone = static_cast<float>(reader.GetReal("game", "deadZone", config.deadZone));
-        config.keySpeed = static_cast<float>(reader.GetReal("game", "keySpeed", config.keySpeed));
-    }
-    INFO("--Config--");
-    INFO("width = %d", config.width);
-    INFO("height = %d", config.height);
-    INFO("fullscreen = %s", (config.fullscreen ? "true" : "false"));
-    INFO("useDesktopSize = %s", (config.useDesktopSize ? "true" : "false"));
-    INFO("vsync = %s", (config.vsync ? "true" : "false"));
-    INFO("deadZone = %f", config.deadZone);
-    INFO("keySpeed = %f", config.keySpeed);
-    INFO("--End config--");
+    readConfig();
 
     INFO("Creating %dx%d render target", renderWidth, renderHeight);
     screen.create(renderWidth, renderHeight);
@@ -59,6 +34,36 @@ Game::Game(const std::string& _name) {
 
 bool Game::ready() {
     return isReady;
+}
+
+void Game::readConfig() {
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Configuration"
+    std::__cxx11::string iniFilename = config.name;
+    iniFilename.append(".ini");
+
+    INIReader reader(iniFilename);
+    INFO("Reading config from '%s'", iniFilename.c_str());
+    if (reader.ParseError() < 0) {
+        ERR("Can't load '%s', using defaults", iniFilename.c_str());
+    } else {
+        // 1200x675 is a 16:9 window that fits inside a 1366x768 screen on most systems
+        config.width = (unsigned int) std::abs(reader.GetInteger("game", "width", (long) config.width));
+        config.height = (unsigned int) std::abs(reader.GetInteger("game", "height", (long) config.height));
+        config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
+        config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
+        config.vsync = reader.GetBoolean("game", "vsync", config.useDesktopSize);
+        config.deadZone = static_cast<float>(reader.GetReal("game", "deadZone", config.deadZone));
+        config.keySpeed = static_cast<float>(reader.GetReal("game", "keySpeed", config.keySpeed));
+    }
+    INFO("Current settings:");
+    INFO("\twidth = %d", config.width);
+    INFO("\theight = %d", config.height);
+    INFO("\tfullscreen = %s", (config.fullscreen ? "true" : "false"));
+    INFO("\tuseDesktopSize = %s", (config.useDesktopSize ? "true" : "false"));
+    INFO("\tvsync = %s", (config.vsync ? "true" : "false"));
+    INFO("\tdeadZone = %f", config.deadZone);
+    INFO("\tkeySpeed = %f", config.keySpeed);
 }
 
 void Game::createWindow(bool shouldFullscreen) {

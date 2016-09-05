@@ -56,6 +56,8 @@ private:
     GamePlayer* player;
 
     Game(const std::string&);
+    // get the configuration from an INI file
+    void readConfig();
     // [re]create the rendering window, possibly fullscreen
     void createWindow(bool shouldFullscreen = false);
     // change the viewport to maintain 16:9 aspect ratio
