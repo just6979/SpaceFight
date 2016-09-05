@@ -229,28 +229,41 @@ void Game::run(void) {
     sf::Thread renderThread(&Game::renderLoop, this);
     renderThread.launch();
 
+    INFO("Initializing eventLoop");
     sf::Clock gameClock;
     sf::Time elapsedTime;
-//    sf::Int32 updateTime;
-    INFO("Starting %s", config.name.c_str());
+    sf::Int32 lastUpdateTime;
+    sf::Int32 totalUpdateTime = 0;
+    sf::Int32 averageUpdateTime;
+    sf::Int32 updateCount = 0;
+    INFO("Starting eventLoop");
     while (window.isOpen()) {
         elapsedTime = gameClock.restart();
         processEvents();
         updateControls();
         updateWorld(elapsedTime);
+        lastUpdateTime = gameClock.getElapsedTime().asMilliseconds();
+        totalUpdateTime += lastUpdateTime;
+        averageUpdateTime = totalUpdateTime / ++updateCount;
+        if (updateCount % 100 == 0) {
+            DBUG("Average update time: %d ms", averageUpdateTime);
+        }
         sf::sleep(sf::milliseconds(16));
-//        updateTime = elapsedTime.asMilliseconds();
-//        DBUG("Update time: %d ms", updateTime);
     }
-    INFO("Stopped");
+    INFO("Stopped eventLoop");
 }
 
 void Game::renderLoop(void) {
-    sf::Int32 frameTime;
-    sf::Clock renderClock;
+    INFO("Initializing renderLoop");
+    sf::Clock frameClock;
+    sf::Int32 lastFrameTime;
+    sf::Int32 averageFrameTime;
+    sf::Int32 totalFrameTime = 0;
+    sf::Int32 frameCount = 0;
     window.setActive(true);
-    renderClock.restart();
+    INFO("Starting renderLoop");
     while (window.isOpen()) {
+        frameClock.restart();
         // blank the render target to black
         screen.clear(sf::Color::Black);
         // render all the normal sprites
@@ -269,7 +282,12 @@ void Game::renderLoop(void) {
         // update thw window
         window.display();
         windowMutex.unlock();
-        frameTime = renderClock.restart().asMilliseconds();
-        DBUG("Frame time: %d ms", frameTime);
+        lastFrameTime = frameClock.getElapsedTime().asMilliseconds();
+        totalFrameTime += lastFrameTime;
+        averageFrameTime = totalFrameTime / ++frameCount;
+        if (frameCount % 100 == 0) {
+            DBUG("Average frame time: %d ms", averageFrameTime);
+        }
     }
+    INFO("Stopped renderLoop");
 }
