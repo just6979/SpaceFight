@@ -10,9 +10,6 @@ Game::Game(const std::string& _name) {
     INFO("Initializing new Game: %s", _name.c_str());
     config.name = _name;
 
-    sf::ContextSettings settings = window.getSettings();
-    INFO("Using OpenGL %d.%d", settings.majorVersion, settings.minorVersion);
-
     std::string iniFilename = config.name;
     iniFilename.append(".ini");
 
@@ -84,6 +81,9 @@ void Game::createWindow(bool shouldFullscreen) {
         ERR("Could not create main window");
         exit(EXIT_FAILURE);
     }
+    sf::ContextSettings settings = window.getSettings();
+    INFO("Using OpenGL %d.%d", settings.majorVersion, settings.minorVersion);
+
     // initialize the view
     view = window.getDefaultView();
     view.setSize(renderWidth, renderHeight);
