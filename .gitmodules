@@ -1,3 +1,6 @@
 [submodule "contrib/inih"]
 	path = contrib/inih
 	url = git@github.com:benhoyt/inih.git
+[submodule "contrib/logog"]
+	path = contrib/logog
+	url = git@github.com:johnwbyrd/logog.git
