@@ -275,8 +275,8 @@ void Game::updateControls() {
 
     float joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
     float joy0_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-    x = fabs(joy0_X) < config.deadZone ? 0 : joy0_X;
-    y = fabs(joy0_y) < config.deadZone ? 0 : joy0_y;
+    x = std::fabs(joy0_X) < config.deadZone ? 0 : joy0_X;
+    y = std::fabs(joy0_y) < config.deadZone ? 0 : joy0_y;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
         y += -config.keySpeed;

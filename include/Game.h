@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 
