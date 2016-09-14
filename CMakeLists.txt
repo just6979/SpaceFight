@@ -23,13 +23,18 @@ endif (CCACHE_FOUND)
 
 INCLUDE_DIRECTORIES(include)
 
-# find the headers in contrib
+# add headers are source for inih
 INCLUDE_DIRECTORIES(contrib/inih)
-INCLUDE_DIRECTORIES(contrib/logog/include)
+file(GLOB CONTRIB_FILES ${CONTRIB_FILES} contrib/inih/*.c)
+file(GLOB CONTRIB_FILES ${CONTRIB_FILES} contrib/inih/cpp/*.cpp)
+# skip any tests (may be removed soon if changes to inih are accepted)
+file(GLOB_RECURSE SKIP_FILES contrib/inih "*test*")
+message(STATUS ${SKIP_FILES})
+list(REMOVE_ITEM CONTRIB_FILES ${SKIP_FILES})
 
-# get all the source files in contrib
-file(GLOB_RECURSE CONTRIB_SOURCE_C contrib *.c)
-file(GLOB_RECURSE CONTRIB_SOURCE_CPP contrib *.cpp)
+# add headers and source for logog
+INCLUDE_DIRECTORIES(contrib/logog/include)
+file(GLOB CONTRIB_FILES ${CONTRIB_FILES} contrib/logog/src/*.cpp)
 
 set(SOURCE_FILES
         src/SpaceFight.cpp
@@ -47,6 +52,6 @@ if (SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
 endif ()
 
-add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} ${CONTRIB_SOURCE_C} ${CONTRIB_SOURCE_CPP})
+add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} ${CONTRIB_FILES})
 
 target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
