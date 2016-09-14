@@ -89,7 +89,7 @@ void inline Game::releaseWindow(bool log) {
 void Game::readConfig() {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Configuration"
-    std::__cxx11::string iniFilename = config.name;
+    std::string iniFilename = config.name;
     iniFilename.append(".ini");
 
     INIReader reader(iniFilename);
