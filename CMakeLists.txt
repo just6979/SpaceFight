@@ -13,9 +13,13 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 # use C++14 everywhere
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 # make symbols for debug builds
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -Og")
 # show all warnings and optimize a lot for release builds
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -O1")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Wall -O3")
+# optimize for size (does CMake add the size optimization flag itself?)
+set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE} -Os")
+# keep debug symbols, but show all warnings  and optimize a lot
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS_RELEASE}")
 
 # local def to hide debugging code for release builds
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
