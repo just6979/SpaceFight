@@ -36,12 +36,8 @@ list(REMOVE_ITEM CONTRIB_FILES ${SKIP_FILES})
 INCLUDE_DIRECTORIES(contrib/logog/include)
 file(GLOB CONTRIB_FILES ${CONTRIB_FILES} contrib/logog/src/*.cpp)
 
-set(SOURCE_FILES
-        src/SpaceFight.cpp
-        src/Game.cpp include/Game.h
-        src/GameSprite.cpp include/GameSprite.h
-        src/GamePlayer.cpp include/GamePlayer.h
-        )
+file(GLOB SOURCE_FILES src/*.cpp)
+file(GLOB HEADER_FILES include/*.h)
 
 if (WIN32)
     set(SFML_STATIC_LIBRARIES TRUE)
