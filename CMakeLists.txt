@@ -4,9 +4,6 @@ project("SpaceFight")
 
 set(EXECUTABLE_NAME ${PROJECT_NAME})
 
-# build locally; not somewhere hidden in %APPDATA%, as the CLion default does
-SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/)
-
 # show all command lines in CLion
 set(CMAKE_VERBOSE_MAKEFILE ON)
 

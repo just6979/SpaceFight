@@ -11,6 +11,8 @@
     </libraryRoots>
     <excludeRoots>
       <file path="$PROJECT_DIR$/bin" />
+      <file path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles" />
+      <file path="$PROJECT_DIR$/cmake-build-release/CMakeFiles" />
     </excludeRoots>
   </component>
 </project>
