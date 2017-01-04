@@ -52,9 +52,13 @@ file(GLOB_RECURSE SKIP_FILES contrib/inih "*test*")
 message(STATUS ${SKIP_FILES})
 list(REMOVE_ITEM CONTRIB_FILES ${SKIP_FILES})
 
-# add headers and source for logog
+# add headers and sources for logog
 INCLUDE_DIRECTORIES(contrib/logog/include)
-file(GLOB CONTRIB_FILES ${CONTRIB_FILES} contrib/logog/src/*.cpp)
+#file(GLOB CONTRIB_FILES ${CONTRIB_FILES} contrib/logog/src/*.cpp)
+# include the logog CMake project directly
+add_subdirectory(contrib/logog)
+# but turn off testing
+set(BUILD_TESTING off)
 
 # add output binary dependent on local headers & sources and contrib sources
 add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${CONTRIB_FILES})
@@ -71,4 +75,4 @@ if (SFML_FOUND)
 endif ()
 
 # link with local objects and SFML libs & dependencies
-target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+target_link_libraries(${EXECUTABLE_NAME} logog ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
