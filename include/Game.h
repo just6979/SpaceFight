@@ -23,7 +23,7 @@ private:
     // private ctor for singleton
     Game(const int argc, const char** argv, const std::string&);
 public:
-    static Game& getGame(const int argc, const char** argv, const std::string& _name = NULL);
+    static Game& getGame(const int argc, const char** argv, const std::string& _name = "");
     bool ready();
     void run();
 private:

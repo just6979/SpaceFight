@@ -2,10 +2,11 @@
 
 
 #undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY "Construct Game"
+#define LOGOG_CATEGORY "Constructor"
+
 Game::Game(const int argc, const char** argv, const std::string& _name) {
-    INFO("Initializing new Game: %s", _name.c_str());
     config.name = _name;
+    INFO("Initializing new Game: %s", config.name.c_str());
 
     readConfig();
 
@@ -28,19 +29,28 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Get Game Instance"
+
 Game& Game::getGame(const int argc, const char** argv, const std::string& _name) {
-    static Game* instance = new Game(argc, argv, _name);
+    std::string name;
+    if (_name.length() == 0) {
+        name = "Game";
+    } else {
+        name = _name;
+    }
+    static Game* instance = new Game(argc, argv, name);
     return *instance;
 }
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Readiness"
+
 bool Game::ready() {
     return isReady;
 }
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Event Loop"
+
 void Game::run() {
     INFO("Creating Render thread");
     releaseWindow();
@@ -75,6 +85,7 @@ void Game::run() {
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "System Configuration"
+
 void Game::readConfig() {
     std::string iniFilename = config.name;
     iniFilename.append(".ini");
@@ -105,6 +116,7 @@ void Game::readConfig() {
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Window Creation"
+
 void Game::createWindow(bool shouldFullscreen) {
     unsigned int flags = 0;
 
@@ -160,6 +172,7 @@ void Game::createWindow(bool shouldFullscreen) {
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Aspect Adjustment"
+
 void Game::adjustAspect(sf::Event::SizeEvent newSize) {
     // save the new window size since this came from a resize event
     // not from a window creation event (initialization or fullscreen toggle)
@@ -203,6 +216,7 @@ void Game::adjustAspect(sf::Vector2u newSize) {
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Window Mutex"
+
 //#define LOG_WINDOW_MUTEX_LOCKS
 void inline Game::lockWindow() {
 #ifdef LOG_WINDOW_MUTEX_LOCKS
@@ -222,6 +236,7 @@ void inline Game::releaseWindow() {
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Process Events"
+
 void Game::processEvents() {
     static sf::Event event;
 
@@ -248,6 +263,7 @@ void Game::processEvents() {
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Key Press"
+
 void Game::handleKeyPress(const sf::Event& event) {
     switch (event.key.code) {
         case sf::Keyboard::Escape:
@@ -266,6 +282,7 @@ void Game::handleKeyPress(const sf::Event& event) {
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Key Release"
+
 void Game::handleKeyRelease(const sf::Event& event) {
     switch (event.key.code) {
         default:
@@ -275,6 +292,7 @@ void Game::handleKeyRelease(const sf::Event& event) {
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Update Controls"
+
 void Game::updateControls() {
     float x, y = 0;
 
@@ -303,6 +321,7 @@ void Game::updateControls() {
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Update World"
+
 void Game::updateWorld(sf::Time elapsed) {
     spritesMutex.lock();
     const int millis = elapsed.asMilliseconds();
@@ -314,6 +333,7 @@ void Game::updateWorld(sf::Time elapsed) {
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Render Loop"
+
 void Game::renderLoop() {
     INFO("Initializing render loop");
     sf::Clock frameClock;
