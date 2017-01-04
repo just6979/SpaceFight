@@ -21,9 +21,9 @@
 class Game {
 private:
     // private ctor for singleton
-    Game(const std::string&);
+    Game(const int argc, const char** argv, const std::string&);
 public:
-    static Game& getGame(const std::string& _name = NULL);
+    static Game& getGame(const int argc, const char** argv, const std::string& _name = NULL);
     bool ready();
     void run();
 private:

@@ -41,7 +41,7 @@ void dump_sys_info(const char* gameName) {
 
 }
 
-int main(int argc, char* argv[]) {
+int main(const int argc, const char** argv) {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Main"
     std::string gameName = "SpaceFight";
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 
     dump_sys_info(gameName.c_str());
 
-    Game& game = Game::getGame(gameName);
+    Game& game = Game::getGame(argc, argv, gameName);
     if (game.ready()) {
         game.run();
         return EXIT_SUCCESS;

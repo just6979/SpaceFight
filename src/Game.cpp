@@ -1,6 +1,6 @@
 #include <Game.h>
 
-Game::Game(const std::string& _name) {
+Game::Game(const int argc, const char** argv, const std::string& _name) {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Initialization"
     INFO("Initializing new Game: %s", _name.c_str());
@@ -25,10 +25,10 @@ Game::Game(const std::string& _name) {
     INFO("Initialization Complete");
 }
 
-Game& Game::getGame(const std::string& _name) {
+Game& Game::getGame(const int argc, const char** argv, const std::string& _name) {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Initialization"
-    static Game* instance = new Game(_name);
+    static Game* instance = new Game(argc, argv, _name);
     INFO("Getting Game instance");
     return *instance;
 }
