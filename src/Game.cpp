@@ -8,6 +8,11 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
     config.name = _name;
     INFO("Initializing new Game: %s", config.name.c_str());
 
+    INFO("Executable: %s", argv[0]);
+    for (int i = 1; i < argc; i++) {
+        INFO("Arg %d: %s", i, argv[i]);
+    }
+
     readConfig();
 
     INFO("Creating %dx%d render target", renderWidth, renderHeight);
