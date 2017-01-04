@@ -27,9 +27,6 @@ public:
     bool ready();
     void run();
 private:
-    // control the window mutex and active window
-    void inline lockWindow(bool log = true);
-    void inline releaseWindow(bool log = true);
     // get the configuration from an INI file
     void readConfig();
     // [re]create the rendering window, possibly fullscreen
@@ -37,6 +34,9 @@ private:
     // change the viewport to maintain 16:9 aspect ratio
     void adjustAspect(sf::Event::SizeEvent newSize);
     void adjustAspect(sf::Vector2u newSize);
+    // control the window mutex and active window
+    void inline lockWindow();
+    void inline releaseWindow();
     // main event loop
     void processEvents();
     // event handlers

@@ -1,8 +1,9 @@
 #include <Game.h>
 
-Game::Game(const int argc, const char** argv, const std::string& _name) {
+
 #undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Initialization"
+#define LOGOG_CATEGORY "Construct Game"
+Game::Game(const int argc, const char** argv, const std::string& _name) {
     INFO("Initializing new Game: %s", _name.c_str());
     config.name = _name;
 
@@ -25,33 +26,35 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
     INFO("Initialization Complete");
 }
 
-Game& Game::getGame(const int argc, const char** argv, const std::string& _name) {
 #undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Initialization"
+#define LOGOG_CATEGORY  "Get Game Instance"
+Game& Game::getGame(const int argc, const char** argv, const std::string& _name) {
     static Game* instance = new Game(argc, argv, _name);
-    INFO("Getting Game instance");
     return *instance;
 }
 
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Readiness"
 bool Game::ready() {
     return isReady;
 }
 
-void Game::run() {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Event Loop"
+void Game::run() {
+    INFO("Creating Render thread");
     releaseWindow();
     sf::Thread renderThread(&Game::renderLoop, this);
     renderThread.launch();
 
-    INFO("Initializing eventLoop");
+    INFO("Initializing event loop");
     sf::Clock gameClock;
     sf::Time elapsedTime;
     sf::Int32 lastUpdateTime;
     sf::Int32 totalUpdateTime = 0;
     sf::Int32 averageUpdateTime;
     sf::Int32 updateCount = 0;
-    INFO("Starting eventLoop");
+    INFO("Starting event loop");
     while (window.isOpen()) {
         elapsedTime = gameClock.restart();
         processEvents();
@@ -67,28 +70,12 @@ void Game::run() {
         // update at approximately 60 Hz
         sf::sleep(sf::milliseconds(16));
     }
-    INFO("Stopped eventLoop");
+    INFO("Stopped event loop");
 }
 
-void inline Game::lockWindow(bool log) {
 #undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Window Control"
-    if (log) DBUG("Grabbing window lock");
-    windowMutex.lock();
-    window.setActive(true);
-}
-
-void inline Game::releaseWindow(bool log) {
-#undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Window Control"
-    if (log) DBUG("Releasing window lock");
-    window.setActive(false);
-    windowMutex.unlock();
-}
-
+#define LOGOG_CATEGORY  "System Configuration"
 void Game::readConfig() {
-#undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Configuration"
     std::string iniFilename = config.name;
     iniFilename.append(".ini");
 
@@ -116,9 +103,9 @@ void Game::readConfig() {
     INFO("\tkeySpeed = %f", config.keySpeed);
 }
 
-void Game::createWindow(bool shouldFullscreen) {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Window Creation"
+void Game::createWindow(bool shouldFullscreen) {
     unsigned int flags = 0;
 
     lockWindow();
@@ -171,9 +158,9 @@ void Game::createWindow(bool shouldFullscreen) {
     adjustAspect(window.getSize());
 }
 
-void Game::adjustAspect(sf::Event::SizeEvent newSize) {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Aspect Adjustment"
+void Game::adjustAspect(sf::Event::SizeEvent newSize) {
     // save the new window size since this came from a resize event
     // not from a window creation event (initialization or fullscreen toggle)
     config.width = newSize.width;
@@ -184,8 +171,6 @@ void Game::adjustAspect(sf::Event::SizeEvent newSize) {
 }
 
 void Game::adjustAspect(sf::Vector2u newSize) {
-#undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Aspect Adjustment"
     INFO("Adjusting aspect for window size ", newSize.x, newSize.y);
     // compute the current aspect
     float currentRatio = (float) newSize.x / (float) newSize.y;
@@ -216,10 +201,28 @@ void Game::adjustAspect(sf::Vector2u newSize) {
     releaseWindow();
 }
 
-
-void Game::processEvents() {
 #undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Event Processing"
+#define LOGOG_CATEGORY  "Window Mutex"
+//#define LOG_WINDOW_MUTEX_LOCKS
+void inline Game::lockWindow() {
+#ifdef LOG_WINDOW_MUTEX_LOCKS
+    DBUG("Grabbing window lock");
+#endif
+    windowMutex.lock();
+    window.setActive(true);
+}
+
+void inline Game::releaseWindow() {
+#ifdef LOG_WINDOW_MUTEX_LOCKS
+    DBUG("Releasing window lock");
+#endif
+    window.setActive(false);
+    windowMutex.unlock();
+}
+
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Process Events"
+void Game::processEvents() {
     static sf::Event event;
 
     while (window.pollEvent(event)) {
@@ -243,9 +246,9 @@ void Game::processEvents() {
     }
 }
 
-void Game::handleKeyPress(const sf::Event& event) {
 #undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Event Processing"
+#define LOGOG_CATEGORY  "Key Press"
+void Game::handleKeyPress(const sf::Event& event) {
     switch (event.key.code) {
         case sf::Keyboard::Escape:
             INFO("Key: Escape: exiting");
@@ -261,15 +264,17 @@ void Game::handleKeyPress(const sf::Event& event) {
     }
 }
 
-void Game::handleKeyRelease(const sf::Event& event) {
 #undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Event Processing"
+#define LOGOG_CATEGORY  "Key Release"
+void Game::handleKeyRelease(const sf::Event& event) {
     switch (event.key.code) {
         default:
             break;
     }
 }
 
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Update Controls"
 void Game::updateControls() {
     float x, y = 0;
 
@@ -296,6 +301,8 @@ void Game::updateControls() {
 
 }
 
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Update World"
 void Game::updateWorld(sf::Time elapsed) {
     spritesMutex.lock();
     const int millis = elapsed.asMilliseconds();
@@ -305,16 +312,16 @@ void Game::updateWorld(sf::Time elapsed) {
     spritesMutex.unlock();
 }
 
-void Game::renderLoop() {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Render Loop"
-    INFO("Initializing renderLoop");
+void Game::renderLoop() {
+    INFO("Initializing render loop");
     sf::Clock frameClock;
     sf::Int32 lastFrameTime;
     sf::Int32 averageFrameTime;
     sf::Int32 totalFrameTime = 0;
     sf::Int32 frameCount = 0;
-    INFO("Starting renderLoop");
+    INFO("Starting render loop");
     while (window.isOpen()) {
         frameClock.restart();
         // blank the render target to black
@@ -327,14 +334,14 @@ void Game::renderLoop() {
         spritesMutex.unlock();
         // update the target
         screen.display();
-        lockWindow(false);
+        lockWindow();
         // blank the window to gray
         window.clear(sf::Color(128, 128, 128));
         // copy render target to window
         window.draw(sf::Sprite(screen.getTexture()));
         // update thw window
         window.display();
-        releaseWindow(false);
+        releaseWindow();
         lastFrameTime = frameClock.getElapsedTime().asMilliseconds();
         totalFrameTime += lastFrameTime;
         averageFrameTime = totalFrameTime / ++frameCount;
@@ -343,5 +350,5 @@ void Game::renderLoop() {
             DBUG("Average frame time: %d ms", averageFrameTime);
         }
     }
-    INFO("Stopped renderLoop");
+    INFO("Stopped render loop");
 }

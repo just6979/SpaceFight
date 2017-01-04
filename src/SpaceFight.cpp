@@ -7,14 +7,14 @@
 
 #include <Game.h>
 
-void dump_sys_info(const char* gameName) {
 #undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "System Info"
+#define LOGOG_CATEGORY  "Build Info"
+void show_build_info(const std::string& gameName) {
     const uint32_t majorVersion = 0;
     const uint32_t minorVersion = 4;
     const uint32_t revision = 1;
 
-    INFO("%s %d.%d.%d %s %s", gameName, majorVersion, minorVersion, revision, __DATE__, __TIME__);
+    INFO("%s %d.%d.%d %s %s", gameName.c_str(), majorVersion, minorVersion, revision, __DATE__, __TIME__);
 
     INFO("SFML %d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR);
 
@@ -41,9 +41,9 @@ void dump_sys_info(const char* gameName) {
 
 }
 
-int main(const int argc, const char** argv) {
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Main"
+int main(const int argc, const char** argv) {
     std::string gameName = "SpaceFight";
 
     LOGOG_INITIALIZE();
@@ -67,11 +67,17 @@ int main(const int argc, const char** argv) {
     out.SetFormatter(customFormat);
     outFile.SetFormatter(customFormat);
 
-    dump_sys_info(gameName.c_str());
+    INFO("Logging system initialized");
 
+    show_build_info(gameName);
+
+    INFO("Getting Game instance");
     Game& game = Game::getGame(argc, argv, gameName);
+    INFO("Checking Game readiness...");
     if (game.ready()) {
+        INFO("Starting Game!");
         game.run();
+        INFO("Game ended");
         return EXIT_SUCCESS;
     } else {
         ERR("Could not initialize Game, quitting.");
