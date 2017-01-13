@@ -46,11 +46,7 @@ file(GLOB SOURCE_FILES src/*.cpp)
 
 # add headers and source for inih
 INCLUDE_DIRECTORIES(contrib/inih)
-file(GLOB CONTRIB_FILES ${CONTRIB_FILES} contrib/inih/*.c contrib/inih/cpp/*.cpp)
-# skip any tests (may be removed soon if changes to inih are accepted)
-file(GLOB_RECURSE SKIP_FILES contrib/inih "*test*")
-message(STATUS ${SKIP_FILES})
-list(REMOVE_ITEM CONTRIB_FILES ${SKIP_FILES})
+file(GLOB INIH_FILES contrib/inih/*.c contrib/inih/cpp/*.cpp)
 
 # add headers and sources for logog
 INCLUDE_DIRECTORIES(contrib/logog/include)
@@ -59,6 +55,9 @@ INCLUDE_DIRECTORIES(contrib/logog/include)
 add_subdirectory(contrib/logog)
 # but turn off testing
 set(BUILD_TESTING off)
+
+# get all contrib files together
+set(CONTRIB_FILES ${INIH_FILES})
 
 # add output binary dependent on local headers & sources and contrib sources
 add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${CONTRIB_FILES})
