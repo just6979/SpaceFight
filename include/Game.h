@@ -15,8 +15,9 @@
 #endif
 #include <logog.hpp>
 
-#include <GamePlayer.h>
 #include <GameSprite.h>
+#include <GamePlayer.h>
+#include <GameEnemy.h>
 
 class Game {
 private:
@@ -81,4 +82,6 @@ private:
     std::vector<GameSprite*> sprites;
     // the player's ship sprite
     GamePlayer* player;
+    // computer opponent's ship sprite
+    GameEnemy* enemy;
 };

@@ -1,6 +1,5 @@
 #include <Game.h>
 
-
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY "Constructor"
 
@@ -20,13 +19,17 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
 
     createWindow(config.fullscreen);
 
-    INFO("Creating gameplay entities");
     spritesMutex.lock();
+    INFO("Creating gameplay entities");
     player = new GamePlayer;
     player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
-    spritesMutex.unlock();
     INFO("Created player");
+    enemy = new GameEnemy;
+    enemy->setPosition(renderWidth * 1 / 2, renderHeight * 1 / 4);
+    sprites.push_back(enemy);
+    INFO("Created enemy");
+    spritesMutex.unlock();
 
     isReady = true;
     INFO("Initialization Complete");
