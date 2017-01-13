@@ -5,6 +5,14 @@
 
 #include <unistd.h>
 
+#ifdef __cplusplus
+# include <lua.hpp>
+#else
+# include <lua.h>
+# include <lualib.h>
+# include <lauxlib.h>
+#endif
+
 #include <Game.h>
 
 #undef LOGOG_CATEGORY
@@ -39,13 +47,13 @@ void show_build_info(const std::string& gameName) {
 #ifdef MSC_VER
     INFO("Visual C++ %s", _MCS_VER);
 #endif
-
 }
 
 #undef LOGOG_CATEGORY
 #define LOGOG_CATEGORY  "Main"
 
 int main(const int argc, const char** argv) {
+    int status;
     std::string gameName = "SpaceFight";
 
     LOGOG_INITIALIZE();
@@ -73,6 +81,18 @@ int main(const int argc, const char** argv) {
 
     show_build_info(gameName);
 
+    INFO("Initializing Lua");
+    lua_State *lua = luaL_newstate();
+    if (lua == NULL) {
+        ERR("Unable to initialize Lua");
+        return EXIT_FAILURE;
+    }
+    // load the Lua standard library
+    luaL_openlibs(lua);
+    lua_getglobal(lua, "_VERSION");
+    const char* luaVersionString = lua_tostring(lua, -1);
+    INFO(luaVersionString);
+
     INFO("Getting Game instance");
     Game& game = Game::getGame(argc, argv, gameName);
     INFO("Checking Game readiness...");
@@ -80,9 +100,14 @@ int main(const int argc, const char** argv) {
         INFO("Starting Game!");
         game.run();
         INFO("Game ended");
-        return EXIT_SUCCESS;
+        status = EXIT_SUCCESS;
     } else {
         ERR("Could not initialize Game, quitting.");
-        return EXIT_FAILURE;
+        status = EXIT_FAILURE;
     }
+
+    INFO("Shutting down Lua");
+    lua_close(lua);
+
+    return status;
 }

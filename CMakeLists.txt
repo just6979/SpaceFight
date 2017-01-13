@@ -48,6 +48,13 @@ file(GLOB SOURCE_FILES src/*.cpp)
 INCLUDE_DIRECTORIES(contrib/inih)
 file(GLOB INIH_FILES contrib/inih/*.c contrib/inih/cpp/*.cpp)
 
+# add Lua headers and sources
+INCLUDE_DIRECTORIES(contrib/lua-5.3.3/src)
+file(GLOB LUA_FILES contrib/lua-5.3.3/src/*.c)
+# skip the lua command line programs
+set(SKIP_FILES ${CMAKE_CURRENT_LIST_DIR}/contrib/lua-5.3.3/src/lua.c ${CMAKE_CURRENT_LIST_DIR}/contrib/lua-5.3.3/src/luac.c)
+list(REMOVE_ITEM LUA_FILES ${SKIP_FILES})
+
 # add headers and sources for logog
 INCLUDE_DIRECTORIES(contrib/logog/include)
 #file(GLOB CONTRIB_FILES ${CONTRIB_FILES} contrib/logog/src/*.cpp)
@@ -57,7 +64,7 @@ add_subdirectory(contrib/logog)
 set(BUILD_TESTING off)
 
 # get all contrib files together
-set(CONTRIB_FILES ${INIH_FILES})
+set(CONTRIB_FILES ${INIH_FILES} ${LUA_FILES})
 
 # add output binary dependent on local headers & sources and contrib sources
 add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${CONTRIB_FILES})
