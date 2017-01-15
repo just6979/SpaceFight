@@ -9,6 +9,8 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
         INFO("Arg %d: %s", i, argv[i]);
     }
 
+    showBuildInfo();
+
     readConfig();
 
     INFO("Creating %dx%d render target", renderWidth, renderHeight);
@@ -78,6 +80,38 @@ void Game::run() {
     }
     INFO("Stopped event loop");
 }
+
+void Game::showBuildInfo() {
+    const uint32_t majorVersion = 0;
+    const uint32_t minorVersion = 4;
+    const uint32_t revision = 1;
+
+    INFO("%s %d.%d.%d %s %s", config.name.c_str(), majorVersion, minorVersion, revision, __DATE__, __TIME__);
+
+    INFO("SFML %d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR);
+
+// what compiler are we using? just because
+#ifdef __MINGW32__
+#ifdef __MINGW64__
+    INFO("MinGW-w64 %d.%d", __MINGW64_VERSION_MAJOR, __MINGW64_VERSION_MINOR);
+#else
+    INFO("MinGW %d.%d", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
+#endif
+#endif
+
+#ifdef __clang__
+    INFO("CLang %d.%d.%d", __clang_major__, __clang_minor__, __clang_patchlevel__);
+#endif
+
+#ifdef __GNUG__
+    INFO("GCC %s", __VERSION__);
+#endif
+
+#ifdef MSC_VER
+    INFO("Visual C++ %s", _MCS_VER);
+#endif
+}
+
 
 void Game::readConfig() {
     std::string iniFilename = config.name;
