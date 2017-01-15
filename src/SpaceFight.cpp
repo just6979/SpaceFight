@@ -7,37 +7,6 @@
 
 #include <Game.h>
 
-void show_build_info(const std::string& gameName) {
-    const uint32_t majorVersion = 0;
-    const uint32_t minorVersion = 4;
-    const uint32_t revision = 1;
-
-    INFO("%s %d.%d.%d %s %s", gameName.c_str(), majorVersion, minorVersion, revision, __DATE__, __TIME__);
-
-    INFO("SFML %d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR);
-
-// what compiler are we using? just because
-#ifdef __MINGW32__
-#ifdef __MINGW64__
-    INFO("MinGW-w64 %d.%d", __MINGW64_VERSION_MAJOR, __MINGW64_VERSION_MINOR);
-#else
-    INFO("MinGW %d.%d", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
-#endif
-#endif
-
-#ifdef __clang__
-    INFO("CLang %d.%d.%d", __clang_major__, __clang_minor__, __clang_patchlevel__);
-#endif
-
-#ifdef __GNUG__
-    INFO("GCC %s", __VERSION__);
-#endif
-
-#ifdef MSC_VER
-    INFO("Visual C++ %s", _MCS_VER);
-#endif
-}
-
 int main(const int argc, const char** argv) {
     int status;
     std::string gameName = "SpaceFight";
@@ -64,8 +33,6 @@ int main(const int argc, const char** argv) {
     outFile.SetFormatter(customFormat);
 
     INFO("Logging system initialized");
-
-    show_build_info(gameName);
 
     INFO("Getting Game instance");
     Game& game = Game::getGame(argc, argv, gameName);

@@ -38,6 +38,7 @@ public:
     bool ready();
     void run();
 private:
+    void showBuildInfo();
     // get the configuration from an INI file
     void readConfig();
     // [re]create the rendering window, possibly fullscreen
