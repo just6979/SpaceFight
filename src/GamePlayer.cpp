@@ -11,5 +11,4 @@ GamePlayer::GamePlayer() {
 }
 
 GamePlayer::~GamePlayer() {
-
 }

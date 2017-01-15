@@ -7,9 +7,6 @@
 
 #include <Game.h>
 
-#undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Build Info"
-
 void show_build_info(const std::string& gameName) {
     const uint32_t majorVersion = 0;
     const uint32_t minorVersion = 4;
@@ -40,9 +37,6 @@ void show_build_info(const std::string& gameName) {
     INFO("Visual C++ %s", _MCS_VER);
 #endif
 }
-
-#undef LOGOG_CATEGORY
-#define LOGOG_CATEGORY  "Main"
 
 int main(const int argc, const char** argv) {
     int status;

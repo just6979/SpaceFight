@@ -11,5 +11,4 @@ GameEnemy::GameEnemy() {
 }
 
 GameEnemy::~GameEnemy() {
-
 }
