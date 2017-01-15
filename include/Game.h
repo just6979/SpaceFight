@@ -15,6 +15,15 @@
 #endif
 #include <logog.hpp>
 
+#ifdef __cplusplus
+# include <lua.hpp>
+#else
+# include <lua.h>
+# include <lualib.h>
+# include <lauxlib.h>
+#endif
+
+
 #include <GameSprite.h>
 #include <GamePlayer.h>
 #include <GameEnemy.h>
@@ -22,9 +31,10 @@
 class Game {
 private:
     // private ctor for singleton
-    Game(const int argc, const char** argv, const std::string&);
+    Game(const int argc, const char** argv, const std::string& _name);
 public:
     static Game& getGame(const int argc, const char** argv, const std::string& _name = "");
+    ~Game();
     bool ready();
     void run();
 private:
@@ -49,6 +59,7 @@ private:
     // render everything, runs in separate thread
     void renderLoop();
 
+    lua_State* lua;
     bool isReady = false;
     struct {
         std::string name;

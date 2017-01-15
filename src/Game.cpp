@@ -12,6 +12,18 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
         INFO("Arg %d: %s", i, argv[i]);
     }
 
+    INFO("Initializing Lua");
+    lua_State* lua = luaL_newstate();
+    if (lua == NULL) {
+        ERR("Unable to initialize Lua");
+        exit(EXIT_FAILURE);
+    }
+    // load the Lua standard library
+    luaL_openlibs(lua);
+    lua_getglobal(lua, "_VERSION");
+    const char* luaVersionString = lua_tostring(lua, -1);
+    INFO(luaVersionString);
+
     readConfig();
 
     INFO("Creating %dx%d render target", renderWidth, renderHeight);
@@ -47,6 +59,14 @@ Game& Game::getGame(const int argc, const char** argv, const std::string& _name)
     }
     static Game* instance = new Game(argc, argv, name);
     return *instance;
+}
+
+#undef LOGOG_CATEGORY
+#define LOGOG_CATEGORY  "Destructor"
+
+Game::~Game() {
+    INFO("Shutting down Lua");
+    lua_close(lua);
 }
 
 #undef LOGOG_CATEGORY
