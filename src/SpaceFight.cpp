@@ -6,9 +6,11 @@
 #include <unistd.h>
 
 #include <Game.h>
-
+/*
+ * Simply initializes the Logog logging system and the Game singleton,
+ * then transfers control to the Game.run() event loop.
+ */
 int main(const int argc, const char** argv) {
-    int status;
     std::string gameName = "SpaceFight";
 
     LOGOG_INITIALIZE();
@@ -32,20 +34,22 @@ int main(const int argc, const char** argv) {
     out.SetFormatter(customFormat);
     outFile.SetFormatter(customFormat);
 
-    INFO("Logging system initialized");
+    INFO("Logging system initialized.");
 
-    INFO("Getting Game instance");
+    INFO("Getting Game instance.");
     Game& game = Game::getGame(argc, argv, gameName);
     INFO("Checking Game readiness...");
     if (game.ready()) {
         INFO("Starting Game!");
-        game.run();
-        INFO("Game ended");
-        status = EXIT_SUCCESS;
+        if (game.run()) {
+            INFO("Game ended successfully!");
+        } else {
+            ERR("Error running game, quitting.");
+            return EXIT_FAILURE;
+        }
     } else {
         ERR("Could not initialize Game, quitting.");
-        status = EXIT_FAILURE;
+        return EXIT_FAILURE;
     }
-
-    return status;
+    return EXIT_SUCCESS;
 }

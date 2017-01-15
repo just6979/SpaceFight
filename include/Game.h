@@ -36,7 +36,7 @@ public:
     static Game& getGame(const int argc, const char** argv, const std::string& _name = "");
     ~Game();
     bool ready();
-    void run();
+    bool run();
 private:
     void showBuildInfo();
     // get the configuration from an INI file

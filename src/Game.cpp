@@ -66,7 +66,7 @@ bool Game::ready() {
     return isReady;
 }
 
-void Game::run() {
+bool Game::run() {
     INFO("Creating Render thread");
     releaseWindow();
     sf::Thread renderThread(&Game::renderLoop, this);
@@ -96,6 +96,7 @@ void Game::run() {
         sf::sleep(sf::milliseconds(16));
     }
     INFO("Stopped event loop");
+    return true;
 }
 
 void Game::showBuildInfo() {
