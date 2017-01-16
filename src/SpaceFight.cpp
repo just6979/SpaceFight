@@ -18,7 +18,7 @@ int main(const int argc, const char** argv) {
     // remove existing log file
     unlink(logFilename.c_str());
     // create the log's  file sink
-    logog::LogFile outFile(logFilename.c_str());
+    logog::LogFile outFile(logFilename.c_str(), false);
     // create the log's console sink
     logog::Cout out;
     // create custom format
@@ -38,6 +38,7 @@ int main(const int argc, const char** argv) {
 
     INFO("Getting Game instance.");
     Game& game = Game::getGame(argc, argv, gameName);
+    return EXIT_SUCCESS;
     INFO("Checking Game readiness...");
     if (game.ready()) {
         INFO("Starting Game!");

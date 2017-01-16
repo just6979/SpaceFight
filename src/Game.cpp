@@ -30,6 +30,15 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
 
     createWindow(config.fullscreen);
 
+    LuaDataReader playerData(lua);
+    playerData.openFile("data/player.lua");
+    int res = playerData.read();
+    if (res != LuaDataReader::OK) {
+        const char* message = lua_tostring(lua, -1);
+        printf(message);
+        lua_pop(lua, 1);
+    }
+
     spritesMutex.lock();
     INFO("Creating gameplay entities");
     player = new GamePlayer;

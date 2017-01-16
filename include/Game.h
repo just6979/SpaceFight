@@ -23,10 +23,11 @@
 # include <lauxlib.h>
 #endif
 
-
 #include <GameSprite.h>
 #include <GamePlayer.h>
 #include <GameEnemy.h>
+
+#include <LuaDataReader.h>
 
 class Game {
 private:
