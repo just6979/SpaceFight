@@ -1,6 +1,6 @@
-#include <GameEnemy.h>
+#include <Enemy.h>
 
-GameEnemy::GameEnemy() {
+Enemy::Enemy() {
     size = 100;
     color = sf::Color::Red;
 
@@ -10,5 +10,5 @@ GameEnemy::GameEnemy() {
     setTexture(image);
 }
 
-GameEnemy::~GameEnemy() {
+Enemy::~Enemy() {
 }

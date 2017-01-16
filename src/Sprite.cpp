@@ -1,30 +1,30 @@
-#include <GameSprite.h>
+#include <Sprite.h>
 
-GameSprite::GameSprite() {
+Sprite::Sprite() {
 }
 
-GameSprite::GameSprite(const sf::Texture& _texture) {
+Sprite::Sprite(const sf::Texture& _texture) {
     setTexture(_texture);
 }
 
-GameSprite::GameSprite(const sf::Image& _image) {
+Sprite::Sprite(const sf::Image& _image) {
     setTexture(_image);
 }
 
-GameSprite::~GameSprite() {
+Sprite::~Sprite() {
 }
 
-void GameSprite::setTexture(const sf::Texture& _texture) {
+void Sprite::setTexture(const sf::Texture& _texture) {
     texture = _texture;
     setVertices();
 }
 
-void GameSprite::setTexture(const sf::Image& _image) {
+void Sprite::setTexture(const sf::Image& _image) {
     texture.loadFromImage(_image);
     setVertices();
 }
 
-void GameSprite::setVertices() {
+void Sprite::setVertices() {
     sf::Vector2u size = texture.getSize();
 
     setOrigin(size.x / 2, size.y / 2);
@@ -43,16 +43,16 @@ void GameSprite::setVertices() {
     vertices[3].texCoords = sf::Vector2f(0, size.y);
 }
 
-void GameSprite::update(const int elapsed) {
+void Sprite::update(const int elapsed) {
     move(dir * (speed * elapsed));
 }
 
-void GameSprite::moveBy(const float x, const float y) {
+void Sprite::moveBy(const float x, const float y) {
     dir.x = x;
     dir.y = y;
 }
 
-void GameSprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
     states.texture = &texture;
     target.draw(vertices, states);

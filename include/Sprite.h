@@ -11,12 +11,12 @@
 
 #include <logog.hpp>
 
-class GameSprite : public sf::Drawable, public sf::Transformable {
+class Sprite : public sf::Drawable, public sf::Transformable {
 public:
-    GameSprite();
-    GameSprite(const sf::Texture& _texture);
-    GameSprite(const sf::Image& _image);
-    ~GameSprite();
+    Sprite();
+    Sprite(const sf::Texture& _texture);
+    Sprite(const sf::Image& _image);
+    ~Sprite();
     void setTexture(const sf::Texture& _texture);
     void setTexture(const sf::Image& _image);
     void update(const int elapsed);

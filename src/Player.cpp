@@ -1,6 +1,6 @@
-#include <GamePlayer.h>
+#include <Player.h>
 
-GamePlayer::GamePlayer() {
+Player::Player() {
     size = 100;
     color = sf::Color::Blue;
 
@@ -10,5 +10,5 @@ GamePlayer::GamePlayer() {
     setTexture(image);
 }
 
-GamePlayer::~GamePlayer() {
+Player::~Player() {
 }

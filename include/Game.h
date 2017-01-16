@@ -15,14 +15,14 @@
 #endif
 #include <logog.hpp>
 
-#include <GameSprite.h>
-#include <GamePlayer.h>
-#include <GameEnemy.h>
+#include <Sprite.h>
+#include <Player.h>
+#include <Enemy.h>
 
 class Game {
 private:
     // private ctor for singleton
-    Game(const int argc, const char** argv, const std::string&);
+    Game(const int argc, const char** argv, const std::string& _name);
 public:
     static Game& getGame(const int argc, const char** argv, const std::string& _name = "");
     bool ready();
@@ -80,9 +80,9 @@ private:
     unsigned int renderWidth = 1280;
     unsigned int renderHeight = 720;
     // all normal sprites to draw
-    std::vector<GameSprite*> sprites;
+    std::vector<Sprite*> sprites;
     // the player's ship sprite
-    GamePlayer* player;
+    Player* player;
     // computer opponent's ship sprite
-    GameEnemy* enemy;
+    Enemy* enemy;
 };

@@ -20,11 +20,11 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
 
     spritesMutex.lock();
     INFO("Creating gameplay entities");
-    player = new GamePlayer;
+    player = new Player;
     player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
     INFO("Created player");
-    enemy = new GameEnemy;
+    enemy = new Enemy;
     enemy->setPosition(renderWidth * 1 / 2, renderHeight * 1 / 4);
     sprites.push_back(enemy);
     INFO("Created enemy");
