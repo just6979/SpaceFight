@@ -23,9 +23,9 @@
 # include <lauxlib.h>
 #endif
 
-#include <GameSprite.h>
-#include <GamePlayer.h>
-#include <GameEnemy.h>
+#include <Sprite.h>
+#include <Player.h>
+#include <Enemy.h>
 
 #include <LuaDataReader.h>
 
@@ -92,9 +92,9 @@ private:
     unsigned int renderWidth = 1280;
     unsigned int renderHeight = 720;
     // all normal sprites to draw
-    std::vector<GameSprite*> sprites;
+    std::vector<Sprite*> sprites;
     // the player's ship sprite
-    GamePlayer* player;
+    Player* player;
     // computer opponent's ship sprite
-    GameEnemy* enemy;
+    Enemy* enemy;
 };
