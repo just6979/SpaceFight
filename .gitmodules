@@ -4,3 +4,6 @@
 [submodule "contrib/logog"]
 	path = contrib/logog
 	url = git@github.com:johnwbyrd/logog.git
+[submodule "contrib/LuaDist"]
+	path = contrib/LuaDist
+	url = https://github.com/LuaDist/lua.git
