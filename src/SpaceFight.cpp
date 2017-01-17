@@ -38,7 +38,6 @@ int main(const int argc, const char** argv) {
 
     INFO("Getting Game instance.");
     Game& game = Game::getGame(argc, argv, gameName);
-    return EXIT_SUCCESS;
     INFO("Checking Game readiness...");
     if (game.ready()) {
         INFO("Starting Game!");
