@@ -4,6 +4,8 @@ project("SpaceFight")
 
 set(EXECUTABLE_NAME ${PROJECT_NAME})
 
+## compiler options
+
 # show all command lines in CLion
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -25,11 +27,6 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 
-# local def to hide debugging code for release builds
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    ADD_DEFINITIONS(-DDO_DEBUG)
-endif (CMAKE_BUILD_TYPE STREQUAL "Debug")
-
 # use ccache if found
 find_program(CCACHE_FOUND ccache)
 if (CCACHE_FOUND)
@@ -37,30 +34,34 @@ if (CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif (CCACHE_FOUND)
 
-# add local headers
-INCLUDE_DIRECTORIES(include)
-file(GLOB HEADER_FILES include/*.h)
+## extra options
 
-# add all source files
-file(GLOB SOURCE_FILES src/*.cpp)
+# local #define to hide debugging code for release builds
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    ADD_DEFINITIONS(-DDO_DEBUG)
+endif (CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+## local libraries that are compiled directly
 
 # add headers and source for inih
 INCLUDE_DIRECTORIES(contrib/inih)
 file(GLOB INIH_FILES contrib/inih/*.c contrib/inih/cpp/*.cpp)
+
+# get all local library files together
+set(CONTRIB_FILES ${INIH_FILES})
+
+## local libraries with CMake support
 
 # add headers and sources for logog
 INCLUDE_DIRECTORIES(contrib/logog/include)
 #file(GLOB CONTRIB_FILES ${CONTRIB_FILES} contrib/logog/src/*.cpp)
 # include the logog CMake project directly
 add_subdirectory(contrib/logog)
-# but turn off testing
+
+# turn off testing (for now)
 set(BUILD_TESTING off)
 
-# get all contrib files together
-set(CONTRIB_FILES ${INIH_FILES})
-
-# add output binary dependent on local headers & sources and contrib sources
-add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${CONTRIB_FILES})
+## external libs with CMake support
 
 # set static sfml libs on Windows (less DLL hell)
 if (WIN32)
@@ -72,6 +73,19 @@ find_package(SFML 2 REQUIRED graphics window system)
 if (SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
 endif ()
+
+## my code
+
+# add local headers
+INCLUDE_DIRECTORIES(include)
+file(GLOB HEADER_FILES include/*.h)
+# add all source files
+file(GLOB SOURCE_FILES src/*.cpp)
+
+## build it
+
+# add output binary dependent on local headers & sources and contrib sources
+add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${CONTRIB_FILES})
 
 # link with local objects and SFML libs & dependencies
 target_link_libraries(${EXECUTABLE_NAME} logog ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
