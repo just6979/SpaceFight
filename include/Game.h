@@ -78,9 +78,9 @@ private:
     unsigned int renderWidth = 1280;
     unsigned int renderHeight = 720;
     // all normal sprites to draw
-    std::vector<Sprite*> sprites;
+    std::vector<std::shared_ptr<Sprite>> sprites;
     // the player's ship sprite
-    Player* player;
+    std::shared_ptr<Player> player;
     // computer opponent's ship sprite
-    Enemy* enemy;
+    std::shared_ptr<Enemy> enemy;
 };
