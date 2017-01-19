@@ -58,7 +58,12 @@ INCLUDE_DIRECTORIES(contrib/logog/include)
 # include the logog CMake project directly
 add_subdirectory(contrib/logog)
 
-# turn off testing (for now)
+# add headers and sources for yaml-cpp
+INCLUDE_DIRECTORIES(contrib/yaml-cpp/include)
+# include the CMake project directly
+add_subdirectory(contrib/yaml-cpp)
+
+# but turn off testing
 set(BUILD_TESTING off)
 
 ## external libs with CMake support
@@ -88,4 +93,4 @@ file(GLOB SOURCE_FILES src/*.cpp)
 add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${CONTRIB_FILES})
 
 # link with local objects and SFML libs & dependencies
-target_link_libraries(${EXECUTABLE_NAME} logog ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+target_link_libraries(${EXECUTABLE_NAME} logog yaml-cpp ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})

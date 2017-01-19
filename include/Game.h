@@ -15,6 +15,8 @@
 #endif
 #include <logog.hpp>
 
+#include <yaml-cpp/yaml.h>
+
 #include <Sprite.h>
 #include <Player.h>
 #include <Enemy.h>

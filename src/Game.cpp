@@ -18,6 +18,18 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
 
     createWindow(config.fullscreen);
 
+    std::string playerConfigFileName = "data/player.yaml";
+    INFO("Loading %s", playerConfigFileName.c_str());
+    try {
+        YAML::Node playerConfig = YAML::LoadFile(playerConfigFileName);
+        INFO("Player type: %s", playerConfig["type"].as<std::string>().c_str());
+        INFO("Player size: %d", playerConfig["size"].as<int>());
+        INFO("Player verts: %s", playerConfig["verts"].as<std::string>().c_str());
+        INFO("Player colors: %s", playerConfig["colors"].as<std::string>().c_str());
+    } catch (YAML::Exception e) {
+        ERR("YAML Exception: %s", e.msg.c_str());
+    }
+
     spritesMutex.lock();
     INFO("Creating gameplay entities");
     player = new Player;
