@@ -1,9 +1,9 @@
 [submodule "contrib/inih"]
 	path = contrib/inih
-	url = git@github.com:benhoyt/inih.git
+	url = https://github.com/benhoyt/inih.git
 [submodule "contrib/logog"]
 	path = contrib/logog
-	url = git@github.com:johnwbyrd/logog.git
+	url = https://github.com/johnwbyrd/logog.git
 [submodule "contrib/LuaDist"]
 	path = contrib/LuaDist
 	url = https://github.com/LuaDist/lua.git
