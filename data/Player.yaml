@@ -1,4 +1,4 @@
-type: "Actor"
+type: "Sprite"
 size: 100
 verts:
  -[-1, -1]
