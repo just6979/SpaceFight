@@ -43,25 +43,18 @@ endif (CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 ## local libraries that are compiled directly
 
-# add headers and source for inih
-INCLUDE_DIRECTORIES(contrib/inih)
-file(GLOB INIH_FILES contrib/inih/*.c contrib/inih/cpp/*.cpp)
+# we have none currently
 
 # get all local library files together
-set(CONTRIB_FILES ${INIH_FILES})
+#set(CONTRIB_FILES)
 
 ## local libraries with CMake support
 
-# add headers and sources for logog
-INCLUDE_DIRECTORIES(contrib/logog/include)
-#file(GLOB CONTRIB_FILES ${CONTRIB_FILES} contrib/logog/src/*.cpp)
-# include the logog CMake project directly
 add_subdirectory(contrib/logog)
+INCLUDE_DIRECTORIES(contrib/logog/include)
 
-# add headers and sources for yaml-cpp
-INCLUDE_DIRECTORIES(contrib/yaml-cpp/include)
-# include the CMake project directly
 add_subdirectory(contrib/yaml-cpp)
+INCLUDE_DIRECTORIES(contrib/yaml-cpp/include)
 
 # but turn off testing
 set(BUILD_TESTING off)

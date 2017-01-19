@@ -127,22 +127,35 @@ void Game::showBuildInfo() {
 
 
 void Game::readConfig() {
-    std::string iniFilename = config.name;
-    iniFilename.append(".ini");
-
-    INIReader reader(iniFilename);
-    INFO("Reading config from '%s'", iniFilename.c_str());
-    if (reader.ParseError() < 0) {
-        ERR("Can't load '%s', using defaults", iniFilename.c_str());
-    } else {
+    std::string configFilename = "config.yaml";
+    INFO("Reading config from '%s'", configFilename.c_str());
+    try {
+        YAML::Node yamlConfig = YAML::LoadFile(configFilename);
         // 1200x675 is a 16:9 window that fits inside a 1366x768 screen on most systems
-        config.width = (unsigned int) std::abs(reader.GetInteger("game", "width", (long) config.width));
-        config.height = (unsigned int) std::abs(reader.GetInteger("game", "height", (long) config.height));
-        config.fullscreen = reader.GetBoolean("game", "fullscreen", config.fullscreen);
-        config.useDesktopSize = reader.GetBoolean("game", "useDesktopSize", config.useDesktopSize);
-        config.vsync = reader.GetBoolean("game", "vsync", config.useDesktopSize);
-        config.deadZone = static_cast<float>(reader.GetReal("game", "deadZone", config.deadZone));
-        config.keySpeed = static_cast<float>(reader.GetReal("game", "keySpeed", config.keySpeed));
+        if (yamlConfig["width"]) {
+            config.width = yamlConfig["width"].as<unsigned int>();
+        }
+        if (yamlConfig["height"]) {
+            config.height = yamlConfig["height"].as<unsigned int>();
+        }
+        if (yamlConfig["fullscreen"]) {
+            config.fullscreen = yamlConfig["fullscreen"].as<bool>();
+        }
+        if (yamlConfig["useDesktopSize"]) {
+            config.useDesktopSize = yamlConfig["useDesktopSize"].as<bool>();
+        }
+        if (yamlConfig["vsync"]) {
+            config.vsync = yamlConfig["vsync"].as<bool>();
+        }
+        if (yamlConfig["deadzone"]) {
+            config.deadZone = yamlConfig["deadzone"].as<float>();
+        }
+        if (yamlConfig["keySpeed"]) {
+            config.keySpeed = yamlConfig["keySpeed"].as<float>();
+        }
+    } catch (YAML::Exception e) {
+        ERR("YAML Exception: %s", e.msg.c_str());
+        ERR("Can't load '%s', using sane defaults", configFilename.c_str());
     }
     INFO("Current settings:");
     INFO("\twidth = %d", config.width);

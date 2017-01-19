@@ -5,9 +5,6 @@
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 
-#include <ini.h>
-#include <cpp/INIReader.h>
-
 #ifdef DO_DEBUG
 #define LOGOG_LEVEL LOGOG_LEVEL_ALL
 #else
@@ -62,10 +59,9 @@ private:
         bool fullscreen = false;
         // but do use desktop size when going fullscreen
         bool useDesktopSize = true;
+        // obvi, use vsync
         bool vsync = true;
-
-        // show the console
-        bool showConsole = false;
+        // controller/keyboard settings
         float deadZone = 15.0;
         float keySpeed = 75.0;
     } config;

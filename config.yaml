@@ -1,0 +1,6 @@
+# defaults that show the whole window, even on a 1366x768 laptop screen
+width: 1200
+height: 675
+fullscreen: false
+useDesktopSize: true
+vsync: true
