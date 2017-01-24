@@ -15,8 +15,6 @@
 #include <yaml-cpp/yaml.h>
 
 #include <Sprite.h>
-#include <Player.h>
-#include <Enemy.h>
 
 class Game {
 private:
@@ -80,7 +78,7 @@ private:
     // all normal sprites to draw
     std::vector<std::shared_ptr<Sprite>> sprites;
     // the player's ship sprite
-    std::shared_ptr<Player> player;
+    std::shared_ptr<Sprite> player;
     // computer opponent's ship sprite
-    std::shared_ptr<Enemy> enemy;
+    std::shared_ptr<Sprite> enemy;
 };

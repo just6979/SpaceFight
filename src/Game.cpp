@@ -20,12 +20,11 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
 
     spritesMutex.lock();
     INFO("Creating gameplay entities");
-    auto yamlPlayer = std::make_shared<Sprite>("data/player.yaml");
-    player = std::make_shared<Player>();
+    player = std::make_shared<Sprite>("data/player.yaml");
     player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
     INFO("Created player");
-    enemy = std::make_shared<Enemy>();
+    enemy = std::make_shared<Sprite>("data/enemy.yaml");
     enemy->setPosition(renderWidth * 1 / 2, renderHeight * 1 / 4);
     sprites.push_back(enemy);
     INFO("Created enemy");

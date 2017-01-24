@@ -31,12 +31,15 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             int size = dataFile["size"].as<int>(0);
             INFO("Size: %d", size);
 
+            vertices.setPrimitiveType(sf::Quads);
+
             YAML::Node verts = dataFile["verts"];
             if (verts) {
                 INFO("Verts [%d]", verts.size());
                 for (int i = 0; i < verts.size(); i++) {
-                    float x = verts[i][0].as<float>();
-                    float y = verts[i][1].as<float>();
+                    float x = verts[i][0].as<float>() * size / 2;
+                    float y = verts[i][1].as<float>() * size / 2;
+                    vertices.append(sf::Vertex(sf::Vector2f(x, y)));
                     INFO("(%f, %f)", x, y);
                 }
             }
@@ -45,10 +48,14 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             if (colors) {
                 INFO("Colors [%d]", colors.size());
                 for (int i = 0; i < colors.size(); i++) {
-                    float x = colors[i][0].as<float>();
-                    float y = colors[i][1].as<float>();
-                    INFO("(%f, %f)", x, y);
+                    YAML::Node color = colors[i];
+                    auto r = sf::Uint8(color[0].as<int>());
+                    auto g = sf::Uint8(color[1].as<int>());
+                    auto b = sf::Uint8(color[2].as<int>());
+                    vertices[i].color = sf::Color(r, g, b);
+                    INFO("(%d, %d, %d)", r, g, b);
                 }
+                texture = NULL;
             }
         }
     } catch (YAML::Exception e) {
@@ -59,17 +66,18 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
 }
 
 void Sprite::setTexture(const sf::Texture& _texture) {
-    texture = _texture;
+    texture = std::make_shared<sf::Texture>(_texture);
     setVertices();
 }
 
 void Sprite::setTexture(const sf::Image& _image) {
-    texture.loadFromImage(_image);
+    texture = std::make_shared<sf::Texture>();
+    texture->loadFromImage(_image);
     setVertices();
 }
 
 void Sprite::setVertices() {
-    sf::Vector2u size = texture.getSize();
+    sf::Vector2u size = texture->getSize();
 
     setOrigin(size.x / 2, size.y / 2);
 
@@ -98,6 +106,8 @@ void Sprite::moveBy(const float x, const float y) {
 
 void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
-    states.texture = &texture;
+    if (texture) {
+        states.texture = texture.get();
+    }
     target.draw(vertices, states);
 }
