@@ -66,8 +66,7 @@ bool Game::run() {
     while (window.isOpen()) {
         elapsedTime = gameClock.restart();
         processEvents();
-        updateControls();
-        updateWorld(elapsedTime);
+        update(elapsedTime);
         lastUpdateTime = gameClock.getElapsedTime().asMilliseconds();
         totalUpdateTime += lastUpdateTime;
         averageUpdateTime = totalUpdateTime / ++updateCount;
@@ -298,9 +297,10 @@ void Game::handleKeyRelease(const sf::Event& event) {
     }
 }
 
-void Game::updateControls() {
+void Game::update(sf::Time elapsed) {
     float x, y = 0;
 
+    // get current state of controls
     float joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
     float joy0_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
     x = std::fabs(joy0_X) < config.deadZone ? 0 : joy0_X;
@@ -318,18 +318,15 @@ void Game::updateControls() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         x += -config.keySpeed;
     }
+
     spritesMutex.lock();
     player->moveBy(x, y);
-    spritesMutex.unlock();
 
-}
-
-void Game::updateWorld(sf::Time elapsed) {
-    spritesMutex.lock();
     const int millis = elapsed.asMilliseconds();
     for (auto sprite : sprites) {
         sprite->update(millis);
     }
+
     spritesMutex.unlock();
 }
 

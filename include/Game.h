@@ -42,8 +42,7 @@ private:
     void handleKeyPress(const sf::Event& event);
     void handleKeyRelease(const sf::Event& event);
     // update the simulation
-    void updateControls();
-    void updateWorld(sf::Time elapsed);
+    void update(sf::Time elapsed);
     // render everything, runs in separate thread
     void renderLoop();
 
