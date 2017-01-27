@@ -1,6 +1,0 @@
-[submodule "contrib/logog"]
-	path = contrib/logog
-	url = https://github.com/johnwbyrd/logog.git
-[submodule "contrib/yaml-cpp"]
-	path = contrib/yaml-cpp
-	url = https://github.com/jbeder/yaml-cpp.git

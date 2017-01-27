@@ -9,7 +9,7 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-#include <logog.hpp>
+#include <logog/logog.hpp>
 
 #include <yaml-cpp/yaml.h>
 

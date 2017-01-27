@@ -10,7 +10,7 @@
 #else
 #define LOGOG_LEVEL LOGOG_LEVEL_INFO
 #endif
-#include <logog.hpp>
+#include <logog/logog.hpp>
 
 #include <yaml-cpp/yaml.h>
 
