@@ -56,26 +56,29 @@ bool Game::run() {
     renderThread.launch();
 
     INFO("Initializing event loop");
+    sf::Int32 updateHz = 60;
+    sf::Int32 updateWaitTime = 1'000'000 / updateHz;
     sf::Clock gameClock;
     sf::Time elapsedTime;
-    sf::Int32 lastUpdateTime;
-    sf::Int32 totalUpdateTime = 0;
-    sf::Int32 averageUpdateTime;
+    sf::Time lastUpdateTime;
+    sf::Int64 totalUpdateTime = 0;
+    sf::Int64 averageUpdateTime;
     sf::Int32 updateCount = 0;
     INFO("Starting event loop");
     while (window.isOpen()) {
         elapsedTime = gameClock.restart();
         processEvents();
         update(elapsedTime);
-        lastUpdateTime = gameClock.getElapsedTime().asMilliseconds();
-        totalUpdateTime += lastUpdateTime;
+        //compute
+        lastUpdateTime = gameClock.getElapsedTime();
+        totalUpdateTime += lastUpdateTime.asMilliseconds();
         averageUpdateTime = totalUpdateTime / ++updateCount;
-        // log the average time per update every seconds
+        // log the average time per update every 1 seconds
         if (updateCount % (60 * 1) == 0) {
             DBUG("Average update time: %d ms", averageUpdateTime);
         }
-        // update at approximately 60 Hz
-        sf::sleep(sf::milliseconds(16));
+        // update at approximately 60 Hz (16666us minus time taken by last update(
+        sf::sleep(sf::microseconds(updateWaitTime - lastUpdateTime.asMicroseconds()));
     }
     INFO("Stopped event loop");
     return true;
