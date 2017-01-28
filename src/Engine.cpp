@@ -1,4 +1,4 @@
-#include <Game.h>
+#include <Engine.h>
 
 Game::Game(const int argc, const char** argv, const std::string& _name) {
     config.name = _name;
@@ -11,6 +11,8 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
 
     showBuildInfo();
 
+    data_dir = _name;
+
     readConfig();
 
     INFO("Creating %dx%d render target", renderWidth, renderHeight);
@@ -20,11 +22,11 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
 
     spritesMutex.lock();
     INFO("Creating gameplay entities");
-    player = std::make_shared<Sprite>("data/player.yaml");
+    player = std::make_shared<Sprite>(data_dir + "/player.yaml");
     player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
     INFO("Created player");
-    enemy = std::make_shared<Sprite>("data/enemy.yaml");
+    enemy = std::make_shared<Sprite>(data_dir + "/enemy.yaml");
     enemy->setPosition(renderWidth * 1 / 2, renderHeight * 1 / 4);
     sprites.push_back(enemy);
     INFO("Created enemy");
@@ -37,7 +39,7 @@ Game::Game(const int argc, const char** argv, const std::string& _name) {
 Game& Game::getGame(const int argc, const char** argv, const std::string& _name) {
     std::string name;
     if (_name.length() == 0) {
-        name = "Game";
+        name = "game";
     } else {
         name = _name;
     }
@@ -117,7 +119,7 @@ void Game::showBuildInfo() {
 
 
 void Game::readConfig() {
-    std::string configFilename = "data/config.yaml";
+    std::string configFilename = data_dir + "/config.yaml";
     INFO("Reading config from '%s'", configFilename.c_str());
     try {
         YAML::Node yamlConfig = YAML::LoadFile(configFilename);

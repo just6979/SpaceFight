@@ -5,14 +5,26 @@
 
 #include <unistd.h>
 
-#include <Game.h>
+#ifdef DO_DEBUG
+#define LOGOG_LEVEL LOGOG_LEVEL_ALL
+#else
+#define LOGOG_LEVEL LOGOG_LEVEL_INFO
+#endif
+#include <logog/logog.hpp>
+
+#include <Engine.h>
+
 /*
  * Simply initializes the Logog logging system and the Game singleton,
  * then transfers control to the Game.run() event loop.
  */
 int main(const int argc, const char** argv) {
-    std::string gameName = "SpaceFight";
-
+    std::string gameName;
+    if (argc >= 1 && argv[1] != NULL) {
+        gameName = std::string(argv[1]);
+    } else {
+        gameName = "game";
+    }
     LOGOG_INITIALIZE();
     const std::string logFilename = gameName + ".log";
     // remove existing log file

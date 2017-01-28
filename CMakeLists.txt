@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.3)
 
-project("SpaceFight")
+project("JustAGame")
 
 set(EXECUTABLE_NAME ${PROJECT_NAME})
 

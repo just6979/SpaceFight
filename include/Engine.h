@@ -5,13 +5,7 @@
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 
-#ifdef DO_DEBUG
-#define LOGOG_LEVEL LOGOG_LEVEL_ALL
-#else
-#define LOGOG_LEVEL LOGOG_LEVEL_INFO
-#endif
 #include <logog/logog.hpp>
-
 #include <yaml-cpp/yaml.h>
 
 #include <Sprite.h>
@@ -47,6 +41,7 @@ private:
     void renderLoop();
 
     bool isReady = false;
+    std::string data_dir;
     struct {
         std::string name;
         // this size fits in most screens in windowed mode

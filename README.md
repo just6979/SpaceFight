@@ -12,14 +12,15 @@ Now using modern technology:
 
 ## Libraries
 
-### Compiled:
-- [logog](http://www.logog.org/)
-- [inih](https://github.com/benhoyt/inih)
-
 ### Linked:
-- [SFML](http://www.sfml-dev.org/)
+
+Traditionally
+- [logog](https://github.com/johnwbyrd/logog)
+
+Via CMake modules
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+- [SFML](https://github.com/SFML/SFML)
 
 ## Notes
 
-- Don't forget to do git submodule update after cloning.
-- Don't forget to use CMake option "-DSFML_ROOT=<sfml-dev library dir>" with a dev library to match your compiler.
+See CMakeLists.txt for a couple *_ROOT variables to point to the above libraries.
