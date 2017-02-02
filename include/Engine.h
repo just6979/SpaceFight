@@ -40,6 +40,7 @@ private:
     // render everything, runs in separate thread
     void renderLoop();
 
+    sf::Thread renderThread;
     bool isReady = false;
     std::string game;
     std::string data_dir;

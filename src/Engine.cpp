@@ -1,6 +1,7 @@
 #include <Engine.h>
 
 Game::Game(const int argc, const char** argv, const std::string& _name) :
+        renderThread(&Game::renderLoop, this),
         game(_name)
 {
     INFO("Initializing new Game: %s", game.c_str());
@@ -55,7 +56,6 @@ bool Game::ready() {
 bool Game::run() {
     INFO("Creating Render thread");
     releaseWindow();
-    sf::Thread renderThread(&Game::renderLoop, this);
     renderThread.launch();
 
     INFO("Initializing event loop");
@@ -84,6 +84,7 @@ bool Game::run() {
         sf::sleep(sf::microseconds(updateWaitTime - lastUpdateTime.asMicroseconds()));
     }
     INFO("Stopped event loop");
+    renderThread.wait();
     return true;
 }
 
@@ -374,5 +375,7 @@ void Game::renderLoop() {
             DBUG("Average frame time: %d ms", averageFrameTime);
         }
     }
+    spritesMutex.unlock();
+    releaseWindow();
     INFO("Stopped render loop");
 }
