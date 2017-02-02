@@ -1,15 +1,16 @@
 #include <Engine.h>
 
-Game::Game(const int argc, const char** argv, const std::string& _name) {
-    config.name = _name;
-    INFO("Initializing new Game: %s", config.name.c_str());
+Game::Game(const int argc, const char** argv, const std::string& _name) :
+        game(_name)
+{
+    INFO("Initializing new Game: %s", game.c_str());
 
     INFO("Executable: %s", argv[0]);
     for (int i = 1; i < argc; i++) {
         INFO("Arg %d: %s", i, argv[i]);
     }
 
-    showBuildInfo();
+    showBuildInfo(argv[0]);
 
     data_dir = _name;
 
@@ -86,12 +87,12 @@ bool Game::run() {
     return true;
 }
 
-void Game::showBuildInfo() {
+void Game::showBuildInfo(const char* name) {
     const uint32_t majorVersion = 0;
     const uint32_t minorVersion = 4;
     const uint32_t revision = 1;
 
-    INFO("%s %d.%d.%d %s %s", config.name.c_str(), majorVersion, minorVersion, revision, __DATE__, __TIME__);
+    INFO("%s %d.%d.%d %s %s", name, majorVersion, minorVersion, revision, __DATE__, __TIME__);
 
     INFO("SFML %d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR);
 
@@ -123,6 +124,7 @@ void Game::readConfig() {
     INFO("Reading config from '%s'", configFilename.c_str());
     try {
         YAML::Node yamlConfig = YAML::LoadFile(configFilename);
+        config.name = yamlConfig["name"].as<std::string>(game);
         config.width = yamlConfig["width"].as<uint32_t>(config.width);
         config.height = yamlConfig["height"].as<uint32_t>(config.height);
         config.fullscreen = yamlConfig["fullscreen"].as<bool>(config.fullscreen);
@@ -135,6 +137,7 @@ void Game::readConfig() {
         ERR("Can't load '%s', using sane defaults", configFilename.c_str());
     }
     INFO("Current settings:");
+    INFO("\tname = %s", config.name.c_str());
     INFO("\twidth = %d", config.width);
     INFO("\theight = %d", config.height);
     INFO("\tfullscreen = %s", (config.fullscreen ? "true" : "false"));
@@ -172,7 +175,7 @@ void Game::createWindow(bool shouldFullscreen) {
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
     INFO("Creating the main window");
-    window.create(mode, config.name, flags);
+    window.create(mode, game, flags);
     if (!window.isOpen()) {
         ERR("Could not create main window");
         exit(EXIT_FAILURE);

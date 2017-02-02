@@ -19,7 +19,7 @@ public:
     bool ready();
     bool run();
 private:
-    void showBuildInfo();
+    void showBuildInfo(const char* name);
     // get the configuration from an INI file
     void readConfig();
     // [re]create the rendering window, possibly fullscreen
@@ -41,6 +41,7 @@ private:
     void renderLoop();
 
     bool isReady = false;
+    std::string game;
     std::string data_dir;
     struct {
         std::string name;
