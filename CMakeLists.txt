@@ -55,7 +55,7 @@ set(EXTERNAL_LIBS logog ${EXTERNAL_LIBS})
 ## root dir for these is set in CLion CMake settings because it's system dependent
 
 # yaml-cpp
-set(CMAKE_MODULE_PATH "${YAML_CPP_ROOT}/CMake" ${CMAKE_MODULE_PATH})
+set(CMAKE_PREFIX_PATH "${YAML_CPP_ROOT}/CMake" ${CMAKE_PREFIX_PATH})
 find_package(yaml-cpp 0.5 REQUIRED CONFIG)
 if (yaml-cpp_FOUND)
     include_directories(${YAML_CPP_INCLUDE_DIR})
