@@ -75,8 +75,9 @@ bool Engine::run() {
         sf::sleep(sf::microseconds(updateWaitTime - lastUpdateTime.asMicroseconds()));
     }
     INFO("Stopped event loop");
-    INFO("Joining render thread");
     renderThread->join();
+    INFO("Closing window");
+    window.close();
     INFO("Game of '%s' ended successfully", config.name.c_str());
     return true;
 }
@@ -369,7 +370,6 @@ void Engine::renderLoop() {
         }
     }
     spritesMutex.unlock();
-    window.close();
     releaseWindow();
     INFO("Stopped render loop");
 }
