@@ -19,6 +19,48 @@
 
 #include <Engine.h>
 
+// keep logog vars in file scope, we manage them completely here
+static logog::LogFile* outFile;
+static logog::Cout* out;
+static logog::Formatter* formatter;
+
+void logging_setup(const std::string& gameName) {
+    LOGOG_INITIALIZE();
+
+    // create custom format
+    class FormatterCustom : public logog::FormatterGCC {
+        virtual TOPIC_FLAGS GetTopicFlags(const logog::Topic& topic) {
+            return (logog::Formatter::GetTopicFlags(topic) &
+                    ~(TOPIC_FILE_NAME_FLAG | TOPIC_LINE_NUMBER_FLAG));
+        }
+    };
+
+    const std::__cxx11::string logFilename = gameName + '/' + gameName + ".log";
+
+    // remove existing log file
+    unlink(logFilename.c_str());
+
+    outFile = new logog::LogFile(logFilename.c_str());
+    out = new logog::Cout;
+    formatter = new FormatterCustom;
+    // use custom format
+    formatter->SetShowTimeOfDay(true);
+    outFile->SetFormatter(*formatter);
+    out->SetFormatter(*formatter);
+
+    INFO("Logging system initialized.");
+}
+
+void logging_shutdown() {
+    INFO("Logging system shutting down.");
+
+    delete(outFile);
+    delete(out);
+    delete(formatter);
+
+    LOGOG_SHUTDOWN();
+}
+
 /*
  * Simply initializes the Logog logging system, and the Engine,
  * then transfers control to the Engine's event loop.
@@ -32,28 +74,9 @@ int main(const int argc, const char** argv) {
         gameName = "game";
     }
 
-    LOGOG_INITIALIZE();
-    const std::string logFilename = gameName + '/' + gameName + ".log";
-    // remove existing log file
-    unlink(logFilename.c_str());
-    // create the log's  file sink
-    logog::LogFile outFile(logFilename.c_str());
-    // create the log's console sink
-    logog::Cout out;
-    // create custom format
-    class FormatterCustom : public logog::FormatterGCC {
-        virtual TOPIC_FLAGS GetTopicFlags(const logog::Topic& topic) {
-            return (logog::Formatter::GetTopicFlags(topic) &
-                    ~(TOPIC_FILE_NAME_FLAG | TOPIC_LINE_NUMBER_FLAG));
-        }
-    };
-    FormatterCustom customFormat;
-    customFormat.SetShowTimeOfDay(true);
-    // use custom format
-    out.SetFormatter(customFormat);
-    outFile.SetFormatter(customFormat);
-    INFO("Logging system initialized.");
+    logging_setup(gameName);
 
+    INFO("Start");
     Engine theGame(argc, argv, gameName);
     if (theGame.ready()) {
         if (theGame.run()) {
@@ -66,5 +89,7 @@ int main(const int argc, const char** argv) {
         return EXIT_FAILURE;
     }
     INFO("Done");
+
+    logging_shutdown();
     return EXIT_SUCCESS;
 }
