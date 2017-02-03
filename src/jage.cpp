@@ -1,6 +1,11 @@
 /*
-    Copyright 2016 Justin White
-    See included LICENSE file for details.
+ * Justin's Awesome Game Engine
+ * or *
+ * Just Another Game Engine
+ *
+ * Copyright 2016 Justin White
+ *
+ * See included LICENSE file for distribution and reuse.
 */
 
 #include <unistd.h>
