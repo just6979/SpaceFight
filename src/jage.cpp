@@ -24,15 +24,16 @@
  * then transfers control to the Engine's event loop.
  */
 int main(const int argc, const char** argv) {
+    // check if a game directory is specified on the command line
     std::string gameName;
-    if (argc > 1 && argv[1] != NULL) {
+    if (argc > 1 and argv[1] != NULL) {
         gameName = std::string(argv[1]);
     } else {
         gameName = "game";
     }
 
     LOGOG_INITIALIZE();
-    const std::string logFilename = gameName + ".log";
+    const std::string logFilename = gameName + '/' + gameName + ".log";
     // remove existing log file
     unlink(logFilename.c_str());
     // create the log's  file sink
@@ -51,7 +52,6 @@ int main(const int argc, const char** argv) {
     // use custom format
     out.SetFormatter(customFormat);
     outFile.SetFormatter(customFormat);
-
     INFO("Logging system initialized.");
 
     Engine theGame(argc, argv, gameName);
@@ -65,5 +65,6 @@ int main(const int argc, const char** argv) {
         ERR("Could not initialize Engine, quitting.");
         return EXIT_FAILURE;
     }
+    INFO("Done");
     return EXIT_SUCCESS;
 }
