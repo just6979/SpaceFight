@@ -16,9 +16,19 @@ class Engine {
 public:
     Engine(const int argc, const char** argv, const std::string& _name = "game");
     bool ready();
+    // main event loop
     bool run();
 private:
-    void showBuildInfo(const char* name);
+    // event handlers
+    void processEvents();
+    void handleKeyPress(const sf::Event& event);
+    void handleKeyRelease(const sf::Event& event);
+    // update the simulation
+    void update(sf::Time elapsed);
+    // render everything, runs in separate thread
+    void renderLoop();
+    // log some build & system info
+    void dumpSystemInfo(const char* name);
     // get the configuration from an INI file
     void readConfig();
     // [re]create the rendering window, possibly fullscreen
@@ -29,21 +39,11 @@ private:
     // control the window mutex and active window
     void inline lockWindow();
     void inline releaseWindow();
-    // main event loop
-    void processEvents();
-    // event handlers
-    void handleKeyPress(const sf::Event& event);
-    void handleKeyRelease(const sf::Event& event);
-    // update the simulation
-    void update(sf::Time elapsed);
-    // render everything, runs in separate thread
-    void renderLoop();
 
     std::unique_ptr<std::thread> renderThread;
     bool isReady = false;
     std::string game;
     std::string data_dir;
-    bool running;
     struct {
         std::string name;
         // this size fits in most screens in windowed mode
@@ -59,6 +59,7 @@ private:
         float deadZone = 15.0;
         float keySpeed = 75.0;
     } config;
+    bool running;
     // where everything is drawn
     sf::RenderWindow window;
     // controls the 2D camera, used for rendering internally at a set size

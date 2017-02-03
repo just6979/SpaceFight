@@ -5,7 +5,7 @@ Engine::Engine(const int argc, const char** argv, const std::string& _name) :
 {
     INFO("Initializing Engine with game data in '%s", game.c_str());
 
-    showBuildInfo(argv[0]);
+    dumpSystemInfo(argv[0]);
 
     data_dir = game;
 
@@ -82,7 +82,128 @@ bool Engine::run() {
     return true;
 }
 
-void Engine::showBuildInfo(const char* name) {
+void Engine::processEvents() {
+    static sf::Event event;
+
+    while (window.pollEvent(event)) {
+        switch (event.type) {
+            case sf::Event::Closed:
+                INFO("Window closed");
+                running = false;
+                break;
+            case sf::Event::Resized:
+                adjustAspect(event.size);
+                break;
+            case sf::Event::KeyPressed:
+                handleKeyPress(event);
+                break;
+            case sf::Event::KeyReleased:
+                handleKeyRelease(event);
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void Engine::handleKeyPress(const sf::Event& event) {
+    switch (event.key.code) {
+        case sf::Keyboard::Escape:
+            INFO("Key: Escape: exiting");
+            running = false;
+            break;
+        case sf::Keyboard::Return:
+            if (event.key.alt) {
+                createWindow(!config.fullscreen);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void Engine::handleKeyRelease(const sf::Event& event) {
+    switch (event.key.code) {
+        default:
+            break;
+    }
+}
+
+void Engine::update(sf::Time elapsed) {
+    float x, y = 0;
+
+    // get current state of controls
+    float joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+    float joy0_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+    x = std::fabs(joy0_X) < config.deadZone ? 0 : joy0_X;
+    y = std::fabs(joy0_y) < config.deadZone ? 0 : joy0_y;
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+        y += -config.keySpeed;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        x += config.keySpeed;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+        y += config.keySpeed;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        x += -config.keySpeed;
+    }
+
+    spritesMutex.lock();
+    player->moveBy(x, y);
+
+    const int millis = elapsed.asMilliseconds();
+    for (auto sprite : sprites) {
+        sprite->update(millis);
+    }
+
+    spritesMutex.unlock();
+}
+
+void Engine::renderLoop() {
+    INFO("Initializing render loop");
+    sf::Clock frameClock;
+    sf::Int32 lastFrameTime;
+    sf::Int32 averageFrameTime;
+    sf::Int32 totalFrameTime = 0;
+    sf::Int32 frameCount = 0;
+    INFO("Starting render loop");
+    while (running) {
+        frameClock.restart();
+        // blank the render target to black
+        screen.clear(sf::Color::Black);
+        // render all the normal sprites
+        spritesMutex.lock();
+        for (const auto sprite : sprites) {
+            screen.draw(*sprite);
+        }
+        spritesMutex.unlock();
+        // update the target
+        screen.display();
+        lockWindow();
+        // blank the window to gray
+        window.clear(sf::Color(128, 128, 128));
+        // copy render target to window
+        window.draw(sf::Sprite(screen.getTexture()));
+        // update thw window
+        window.display();
+        releaseWindow();
+        lastFrameTime = frameClock.getElapsedTime().asMilliseconds();
+        totalFrameTime += lastFrameTime;
+        averageFrameTime = totalFrameTime / ++frameCount;
+        // log the time per frame every 60 frames (every second if at 60 Hz)
+        if (frameCount % (60 * 1) == 0) {
+            DBUG("Average frame time: %d ms", averageFrameTime);
+        }
+    }
+    spritesMutex.unlock();
+    releaseWindow();
+    INFO("Stopped render loop");
+}
+
+void Engine::dumpSystemInfo(const char* name) {
     const uint32_t majorVersion = 0;
     const uint32_t minorVersion = 4;
     const uint32_t revision = 1;
@@ -251,125 +372,4 @@ void inline Engine::releaseWindow() {
 #endif
     window.setActive(false);
     windowMutex.unlock();
-}
-
-void Engine::processEvents() {
-    static sf::Event event;
-
-    while (window.pollEvent(event)) {
-        switch (event.type) {
-            case sf::Event::Closed:
-                INFO("Window closed");
-                running = false;
-                break;
-            case sf::Event::Resized:
-                adjustAspect(event.size);
-                break;
-            case sf::Event::KeyPressed:
-                handleKeyPress(event);
-                break;
-            case sf::Event::KeyReleased:
-                handleKeyRelease(event);
-                break;
-            default:
-                break;
-        }
-    }
-}
-
-void Engine::handleKeyPress(const sf::Event& event) {
-    switch (event.key.code) {
-        case sf::Keyboard::Escape:
-            INFO("Key: Escape: exiting");
-            running = false;
-            break;
-        case sf::Keyboard::Return:
-            if (event.key.alt) {
-                createWindow(!config.fullscreen);
-            }
-            break;
-        default:
-            break;
-    }
-}
-
-void Engine::handleKeyRelease(const sf::Event& event) {
-    switch (event.key.code) {
-        default:
-            break;
-    }
-}
-
-void Engine::update(sf::Time elapsed) {
-    float x, y = 0;
-
-    // get current state of controls
-    float joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
-    float joy0_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-    x = std::fabs(joy0_X) < config.deadZone ? 0 : joy0_X;
-    y = std::fabs(joy0_y) < config.deadZone ? 0 : joy0_y;
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-        y += -config.keySpeed;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        x += config.keySpeed;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        y += config.keySpeed;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        x += -config.keySpeed;
-    }
-
-    spritesMutex.lock();
-    player->moveBy(x, y);
-
-    const int millis = elapsed.asMilliseconds();
-    for (auto sprite : sprites) {
-        sprite->update(millis);
-    }
-
-    spritesMutex.unlock();
-}
-
-void Engine::renderLoop() {
-    INFO("Initializing render loop");
-    sf::Clock frameClock;
-    sf::Int32 lastFrameTime;
-    sf::Int32 averageFrameTime;
-    sf::Int32 totalFrameTime = 0;
-    sf::Int32 frameCount = 0;
-    INFO("Starting render loop");
-    while (running) {
-        frameClock.restart();
-        // blank the render target to black
-        screen.clear(sf::Color::Black);
-        // render all the normal sprites
-        spritesMutex.lock();
-        for (const auto sprite : sprites) {
-            screen.draw(*sprite);
-        }
-        spritesMutex.unlock();
-        // update the target
-        screen.display();
-        lockWindow();
-        // blank the window to gray
-        window.clear(sf::Color(128, 128, 128));
-        // copy render target to window
-        window.draw(sf::Sprite(screen.getTexture()));
-        // update thw window
-        window.display();
-        releaseWindow();
-        lastFrameTime = frameClock.getElapsedTime().asMilliseconds();
-        totalFrameTime += lastFrameTime;
-        averageFrameTime = totalFrameTime / ++frameCount;
-        // log the time per frame every 60 frames (every second if at 60 Hz)
-        if (frameCount % (60 * 1) == 0) {
-            DBUG("Average frame time: %d ms", averageFrameTime);
-        }
-    }
-    spritesMutex.unlock();
-    releaseWindow();
-    INFO("Stopped render loop");
 }
