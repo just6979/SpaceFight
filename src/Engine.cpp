@@ -58,7 +58,8 @@ bool Engine::run() {
     sf::Int64 averageUpdateTime;
     sf::Int32 updateCount = 0;
     INFO("Starting event loop");
-    while (window.isOpen()) {
+    running = true;
+    while (running) {
         elapsedTime = gameClock.restart();
         processEvents();
         update(elapsedTime);
@@ -258,7 +259,7 @@ void Engine::processEvents() {
         switch (event.type) {
             case sf::Event::Closed:
                 INFO("Window closed");
-                window.close();
+                running = false;
                 break;
             case sf::Event::Resized:
                 adjustAspect(event.size);
@@ -279,7 +280,7 @@ void Engine::handleKeyPress(const sf::Event& event) {
     switch (event.key.code) {
         case sf::Keyboard::Escape:
             INFO("Key: Escape: exiting");
-            window.close();
+            running = false;
             break;
         case sf::Keyboard::Return:
             if (event.key.alt) {
@@ -339,7 +340,7 @@ void Engine::renderLoop() {
     sf::Int32 totalFrameTime = 0;
     sf::Int32 frameCount = 0;
     INFO("Starting render loop");
-    while (window.isOpen()) {
+    while (running) {
         frameClock.restart();
         // blank the render target to black
         screen.clear(sf::Color::Black);
@@ -368,6 +369,7 @@ void Engine::renderLoop() {
         }
     }
     spritesMutex.unlock();
+    window.close();
     releaseWindow();
     INFO("Stopped render loop");
 }

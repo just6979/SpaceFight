@@ -43,6 +43,7 @@ private:
     bool isReady = false;
     std::string game;
     std::string data_dir;
+    bool running;
     struct {
         std::string name;
         // this size fits in most screens in windowed mode
