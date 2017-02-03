@@ -34,7 +34,7 @@ Engine::Engine(const int argc, const char** argv, const std::string& _name) :
 
 bool Engine::ready() {
     if (isReady) {
-        INFO("Engine of '%s' is ready", config.name);
+        INFO("Game of '%s' is ready", config.name.c_str());
     } else {
 
     }
@@ -42,7 +42,7 @@ bool Engine::ready() {
 }
 
 bool Engine::run() {
-    INFO("Starting a game of '%s'", config.name);
+    INFO("Starting a game of '%s'", config.name.c_str());
 
     INFO("Creating Render thread");
     releaseWindow();
@@ -76,7 +76,7 @@ bool Engine::run() {
     INFO("Stopped event loop");
     INFO("Joining render thread");
     renderThread->join();
-    INFO("Engine of '%s' ended successfully", config.name);
+    INFO("Game of '%s' ended successfully", config.name.c_str());
     return true;
 }
 
