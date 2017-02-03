@@ -204,10 +204,6 @@ void Engine::renderLoop() {
 }
 
 void Engine::dumpSystemInfo(const char* name) {
-    const uint32_t majorVersion = 0;
-    const uint32_t minorVersion = 4;
-    const uint32_t revision = 1;
-
     INFO("%s %d.%d.%d %s %s", name, majorVersion, minorVersion, revision, __DATE__, __TIME__);
 
     INFO("SFML %d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR);

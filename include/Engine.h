@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cmath>
-
 #include <mutex>
 #include <thread>
 
@@ -14,6 +12,9 @@
 
 class Engine {
 public:
+    const uint32_t majorVersion = 0;
+    const uint32_t minorVersion = 5;
+    const uint32_t revision = 0;
     Engine(const int argc, const char** argv, const std::string& _name = "game");
     bool ready();
     // main event loop
