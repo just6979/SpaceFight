@@ -10,64 +10,8 @@
 
 #include <cstdio>
 
-#ifdef DO_DEBUG
-#define LOGOG_LEVEL LOGOG_LEVEL_ALL
-#else
-#define LOGOG_LEVEL LOGOG_LEVEL_INFO
-#endif
-#include <logog/logog.hpp>
-
 #include <Engine.hpp>
 
-// keep logog vars in file scope, we manage them completely here
-static logog::LogFile* logFile;
-static logog::Cout* logConsole;
-static logog::Formatter* formatter;
-
-void logging_setup(const std::string& gameName) {
-    LOGOG_INITIALIZE();
-
-    // create custom format
-    class FormatterCustom : public logog::FormatterGCC {
-        virtual TOPIC_FLAGS GetTopicFlags(const logog::Topic& topic) {
-            return (logog::Formatter::GetTopicFlags(topic) &
-                    ~(TOPIC_FILE_NAME_FLAG | TOPIC_LINE_NUMBER_FLAG));
-        }
-    };
-
-    const std::string logFilename = gameName + '/' + gameName + ".log";
-
-    // remove existing log file
-    std::remove(logFilename.c_str());
-
-    logFile = new logog::LogFile(logFilename.c_str());
-    logConsole = new logog::Cout;
-    formatter = new FormatterCustom;
-    // use custom format
-    formatter->SetShowTimeOfDay(true);
-    logFile->SetFormatter(*formatter);
-    logConsole->SetFormatter(*formatter);
-
-    // try to make sure we don't get extra crap in our console log
-    std::cout.flush();
-
-    INFO("Logging system initialized.");
-}
-
-void logging_shutdown() {
-    INFO("Logging system shutting down.");
-
-    delete(logFile);
-    delete(logConsole);
-    delete(formatter);
-
-    LOGOG_SHUTDOWN();
-}
-
-/*
- * Simply initializes the Logog logging system, and the Engine,
- * then transfers control to the Engine's event loop.
- */
 int main(const int argc, const char** argv) {
     // check if a game directory is specified on the command line
     std::string gameName;
@@ -77,22 +21,19 @@ int main(const int argc, const char** argv) {
         gameName = "game";
     }
 
-    logging_setup(gameName);
-
-    INFO("Start");
+    std::cout << "Start" << std::endl;;
     Engine theGame(argc, argv, gameName);
     if (theGame.ready()) {
         if (theGame.run()) {
         } else {
-            ERR("Error running Engine, quitting.");
+            std::cerr << "Error running Engine, quitting." << std::endl;;
             return EXIT_FAILURE;
         }
     } else {
-        ERR("Could not initialize Engine, quitting.");
+        std::cerr << "Could not initialize Engine, quitting." << std::endl;;
         return EXIT_FAILURE;
     }
-    INFO("Done");
+    std::cout << "Done" << std::endl;;
 
-    logging_shutdown();
     return EXIT_SUCCESS;
 }

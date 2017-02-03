@@ -6,6 +6,12 @@
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 #include <yaml-cpp/yaml.h>
+
+#ifdef DO_DEBUG
+#define LOGOG_LEVEL LOGOG_LEVEL_ALL
+#else
+#define LOGOG_LEVEL LOGOG_LEVEL_INFO
+#endif
 #include <logog/logog.hpp>
 
 #include <Sprite.hpp>
@@ -16,6 +22,7 @@ public:
     const uint32_t minorVersion = 5;
     const uint32_t revision = 0;
     Engine(const int argc, const char** argv, const std::string& _name = "game");
+    ~Engine();
     bool ready();
     // main event loop
     bool run();
@@ -40,6 +47,11 @@ private:
     // control the window mutex and active window
     void inline lockWindow();
     void inline releaseWindow();
+
+
+    logog::LogFile* logFile;
+    logog::Cout* logConsole;
+    logog::Formatter* formatter;
 
     std::unique_ptr<std::thread> renderThread;
     bool isReady = false;

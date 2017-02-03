@@ -3,6 +3,34 @@
 Engine::Engine(const int argc, const char** argv, const std::string& _name) :
         game(_name)
 {
+    LOGOG_INITIALIZE();
+
+    // create custom format
+    class FormatterCustom : public logog::FormatterGCC {
+        virtual TOPIC_FLAGS GetTopicFlags(const logog::Topic& topic) {
+            return  (logog::FormatterGCC::GetTopicFlags(topic) &
+                         ~(TOPIC_FILE_NAME_FLAG | TOPIC_LINE_NUMBER_FLAG));
+        }
+    };
+
+    const std::string logFilename = data_dir + '/' + game + ".log";
+
+    // remove existing log file
+    remove(logFilename.c_str());
+
+    logFile = new logog::LogFile(logFilename.c_str());
+    logConsole = new logog::Cout;
+    formatter = new FormatterCustom;
+    // use custom format
+    formatter->SetShowTimeOfDay(true);
+    logFile->SetFormatter(*formatter);
+    logConsole->SetFormatter(*formatter);
+
+    // try to make sure we don't get extra crap in our console log
+    std::cout.flush();
+
+    INFO("Logging system initialized.");
+
     INFO("Initializing Engine with game data in '%s", game.c_str());
 
     dumpSystemInfo(argv[0]);
@@ -30,6 +58,16 @@ Engine::Engine(const int argc, const char** argv, const std::string& _name) :
 
     isReady = true;
     INFO("Initialization Complete");
+}
+
+Engine::~Engine() {
+    INFO("Logging system shutting down.");
+
+    delete(logFile);
+    delete(logConsole);
+    delete(formatter);
+
+    LOGOG_SHUTDOWN();
 }
 
 bool Engine::ready() {
@@ -369,3 +407,4 @@ void inline Engine::releaseWindow() {
     window.setActive(false);
     windowMutex.unlock();
 }
+
