@@ -8,7 +8,7 @@
  * See included LICENSE file for distribution and reuse.
 */
 
-#include <unistd.h>
+#include <cstdio>
 
 #ifdef DO_DEBUG
 #define LOGOG_LEVEL LOGOG_LEVEL_ALL
@@ -35,10 +35,10 @@ void logging_setup(const std::string& gameName) {
         }
     };
 
-    const std::__cxx11::string logFilename = gameName + '/' + gameName + ".log";
+    const std::string logFilename = gameName + '/' + gameName + ".log";
 
     // remove existing log file
-    unlink(logFilename.c_str());
+    std::remove(logFilename.c_str());
 
     outFile = new logog::LogFile(logFilename.c_str());
     out = new logog::Cout;
