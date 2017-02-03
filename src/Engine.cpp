@@ -1,6 +1,8 @@
 #include <Engine.hpp>
 
-Engine::Engine(const int argc, const char** argv) {
+Engine::Engine(const int _argc, const char** _argv) :
+    argc(_argc), argv(_argv)
+{
     // check if a game directory is specified on the command line
     if (argc > 1 and argv[1] != nullptr) {
         game = std::string(argv[1]);
@@ -36,9 +38,9 @@ Engine::Engine(const int argc, const char** argv) {
 
     INFO("Logging system initialized.");
 
-    INFO("Initializing Engine with game data in '%s", game.c_str());
+    dumpSystemInfo();
 
-    dumpSystemInfo(argv[0]);
+    INFO("Initializing Engine with game data in '%s'", game.c_str());
 
     data_dir = game;
 
@@ -172,7 +174,7 @@ void Engine::handleKeyRelease(const sf::Event& event) {
     }
 }
 
-void Engine::update(sf::Time elapsed) {
+void Engine::update(const sf::Time& elapsed) {
     float x, y = 0;
 
     // get current state of controls
@@ -246,12 +248,17 @@ void Engine::renderLoop() {
     INFO("Stopped render loop");
 }
 
-void Engine::dumpSystemInfo(const char* name) {
-    INFO("%s %d.%d.%d %s %s", name, majorVersion, minorVersion, revision, __DATE__, __TIME__);
+void Engine::dumpSystemInfo() {
+//    INFO(argv[0]);
 
+    // dump our own version and build info
+    INFO("JAGE %d.%d.%d", majorVersion, minorVersion, revision);
+    INFO("Built %s %s", __DATE__, __TIME__);
+
+    // and SFML's info
     INFO("SFML %d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR);
 
-// what compiler are we using? just because
+// what compiler did we use?
 #ifdef __MINGW32__
 #ifdef __MINGW64__
     INFO("MinGW-w64 %d.%d", __MINGW64_VERSION_MAJOR, __MINGW64_VERSION_MINOR);
@@ -302,7 +309,7 @@ void Engine::readConfig() {
     INFO("\tkeySpeed = %f", config.keySpeed);
 }
 
-void Engine::createWindow(bool shouldFullscreen) {
+void Engine::createWindow(const bool shouldFullscreen) {
     unsigned int flags = 0;
 
     lockWindow();
@@ -355,7 +362,7 @@ void Engine::createWindow(bool shouldFullscreen) {
     adjustAspect(window.getSize());
 }
 
-void Engine::adjustAspect(sf::Event::SizeEvent newSize) {
+void Engine::adjustAspect(const sf::Event::SizeEvent& newSize) {
     // save the new window size since this came from a resize event
     // not from a window creation event (initialization or fullscreen toggle)
     config.width = newSize.width;
@@ -365,7 +372,7 @@ void Engine::adjustAspect(sf::Event::SizeEvent newSize) {
     adjustAspect(sf::Vector2u(newSize.width, newSize.height));
 }
 
-void Engine::adjustAspect(sf::Vector2u newSize) {
+void Engine::adjustAspect(const sf::Vector2u& newSize) {
     INFO("Adjusting aspect for window size ", newSize.x, newSize.y);
     // compute the current aspect
     float currentRatio = (float) newSize.x / (float) newSize.y;
