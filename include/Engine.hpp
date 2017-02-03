@@ -8,7 +8,7 @@
 #include <yaml-cpp/yaml.h>
 #include <logog/logog.hpp>
 
-#include <Sprite.h>
+#include <Sprite.hpp>
 
 class Engine {
 public:

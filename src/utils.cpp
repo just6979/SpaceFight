@@ -1,5 +1,5 @@
 
-#include <utils.h>
+#include <utils.hpp>
 
 std::string NodeTypeToString(YAML::Node node) {
     switch (node.Type()) {

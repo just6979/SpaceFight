@@ -1,4 +1,4 @@
-#include <Engine.h>
+#include <Engine.hpp>
 
 Engine::Engine(const int argc, const char** argv, const std::string& _name) :
         game(_name)

@@ -17,7 +17,7 @@
 #endif
 #include <logog/logog.hpp>
 
-#include <Engine.h>
+#include <Engine.hpp>
 
 // keep logog vars in file scope, we manage them completely here
 static logog::LogFile* outFile;
