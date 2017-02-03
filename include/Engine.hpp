@@ -21,7 +21,7 @@ public:
     const uint32_t majorVersion = 0;
     const uint32_t minorVersion = 5;
     const uint32_t revision = 0;
-    Engine(const int argc, const char** argv, const std::string& _name = "game");
+    Engine(const int argc, const char** argv);
     ~Engine();
     bool ready();
     // main event loop

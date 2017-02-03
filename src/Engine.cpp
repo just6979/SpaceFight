@@ -1,8 +1,13 @@
 #include <Engine.hpp>
 
-Engine::Engine(const int argc, const char** argv, const std::string& _name) :
-        game(_name)
-{
+Engine::Engine(const int argc, const char** argv) {
+    // check if a game directory is specified on the command line
+    if (argc > 1 and argv[1] != nullptr) {
+        game = std::string(argv[1]);
+    } else {
+        game = "game";
+    }
+
     LOGOG_INITIALIZE();
 
     // create custom format

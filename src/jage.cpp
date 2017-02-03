@@ -13,16 +13,8 @@
 #include <Engine.hpp>
 
 int main(const int argc, const char** argv) {
-    // check if a game directory is specified on the command line
-    std::string gameName;
-    if (argc > 1 and argv[1] != NULL) {
-        gameName = std::string(argv[1]);
-    } else {
-        gameName = "game";
-    }
-
     std::cout << "Start" << std::endl;;
-    Engine theGame(argc, argv, gameName);
+    Engine theGame(argc, argv);
     if (theGame.ready()) {
         if (theGame.run()) {
         } else {
