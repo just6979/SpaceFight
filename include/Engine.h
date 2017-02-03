@@ -12,9 +12,9 @@
 
 #include <Sprite.h>
 
-class Game {
+class Engine {
 public:
-    Game(const int argc, const char** argv, const std::string& _name = "game");
+    Engine(const int argc, const char** argv, const std::string& _name = "game");
     bool ready();
     bool run();
 private:

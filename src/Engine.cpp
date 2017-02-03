@@ -1,14 +1,9 @@
 #include <Engine.h>
 
-Game::Game(const int argc, const char** argv, const std::string& _name) :
+Engine::Engine(const int argc, const char** argv, const std::string& _name) :
         game(_name)
 {
-    INFO("Initializing Game in '%s", game.c_str());
-
-    INFO("Executable: %s", argv[0]);
-    for (int i = 1; i < argc; i++) {
-        INFO("Arg %d: %s", i, argv[i]);
-    }
+    INFO("Initializing Engine with game data in '%s", game.c_str());
 
     showBuildInfo(argv[0]);
 
@@ -22,7 +17,7 @@ Game::Game(const int argc, const char** argv, const std::string& _name) :
     createWindow(config.fullscreen);
 
     spritesMutex.lock();
-    INFO("Creating game entities");
+    INFO("Creating entities");
     player = std::make_shared<Sprite>(data_dir + "/player.yaml");
     player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
@@ -37,21 +32,21 @@ Game::Game(const int argc, const char** argv, const std::string& _name) :
     INFO("Initialization Complete");
 }
 
-bool Game::ready() {
+bool Engine::ready() {
     if (isReady) {
-        INFO("Game of '%s' is ready", config.name);
+        INFO("Engine of '%s' is ready", config.name);
     } else {
 
     }
     return isReady;
 }
 
-bool Game::run() {
+bool Engine::run() {
     INFO("Starting a game of '%s'", config.name);
 
     INFO("Creating Render thread");
     releaseWindow();
-    renderThread = std::make_unique<std::thread>(&Game::renderLoop, this);
+    renderThread = std::make_unique<std::thread>(&Engine::renderLoop, this);
 
     INFO("Initializing event loop");
     sf::Int32 updateHz = 60;
@@ -81,11 +76,11 @@ bool Game::run() {
     INFO("Stopped event loop");
     INFO("Joining render thread");
     renderThread->join();
-    INFO("Game of '%s' ended successfully", config.name);
+    INFO("Engine of '%s' ended successfully", config.name);
     return true;
 }
 
-void Game::showBuildInfo(const char* name) {
+void Engine::showBuildInfo(const char* name) {
     const uint32_t majorVersion = 0;
     const uint32_t minorVersion = 4;
     const uint32_t revision = 1;
@@ -117,7 +112,7 @@ void Game::showBuildInfo(const char* name) {
 }
 
 
-void Game::readConfig() {
+void Engine::readConfig() {
     std::string configFilename = data_dir + "/config.yaml";
     INFO("Reading config from '%s'", configFilename.c_str());
     try {
@@ -145,7 +140,7 @@ void Game::readConfig() {
     INFO("\tkeySpeed = %f", config.keySpeed);
 }
 
-void Game::createWindow(bool shouldFullscreen) {
+void Engine::createWindow(bool shouldFullscreen) {
     unsigned int flags = 0;
 
     lockWindow();
@@ -198,7 +193,7 @@ void Game::createWindow(bool shouldFullscreen) {
     adjustAspect(window.getSize());
 }
 
-void Game::adjustAspect(sf::Event::SizeEvent newSize) {
+void Engine::adjustAspect(sf::Event::SizeEvent newSize) {
     // save the new window size since this came from a resize event
     // not from a window creation event (initialization or fullscreen toggle)
     config.width = newSize.width;
@@ -208,7 +203,7 @@ void Game::adjustAspect(sf::Event::SizeEvent newSize) {
     adjustAspect(sf::Vector2u(newSize.width, newSize.height));
 }
 
-void Game::adjustAspect(sf::Vector2u newSize) {
+void Engine::adjustAspect(sf::Vector2u newSize) {
     INFO("Adjusting aspect for window size ", newSize.x, newSize.y);
     // compute the current aspect
     float currentRatio = (float) newSize.x / (float) newSize.y;
@@ -240,7 +235,7 @@ void Game::adjustAspect(sf::Vector2u newSize) {
 }
 
 //#define LOG_WINDOW_MUTEX_LOCKS
-void inline Game::lockWindow() {
+void inline Engine::lockWindow() {
 #ifdef LOG_WINDOW_MUTEX_LOCKS
     DBUG("Grabbing window lock");
 #endif
@@ -248,7 +243,7 @@ void inline Game::lockWindow() {
     window.setActive(true);
 }
 
-void inline Game::releaseWindow() {
+void inline Engine::releaseWindow() {
 #ifdef LOG_WINDOW_MUTEX_LOCKS
     DBUG("Releasing window lock");
 #endif
@@ -256,7 +251,7 @@ void inline Game::releaseWindow() {
     windowMutex.unlock();
 }
 
-void Game::processEvents() {
+void Engine::processEvents() {
     static sf::Event event;
 
     while (window.pollEvent(event)) {
@@ -280,7 +275,7 @@ void Game::processEvents() {
     }
 }
 
-void Game::handleKeyPress(const sf::Event& event) {
+void Engine::handleKeyPress(const sf::Event& event) {
     switch (event.key.code) {
         case sf::Keyboard::Escape:
             INFO("Key: Escape: exiting");
@@ -296,14 +291,14 @@ void Game::handleKeyPress(const sf::Event& event) {
     }
 }
 
-void Game::handleKeyRelease(const sf::Event& event) {
+void Engine::handleKeyRelease(const sf::Event& event) {
     switch (event.key.code) {
         default:
             break;
     }
 }
 
-void Game::update(sf::Time elapsed) {
+void Engine::update(sf::Time elapsed) {
     float x, y = 0;
 
     // get current state of controls
@@ -336,7 +331,7 @@ void Game::update(sf::Time elapsed) {
     spritesMutex.unlock();
 }
 
-void Game::renderLoop() {
+void Engine::renderLoop() {
     INFO("Initializing render loop");
     sf::Clock frameClock;
     sf::Int32 lastFrameTime;

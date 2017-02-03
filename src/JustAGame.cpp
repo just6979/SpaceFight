@@ -15,16 +15,17 @@
 #include <Engine.h>
 
 /*
- * Simply initializes the Logog logging system and the Game singleton,
- * then transfers control to the Game.run() event loop.
+ * Simply initializes the Logog logging system, and the Engine,
+ * then transfers control to the Engine's event loop.
  */
 int main(const int argc, const char** argv) {
     std::string gameName;
-    if (argc >= 1 && argv[1] != NULL) {
+    if (argc > 1 && argv[1] != NULL) {
         gameName = std::string(argv[1]);
     } else {
         gameName = "game";
     }
+
     LOGOG_INITIALIZE();
     const std::string logFilename = gameName + ".log";
     // remove existing log file
@@ -48,15 +49,15 @@ int main(const int argc, const char** argv) {
 
     INFO("Logging system initialized.");
 
-    Game game(argc, argv, gameName);
-    if (game.ready()) {
-        if (game.run()) {
+    Engine theGame(argc, argv, gameName);
+    if (theGame.ready()) {
+        if (theGame.run()) {
         } else {
-            ERR("Error running game, quitting.");
+            ERR("Error running Engine, quitting.");
             return EXIT_FAILURE;
         }
     } else {
-        ERR("Could not initialize Game, quitting.");
+        ERR("Could not initialize Engine, quitting.");
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
