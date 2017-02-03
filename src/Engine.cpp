@@ -3,7 +3,7 @@
 Game::Game(const int argc, const char** argv, const std::string& _name) :
         game(_name)
 {
-    INFO("Initializing new Game: %s", game.c_str());
+    INFO("Initializing Game in '%s", game.c_str());
 
     INFO("Executable: %s", argv[0]);
     for (int i = 1; i < argc; i++) {
@@ -12,7 +12,7 @@ Game::Game(const int argc, const char** argv, const std::string& _name) :
 
     showBuildInfo(argv[0]);
 
-    data_dir = _name;
+    data_dir = game;
 
     readConfig();
 
@@ -22,7 +22,7 @@ Game::Game(const int argc, const char** argv, const std::string& _name) :
     createWindow(config.fullscreen);
 
     spritesMutex.lock();
-    INFO("Creating gameplay entities");
+    INFO("Creating game entities");
     player = std::make_shared<Sprite>(data_dir + "/player.yaml");
     player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
@@ -37,22 +37,18 @@ Game::Game(const int argc, const char** argv, const std::string& _name) :
     INFO("Initialization Complete");
 }
 
-Game& Game::getGame(const int argc, const char** argv, const std::string& _name) {
-    std::string name;
-    if (_name.length() == 0) {
-        name = "game";
-    } else {
-        name = _name;
-    }
-    static Game* instance = new Game(argc, argv, name);
-    return *instance;
-}
-
 bool Game::ready() {
+    if (isReady) {
+        INFO("Game of '%s' is ready", config.name);
+    } else {
+
+    }
     return isReady;
 }
 
 bool Game::run() {
+    INFO("Starting a game of '%s'", config.name);
+
     INFO("Creating Render thread");
     releaseWindow();
     renderThread = std::make_unique<std::thread>(&Game::renderLoop, this);
@@ -85,6 +81,7 @@ bool Game::run() {
     INFO("Stopped event loop");
     INFO("Joining render thread");
     renderThread->join();
+    INFO("Game of '%s' ended successfully", config.name);
     return true;
 }
 

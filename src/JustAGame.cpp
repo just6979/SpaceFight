@@ -48,13 +48,9 @@ int main(const int argc, const char** argv) {
 
     INFO("Logging system initialized.");
 
-    INFO("Getting Game instance.");
-    Game& game = Game::getGame(argc, argv, gameName);
-    INFO("Checking Game readiness...");
+    Game game(argc, argv, gameName);
     if (game.ready()) {
-        INFO("Starting Game!");
         if (game.run()) {
-            INFO("Game ended successfully!");
         } else {
             ERR("Error running game, quitting.");
             return EXIT_FAILURE;

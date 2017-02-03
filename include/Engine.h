@@ -13,11 +13,8 @@
 #include <Sprite.h>
 
 class Game {
-private:
-    // private ctor for singleton
-    Game(const int argc, const char** argv, const std::string& _name);
 public:
-    static Game& getGame(const int argc, const char** argv, const std::string& _name = "");
+    Game(const int argc, const char** argv, const std::string& _name = "game");
     bool ready();
     bool run();
 private:
