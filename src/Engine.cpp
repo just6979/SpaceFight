@@ -1,7 +1,6 @@
 #include <Engine.h>
 
 Game::Game(const int argc, const char** argv, const std::string& _name) :
-        renderThread(&Game::renderLoop, this),
         game(_name)
 {
     INFO("Initializing new Game: %s", game.c_str());
@@ -56,7 +55,7 @@ bool Game::ready() {
 bool Game::run() {
     INFO("Creating Render thread");
     releaseWindow();
-    renderThread.launch();
+    renderThread = std::make_unique<std::thread>(&Game::renderLoop, this);
 
     INFO("Initializing event loop");
     sf::Int32 updateHz = 60;
@@ -84,7 +83,8 @@ bool Game::run() {
         sf::sleep(sf::microseconds(updateWaitTime - lastUpdateTime.asMicroseconds()));
     }
     INFO("Stopped event loop");
-    renderThread.wait();
+    INFO("Joining render thread");
+    renderThread->join();
     return true;
 }
 

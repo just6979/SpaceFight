@@ -2,11 +2,13 @@
 
 #include <cmath>
 
+#include <mutex>
+#include <thread>
+
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
-
-#include <logog/logog.hpp>
 #include <yaml-cpp/yaml.h>
+#include <logog/logog.hpp>
 
 #include <Sprite.h>
 
@@ -40,7 +42,7 @@ private:
     // render everything, runs in separate thread
     void renderLoop();
 
-    sf::Thread renderThread;
+    std::unique_ptr<std::thread> renderThread;
     bool isReady = false;
     std::string game;
     std::string data_dir;
@@ -66,8 +68,8 @@ private:
     // where we render the game before copying it to the window
     sf::RenderTexture screen;
     // mutexes for the window and sprite list
-    sf::Mutex windowMutex;
-    sf::Mutex spritesMutex;
+    std::mutex windowMutex;
+    std::mutex spritesMutex;
     // render internally to 720p widescreen
     unsigned int renderWidth = 1280;
     unsigned int renderHeight = 720;
