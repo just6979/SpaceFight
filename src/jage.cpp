@@ -20,8 +20,8 @@
 #include <Engine.hpp>
 
 // keep logog vars in file scope, we manage them completely here
-static logog::LogFile* outFile;
-static logog::Cout* out;
+static logog::LogFile* logFile;
+static logog::Cout* logConsole;
 static logog::Formatter* formatter;
 
 void logging_setup(const std::string& gameName) {
@@ -40,13 +40,16 @@ void logging_setup(const std::string& gameName) {
     // remove existing log file
     std::remove(logFilename.c_str());
 
-    outFile = new logog::LogFile(logFilename.c_str());
-    out = new logog::Cout;
+    logFile = new logog::LogFile(logFilename.c_str());
+    logConsole = new logog::Cout;
     formatter = new FormatterCustom;
     // use custom format
     formatter->SetShowTimeOfDay(true);
-    outFile->SetFormatter(*formatter);
-    out->SetFormatter(*formatter);
+    logFile->SetFormatter(*formatter);
+    logConsole->SetFormatter(*formatter);
+
+    // try to make sure we don't get extra crap in our console log
+    std::cout.flush();
 
     INFO("Logging system initialized.");
 }
@@ -54,8 +57,8 @@ void logging_setup(const std::string& gameName) {
 void logging_shutdown() {
     INFO("Logging system shutting down.");
 
-    delete(outFile);
-    delete(out);
+    delete(logFile);
+    delete(logConsole);
     delete(formatter);
 
     LOGOG_SHUTDOWN();
