@@ -44,6 +44,9 @@ Engine::Engine(const int _argc, const char** _argv) :
 
     data_dir = game;
 
+    // TODO: verify data_dir is accesible, abort if not
+    // TODO: _chdir into data_dir for easier relative paths everywhere else
+
     readConfig();
 
     INFO("Creating %dx%d render target", renderWidth, renderHeight);
@@ -249,26 +252,27 @@ void Engine::renderLoop() {
 }
 
 void Engine::dumpSystemInfo() {
-//    INFO(argv[0]);
-
+#ifndef NDEBUG
+    INFO(argv[0]);
+#endif
     // dump our own version and build info
-    INFO("JAGE %d.%d.%d", majorVersion, minorVersion, revision);
+    INFO("JAGE %d.%d.%d", JAGE_VERSION_MAJOR, JAGE_VERSION_MINOR, JAGE_VERSION_REVISION);
     INFO("Built %s %s", __DATE__, __TIME__);
 
     // and SFML's info
-    INFO("SFML %d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR);
+    INFO("SFML %d.%d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR, SFML_VERSION_PATCH);
 
 // what compiler did we use?
 #ifdef __MINGW32__
 #ifdef __MINGW64__
-    INFO("MinGW-w64 %d.%d", __MINGW64_VERSION_MAJOR, __MINGW64_VERSION_MINOR);
+    INFO("MinGW-w64 %s", __MINGW64_VERSION_STR);
 #else
-    INFO("MinGW %d.%d", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
+    INFO("MinGW %s", __MINGW64_VERSION_STR);
 #endif
 #endif
 
 #ifdef __clang__
-    INFO("CLang %d.%d.%d", __clang_major__, __clang_minor__, __clang_patchlevel__);
+    INFO("CLang %s", __clang_version__);
 #endif
 
 #ifdef __GNUG__
@@ -403,19 +407,14 @@ void Engine::adjustAspect(const sf::Vector2u& newSize) {
     releaseWindow();
 }
 
-//#define LOG_WINDOW_MUTEX_LOCKS
 void inline Engine::lockWindow() {
-#ifdef LOG_WINDOW_MUTEX_LOCKS
-    DBUG("Grabbing window lock");
-#endif
+//    DBUG("Grabbing window lock");
     windowMutex.lock();
     window.setActive(true);
 }
 
 void inline Engine::releaseWindow() {
-#ifdef LOG_WINDOW_MUTEX_LOCKS
-    DBUG("Releasing window lock");
-#endif
+//    DBUG("Releasing window lock");
     window.setActive(false);
     windowMutex.unlock();
 }

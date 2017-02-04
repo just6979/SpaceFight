@@ -7,10 +7,10 @@
 #include <SFML/Graphics.hpp>
 #include <yaml-cpp/yaml.h>
 
-#ifdef DO_DEBUG
-#define LOGOG_LEVEL LOGOG_LEVEL_ALL
-#else
+#ifdef NDEBUG
 #define LOGOG_LEVEL LOGOG_LEVEL_INFO
+#else
+#define LOGOG_LEVEL LOGOG_LEVEL_ALL
 #endif
 #include <logog/logog.hpp>
 
@@ -18,9 +18,9 @@
 
 class Engine {
 public:
-    const uint32_t majorVersion = 0;
-    const uint32_t minorVersion = 5;
-    const uint32_t revision = 1;
+    const uint32_t JAGE_VERSION_MAJOR = 0;
+    const uint32_t JAGE_VERSION_MINOR = 5;
+    const uint32_t JAGE_VERSION_REVISION = 2;
 
     Engine(const int argc, const char** argv);
     ~Engine();
