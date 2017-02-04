@@ -10,31 +10,29 @@
 
 #include <Engine.hpp>
 
-static std::unique_ptr<Engine> theGame;
-
-int success(const std::string& msg);
-int fail(const std::string& msg);
+int done(std::unique_ptr<Engine> theGame, int exitCode, const std::string& msg = "Done");
 
 int main(const int argc, const char** argv) {
     std::cout << "Start" << std::endl;
-    theGame = std::make_unique<Engine>(argc, argv);
+    auto theGame = std::make_unique<Engine>(argc, argv);
     if (not theGame->ready()) {
-        return fail("Could not initialize Engine, quitting.");
+        return done(std::move(theGame), EXIT_FAILURE, "Could not initialize Engine, quitting.");
     }
     if (not theGame->run()) {
-        return fail("Error running Engine, quitting.");
+        return done(std::move(theGame), EXIT_FAILURE, "Error running Engine, quitting.");
     }
-    return success("Done");
+    return done(std::move(theGame), EXIT_SUCCESS);
 }
 
-int success(const std::string& msg) {
+int done(std::unique_ptr<Engine> theGame, int exitCode, const std::string& msg) {
+    // shutdown the Engine
     theGame.release();
-    std::cout << msg << std::endl;
-    return EXIT_SUCCESS;
-}
-
-int fail(const std::string& msg) {
-    theGame.release();
-    std::cerr << msg << std::endl;
-    return EXIT_FAILURE;
+    std::string fullMsg;
+    if (exitCode == EXIT_SUCCESS) {
+        fullMsg = "Success: " + msg;
+    } else { //EXIT_FAILURE
+        fullMsg = "Error: " + msg;
+    }
+    std::cout << fullMsg << std::endl;
+    return exitCode;
 }
