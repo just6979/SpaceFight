@@ -140,7 +140,7 @@ void Engine::processEvents() {
                 running = false;
                 break;
             case sf::Event::Resized:
-                adjustAspect(event.size);
+                handleResize(event.size);
                 break;
             case sf::Event::KeyPressed:
                 handleKeyPress(event);
@@ -151,29 +151,6 @@ void Engine::processEvents() {
             default:
                 break;
         }
-    }
-}
-
-void Engine::handleKeyPress(const sf::Event& event) {
-    switch (event.key.code) {
-        case sf::Keyboard::Escape:
-            INFO("Key: Escape: exiting");
-            running = false;
-            break;
-        case sf::Keyboard::Return:
-            if (event.key.alt) {
-                createWindow(!config.fullscreen);
-            }
-            break;
-        default:
-            break;
-    }
-}
-
-void Engine::handleKeyRelease(const sf::Event& event) {
-    switch (event.key.code) {
-        default:
-            break;
     }
 }
 
@@ -251,6 +228,40 @@ void Engine::renderLoop() {
     INFO("Stopped render loop");
 }
 
+void Engine::handleResize(const sf::Event::SizeEvent& newSize) {
+    // save the new window size since this came from a resize event
+    // not from a window creation event (initialization or fullscreen toggle)
+    config.width = newSize.width;
+    config.height = newSize.height;
+    INFO("Window resized to: %dx%d", config.width, config.height);
+    // do the calculation
+    adjustAspect(sf::Vector2u(newSize.width, newSize.height));
+}
+
+void Engine::handleKeyPress(const sf::Event& event) {
+    switch (event.key.code) {
+        case sf::Keyboard::Escape:
+            INFO("Key: Escape: exiting");
+            running = false;
+            break;
+        case sf::Keyboard::Return:
+            if (event.key.alt) {
+                createWindow(!config.fullscreen);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void Engine::handleKeyRelease(const sf::Event& event) {
+    switch (event.key.code) {
+        default:
+            break;
+    }
+}
+
+
 void Engine::dumpSystemInfo() {
 #ifndef NDEBUG
     INFO(argv[0]);
@@ -283,7 +294,6 @@ void Engine::dumpSystemInfo() {
     INFO("Visual C++ %s", _MCS_VER);
 #endif
 }
-
 
 void Engine::readConfig() {
     std::string configFilename = data_dir + "/config.yaml";
@@ -366,18 +376,8 @@ void Engine::createWindow(const bool shouldFullscreen) {
     adjustAspect(window.getSize());
 }
 
-void Engine::adjustAspect(const sf::Event::SizeEvent& newSize) {
-    // save the new window size since this came from a resize event
-    // not from a window creation event (initialization or fullscreen toggle)
-    config.width = newSize.width;
-    config.height = newSize.height;
-    INFO("Window resized to: %dx%d", config.width, config.height);
-    // do the calculation
-    adjustAspect(sf::Vector2u(newSize.width, newSize.height));
-}
-
 void Engine::adjustAspect(const sf::Vector2u& newSize) {
-    INFO("Adjusting aspect for window size ", newSize.x, newSize.y);
+    INFO("Adjusting aspect for window size %dx%d", newSize.x, newSize.y);
     // compute the current aspect
     float currentRatio = (float) newSize.x / (float) newSize.y;
     // used to offset and scale the viewport to maintain 16:9 aspect

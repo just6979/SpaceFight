@@ -33,14 +33,17 @@ public:
 private:
     /* methods */
 
-    // event handlers
-    void processEvents();
-    void handleKeyPress(const sf::Event& event);
-    void handleKeyRelease(const sf::Event& event);
+    //event dispatcher
+     void processEvents();
     // update the simulation
     void update(const sf::Time& elapsed);
     // render everything, runs in separate thread
     void renderLoop();
+
+    // event handlers
+    void handleResize(const sf::Event::SizeEvent& newSize);
+    void handleKeyPress(const sf::Event& event);
+    void handleKeyRelease(const sf::Event& event);
 
     // log some build & system info
     void dumpSystemInfo();
@@ -51,7 +54,6 @@ private:
     // [re]create the rendering window, possibly fullscreen
     void createWindow(const bool shouldFullscreen = false);
     // change the viewport to maintain 16:9 aspect ratio
-    void adjustAspect(const sf::Event::SizeEvent& newSize);
     void adjustAspect(const sf::Vector2u& newSize);
 
     // control the window mutex and active window
@@ -103,8 +105,8 @@ private:
     sf::RenderTexture screen;
 
     // mutexes for the window and sprite list
-    std::mutex windowMutex;
-    std::mutex spritesMutex;
+    std::recursive_mutex windowMutex;
+    std::recursive_mutex spritesMutex;
 
     // all normal sprites to draw
     std::vector<std::shared_ptr<Sprite>> sprites;
