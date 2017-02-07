@@ -105,8 +105,8 @@ private:
     sf::RenderTexture screen;
 
     // mutexes for the window and sprite list
-    std::recursive_mutex windowMutex;
-    std::recursive_mutex spritesMutex;
+    std::mutex windowMutex;
+    std::mutex spritesMutex;
 
     // all normal sprites to draw
     std::vector<std::shared_ptr<Sprite>> sprites;
