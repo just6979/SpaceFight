@@ -34,7 +34,7 @@ private:
     /* methods */
 
     //event dispatcher
-     void processEvents();
+    void processEvents();
     // update the simulation
     void update(const sf::Time& elapsed);
     // render everything, runs in separate thread

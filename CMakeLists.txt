@@ -48,7 +48,7 @@ if (WIN32)
     # set LOGOG_ROOT in CLion CMake settings
     INCLUDE_DIRECTORIES(${LOGOG_ROOT}/include)
     LINK_DIRECTORIES(${LOGOG_ROOT}/lib)
-endif()
+endif ()
 set(EXTERNAL_LIBS logog ${EXTERNAL_LIBS})
 
 ## external libs with CMake find_package() support
@@ -59,7 +59,7 @@ set(CMAKE_PREFIX_PATH "${YAML_CPP_ROOT}/CMake" ${CMAKE_PREFIX_PATH})
 find_package(yaml-cpp 0.5 REQUIRED CONFIG)
 if (yaml-cpp_FOUND)
     include_directories(${YAML_CPP_INCLUDE_DIR})
-endif()
+endif ()
 
 # SFML
 if (WIN32)

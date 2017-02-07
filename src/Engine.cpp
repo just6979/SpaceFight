@@ -1,8 +1,7 @@
 #include <Engine.hpp>
 
 Engine::Engine(const int _argc, const char** _argv) :
-    argc(_argc), argv(_argv)
-{
+        argc(_argc), argv(_argv) {
     // check if a game directory is specified on the command line
     if (argc > 1 and argv[1] != nullptr) {
         game = std::string(argv[1]);
@@ -15,8 +14,8 @@ Engine::Engine(const int _argc, const char** _argv) :
     // create custom format
     class FormatterCustom : public logog::FormatterGCC {
         virtual TOPIC_FLAGS GetTopicFlags(const logog::Topic& topic) {
-            return  (logog::FormatterGCC::GetTopicFlags(topic) &
-                         ~(TOPIC_FILE_NAME_FLAG | TOPIC_LINE_NUMBER_FLAG));
+            return (logog::FormatterGCC::GetTopicFlags(topic) &
+                    ~(TOPIC_FILE_NAME_FLAG | TOPIC_LINE_NUMBER_FLAG));
         }
     };
 
@@ -73,9 +72,9 @@ Engine::Engine(const int _argc, const char** _argv) :
 Engine::~Engine() {
     INFO("Logging system shutting down.");
 
-    delete(logFile);
-    delete(logConsole);
-    delete(formatter);
+    delete logFile;
+    delete logConsole;
+    delete formatter;
 
     LOGOG_SHUTDOWN();
 }
