@@ -374,6 +374,8 @@ void Engine::createWindow(const bool shouldFullscreen) {
     if (config.vsync) {
         INFO("Enabling V-sync");
         window.setVerticalSyncEnabled(true);
+    } else {
+        window.setVerticalSyncEnabled(false);
     }
 
     window.setActive(false);
