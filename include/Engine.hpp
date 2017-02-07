@@ -56,10 +56,6 @@ private:
     // change the viewport to maintain 16:9 aspect ratio
     void adjustAspect(const sf::Vector2u& newSize);
 
-    // control the window mutex and active window
-    void inline lockWindow();
-    void inline releaseWindow();
-
     /* member data */
 
     int argc;

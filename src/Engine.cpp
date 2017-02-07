@@ -54,7 +54,7 @@ Engine::Engine(const int _argc, const char** _argv) :
 
     createWindow(config.fullscreen);
 
-    spritesMutex.lock();
+    std::unique_lock<std::mutex> spritesLock(spritesMutex);
     INFO("Creating entities");
     player = std::make_shared<Sprite>(data_dir + "/player.yaml");
     player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
@@ -64,7 +64,7 @@ Engine::Engine(const int _argc, const char** _argv) :
     enemy->setPosition(renderWidth * 1 / 2, renderHeight * 1 / 4);
     sprites.push_back(enemy);
     INFO("Created enemy");
-    spritesMutex.unlock();
+    spritesLock.unlock();
 
     isReady = true;
     INFO("Initialization Complete");
@@ -92,10 +92,6 @@ bool Engine::ready() {
 bool Engine::run() {
     INFO("Starting a game of '%s'", config.name.c_str());
 
-    INFO("Creating Render thread");
-    releaseWindow();
-    renderThread = std::make_unique<std::thread>(&Engine::renderLoop, this);
-
     INFO("Initializing event loop");
     sf::Int32 updateHz = 60;
     sf::Int32 updateWaitTime = 1'000'000 / updateHz;
@@ -105,8 +101,12 @@ bool Engine::run() {
     sf::Int64 totalUpdateTime = 0;
     sf::Int64 averageUpdateTime;
     sf::Int32 updateCount = 0;
-    INFO("Starting event loop");
+
+    INFO("Creating Render thread");
     running = true;
+    renderThread = std::make_unique<std::thread>(&Engine::renderLoop, this);
+
+    INFO("Starting event loop");
     while (running) {
         elapsedTime = gameClock.restart();
         processEvents();
@@ -119,7 +119,7 @@ bool Engine::run() {
         if (updateCount % (60 * 1) == 0) {
             DBUG("Average update time: %d ms", averageUpdateTime);
         }
-        // update at approximately 60 Hz (16666us minus time taken by last update(
+        // update at approximately 60 Hz (16666us minus time taken by last update
         sf::sleep(sf::microseconds(updateWaitTime - lastUpdateTime.asMicroseconds()));
     }
     INFO("Stopped event loop");
@@ -176,7 +176,8 @@ void Engine::update(const sf::Time& elapsed) {
         x += -config.keySpeed;
     }
 
-    spritesMutex.lock();
+    std::unique_lock<std::mutex> spritesLock(spritesMutex);
+
     player->moveBy(x, y);
 
     const int millis = elapsed.asMilliseconds();
@@ -184,7 +185,7 @@ void Engine::update(const sf::Time& elapsed) {
         sprite->update(millis);
     }
 
-    spritesMutex.unlock();
+    spritesLock.unlock();
 }
 
 void Engine::renderLoop() {
@@ -200,21 +201,27 @@ void Engine::renderLoop() {
         // blank the render target to black
         screen.clear(sf::Color::Black);
         // render all the normal sprites
-        spritesMutex.lock();
+        std::unique_lock<std::mutex> spritesLock(spritesMutex);
         for (const auto sprite : sprites) {
             screen.draw(*sprite);
         }
-        spritesMutex.unlock();
+        spritesLock.unlock();
         // update the target
         screen.display();
-        lockWindow();
-        // blank the window to gray
-        window.clear(sf::Color(128, 128, 128));
-        // copy render target to window
-        window.draw(sf::Sprite(screen.getTexture()));
-        // update thw window
-        window.display();
-        releaseWindow();
+        // lock and activate the window
+        std::unique_lock<std::mutex> windowLock(windowMutex);
+        if (window.setActive(true)) {
+            // blank the window to gray
+            window.clear(sf::Color(128, 128, 128));
+            // copy render target to window
+            window.draw(sf::Sprite(screen.getTexture()));
+            // update the window
+            window.display();
+        } else {
+            ("Failed to get window context for rendering.");
+        }
+        // release the lock
+        windowLock.unlock();
         lastFrameTime = frameClock.getElapsedTime().asMilliseconds();
         totalFrameTime += lastFrameTime;
         averageFrameTime = totalFrameTime / ++frameCount;
@@ -223,8 +230,6 @@ void Engine::renderLoop() {
             DBUG("Average frame time: %d ms", averageFrameTime);
         }
     }
-    spritesMutex.unlock();
-    releaseWindow();
     INFO("Stopped render loop");
 }
 
@@ -326,7 +331,7 @@ void Engine::readConfig() {
 void Engine::createWindow(const bool shouldFullscreen) {
     unsigned int flags = 0;
 
-    lockWindow();
+    std::unique_lock<std::mutex> windowLock(windowMutex);
 
     INFO("Reading config");
     sf::VideoMode mode;
@@ -356,6 +361,7 @@ void Engine::createWindow(const bool shouldFullscreen) {
         ERR("Could not create main window");
         exit(EXIT_FAILURE);
     }
+    window.setActive(true);
     sf::ContextSettings settings = window.getSettings();
     INFO("Using OpenGL %d.%d", settings.majorVersion, settings.minorVersion);
 
@@ -370,7 +376,8 @@ void Engine::createWindow(const bool shouldFullscreen) {
         window.setVerticalSyncEnabled(true);
     }
 
-    releaseWindow();
+    window.setActive(false);
+    windowLock.unlock();
 
     // scale the viewport to maintain good aspect
     adjustAspect(window.getSize());
@@ -399,23 +406,11 @@ void Engine::adjustAspect(const sf::Vector2u& newSize) {
         heightScale = newSize.x * (9.0f / 16.0f) / newSize.y;
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
-    lockWindow();
+    std::unique_lock<std::mutex> windowLock(windowMutex);
     INFO("Setting %s viewport (wo:%f, ho:%f; ws:%f, hs: %f", isSixteenNine.c_str(),
          widthOffset, heightOffset, widthScale, heightScale);
     view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
     window.setView(view);
-    releaseWindow();
-}
-
-void inline Engine::lockWindow() {
-//    DBUG("Grabbing window lock");
-    windowMutex.lock();
-    window.setActive(true);
-}
-
-void inline Engine::releaseWindow() {
-//    DBUG("Releasing window lock");
-    window.setActive(false);
-    windowMutex.unlock();
+    windowLock.unlock();
 }
 
