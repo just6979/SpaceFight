@@ -97,7 +97,7 @@ bool Engine::run() {
     sf::Clock gameClock;
     sf::Time elapsedTime;
     sf::Time lastUpdateTime;
-    float averageUpdateTime;
+    float averageUpdateTime = 0.0f;
     sf::Int64 totalUpdateTime = 0;
     sf::Int64 updateCount = 0;
 
@@ -195,24 +195,28 @@ void Engine::update(const sf::Time& elapsed) {
 }
 
 void Engine::renderLoop() {
+    using namespace std::chrono_literals;
+
     INFO("Initializing render loop");
-    sf::Clock frameClock;
-    sf::Time lastFrameTime;
+
+    std::chrono::high_resolution_clock frameClock;
+    std::chrono::time_point<std::chrono::high_resolution_clock> frameStart;
+    std::chrono::nanoseconds lastFrameTime = 0ns;
     float averageFrameTime = 0.0f;
-    sf::Int64 totalFrameTime = 0;
-    sf::Int64 frameCount = 0;
-    
+    uint64_t totalFrameTime = 0;
+    uint64_t frameCount = 0;
+
+
     INFO("Starting render loop");
     while (running) {
-        frameClock.restart();
-
+        frameStart = frameClock.now();
         // compute FPS
-        totalFrameTime += lastFrameTime.asMicroseconds();
+        totalFrameTime += lastFrameTime.count();
         frameCount++;
         averageFrameTime = static_cast<float>(totalFrameTime) / frameCount;
-        // log the time per frame every 30 frames (every half second if at 60 Hz)
-        if (frameCount % (60 * 1 / 2) == 0) {
-            DBUG("Average frame time: %f ms", averageFrameTime / 1000.0f);
+        // log the time per frame every 30 frames (every half second at 60 Hz)
+        if (frameCount % 30 == 0) {
+            DBUG("Average frame time: %f ms", averageFrameTime / (1ms/1ns));
         }
 
         // blank the render target to black
@@ -242,10 +246,10 @@ void Engine::renderLoop() {
         windowLock.unlock();
 
         // remember how long the whole loop took, for FPS calculation
-        lastFrameTime = frameClock.getElapsedTime();
+        lastFrameTime = frameClock.now() - frameStart;
     }
     INFO("Stopped render loop");
-    INFO("Average frame time: %f ms", averageFrameTime / 1000.0);
+    INFO("Average frame time: %f ms", averageFrameTime / (1ms/1ns));
 }
 
 void Engine::handleResize(const sf::Event::SizeEvent& newSize) {
