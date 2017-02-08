@@ -211,7 +211,7 @@ void Engine::renderThreadFunc() {
     uint64_t frameCount = 0;
 
 #ifndef NDEBUG
-    uint64_t lastLogTime = 0;
+    int64_t lastLogTime = 0;
 #endif
 
     INFO("Render thread: waiting for Engine to become ready");
@@ -229,9 +229,9 @@ void Engine::renderThreadFunc() {
         averageFrameTime = static_cast<float>(totalFrameTime) / frameCount;
 #ifndef NDEBUG
         // log the average time per frame once per second
-        if (totalFrameTime - lastLogTime > (1s/1ns)) {
+        if (frameClock.now().time_since_epoch().count() - lastLogTime > (1s / 1ns)) {
             DBUG("Average frame time: %f ms", averageFrameTime / (1ms / 1ns));
-            lastLogTime = totalFrameTime;
+            lastLogTime = frameClock.now().time_since_epoch().count();
         }
 #endif
 
