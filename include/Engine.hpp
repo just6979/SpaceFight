@@ -17,6 +17,8 @@
 
 #include <Sprite.hpp>
 
+using namespace std::chrono_literals;
+
 class Engine {
 public:
     const uint32_t JAGE_VERSION_MAJOR = 0;
@@ -37,7 +39,7 @@ private:
     //event dispatcher
     void processEvents();
     // update the simulation
-    void update(const sf::Time& elapsed);
+    void updateLoop();
     // render everything, runs in separate thread
     void renderLoop();
 
@@ -66,6 +68,7 @@ private:
     logog::Cout* logConsole;
     logog::Formatter* formatter;
 
+    std::unique_ptr<std::thread> updateThread;
     std::unique_ptr<std::thread> renderThread;
 
     bool isReady = false;

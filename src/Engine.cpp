@@ -80,59 +80,33 @@ Engine::~Engine() {
 }
 
 bool Engine::ready() {
-    if (isReady) {
-        INFO("Game of '%s' is ready", config.name.c_str());
-    } else {
-
-    }
     return isReady;
 }
 
 bool Engine::run() {
     INFO("Starting a game of '%s'", config.name.c_str());
 
-    INFO("Initializing event loop");
-    sf::Int64 updateHz = 60;
-    sf::Int64 updateWaitTime = 1'000'000 / updateHz;
-    sf::Clock gameClock;
-    sf::Time elapsedTime;
-    sf::Time lastUpdateTime;
-    float averageUpdateTime = 0.0f;
-    sf::Int64 totalUpdateTime = 0;
-    sf::Int64 updateCount = 0;
+    INFO("Creating Update thread");
+    updateThread = std::make_unique<std::thread>(&Engine::updateLoop, this);
 
     INFO("Creating Render thread");
-    running = true;
     renderThread = std::make_unique<std::thread>(&Engine::renderLoop, this);
 
     INFO("Starting event loop");
+    running = true;
     while (running) {
-        elapsedTime = gameClock.restart();
-
-        //compute update time spent
-        totalUpdateTime += lastUpdateTime.asMicroseconds();
-        updateCount++;
-        averageUpdateTime = static_cast<float>(totalUpdateTime) / updateCount;
-        // log the average time per update every 0.5 seconds
-        if (updateCount % (60 * 1 / 2) == 0) {
-            DBUG("Average update time: %f ms", averageUpdateTime / 1000.0f);
-        }
-
         processEvents();
-        update(elapsedTime);
-
-        // remember how long the above code took, for update time spent calculation
-        lastUpdateTime = gameClock.getElapsedTime();
-
-        // sleep long enough to update at approximately updateHz
-        sf::Int64 timeToWait = updateWaitTime - lastUpdateTime.asMicroseconds();
-        sf::sleep(sf::microseconds(timeToWait));
+        std::this_thread::yield();
     }
     INFO("Stopped event loop");
-    INFO("Average update time: %f ms", averageUpdateTime / 1000.0f);
+    INFO("Stopping update thread");
+    updateThread->join();
+    INFO("Stopping render thread");
     renderThread->join();
-    INFO("Closing window");
-    window.close();
+    if (window.isOpen()) {
+        INFO("Closing window");
+        window.close();
+    }
     INFO("Game of '%s' ended successfully", config.name.c_str());
     return true;
 }
@@ -161,43 +135,83 @@ void Engine::processEvents() {
     }
 }
 
-void Engine::update(const sf::Time& elapsed) {
+// runs in its own thread
+void Engine::updateLoop() {
+    INFO("Initializing update thread");
+
+    float joy0_X, joy0_y;
     float x, y = 0;
 
-    // get current state of controls
-    float joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
-    float joy0_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-    x = std::fabs(joy0_X) < config.deadZone ? 0 : joy0_X;
-    y = std::fabs(joy0_y) < config.deadZone ? 0 : joy0_y;
+    sf::Int64 updateHz = 120;
+    sf::Int64 updateWaitTime = 1'000'000 / updateHz;
+    sf::Clock gameClock;
+    sf::Time elapsedTime;
+    sf::Time lastUpdateTime;
+    float averageUpdateTime = 0.0f;
+    sf::Int64 totalUpdateTime = 0;
+    sf::Int64 updateCount = 0;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-        y += -config.keySpeed;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        x += config.keySpeed;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        y += config.keySpeed;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        x += -config.keySpeed;
+    INFO("Update thread: waiting for Engine to become ready");
+    while (!running) {
+        std::this_thread::yield();
+        std::this_thread::sleep_for(10ms);
     }
 
-    std::unique_lock<std::mutex> spritesLock(spritesMutex);
+    INFO("Starting update loop");
+    while (running) {
+        elapsedTime = gameClock.restart();
 
-    player->moveBy(x, y);
+        //compute update time spent
+        totalUpdateTime += lastUpdateTime.asMicroseconds();
+        updateCount++;
+        averageUpdateTime = static_cast<float>(totalUpdateTime) / updateCount;
+        // log the average time per update every 0.5 seconds
+        if (updateCount % (60 * 1 / 2) == 0) {
+            DBUG("Average update time: %f ms", averageUpdateTime / 1000.0f);
+        }
 
-    for (auto sprite : sprites) {
-        sprite->update(elapsed);
+        // get current state of controls
+        joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+        joy0_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
+        x = std::fabs(joy0_X) < config.deadZone ? 0 : joy0_X;
+        y = std::fabs(joy0_y) < config.deadZone ? 0 : joy0_y;
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+            y += -config.keySpeed;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+            x += config.keySpeed;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            y += config.keySpeed;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            x += -config.keySpeed;
+        }
+
+        std::unique_lock<std::mutex> spritesLock(spritesMutex);
+
+        player->moveBy(x, y);
+
+        for (auto sprite : sprites) {
+            sprite->update(elapsedTime);
+        }
+
+        spritesLock.unlock();
+
+        // remember how long the above code took, for updateLoop time spent calculation
+        lastUpdateTime = gameClock.getElapsedTime();
+        // sleep long enough to updateLoop at approximately updateHz
+        sf::Int64 timeToWait = updateWaitTime - lastUpdateTime.asMicroseconds();
+        sf::sleep(sf::microseconds(timeToWait));
     }
-
-    spritesLock.unlock();
+    INFO("Stopped render loop");
+    INFO("Average update time: %f ms", averageUpdateTime / (1ms / 1ns));
 }
 
+// runs in its own thread
 void Engine::renderLoop() {
-    using namespace std::chrono_literals;
-
-    INFO("Initializing render loop");
+    INFO("Initializing render thread");
 
     std::chrono::high_resolution_clock frameClock;
     std::chrono::time_point<std::chrono::high_resolution_clock> frameStart;
@@ -206,6 +220,11 @@ void Engine::renderLoop() {
     uint64_t totalFrameTime = 0;
     uint64_t frameCount = 0;
 
+    INFO("Render thread: waiting for Engine to become ready");
+    while (!running) {
+        std::this_thread::yield();
+        std::this_thread::sleep_for(10ms);
+    }
 
     INFO("Starting render loop");
     while (running) {
@@ -216,7 +235,7 @@ void Engine::renderLoop() {
         averageFrameTime = static_cast<float>(totalFrameTime) / frameCount;
         // log the time per frame every 30 frames (every half second at 60 Hz)
         if (frameCount % 30 == 0) {
-            DBUG("Average frame time: %f ms", averageFrameTime / (1ms/1ns));
+            DBUG("Average frame time: %f ms", averageFrameTime / (1ms / 1ns));
         }
 
         // blank the render target to black
@@ -249,7 +268,7 @@ void Engine::renderLoop() {
         lastFrameTime = frameClock.now() - frameStart;
     }
     INFO("Stopped render loop");
-    INFO("Average frame time: %f ms", averageFrameTime / (1ms/1ns));
+    INFO("Average frame time: %f ms", averageFrameTime / (1ms / 1ns));
 }
 
 void Engine::handleResize(const sf::Event::SizeEvent& newSize) {
