@@ -116,7 +116,6 @@ void Engine::simulationThreadFunc() {
     INFO("Initializing simulation thread");
 
     uint32_t simulationWaitTime;
-    std::chrono::high_resolution_clock simulationClock;
     std::chrono::time_point<std::chrono::high_resolution_clock> startSimulationTime;
     std::chrono::time_point<std::chrono::high_resolution_clock> endSimulationTime;
     std::chrono::nanoseconds lastSimulationTime = 0ns;
@@ -144,7 +143,7 @@ void Engine::simulationThreadFunc() {
 
     INFO("Starting simulation loop");
     while (running) {
-        startSimulationTime = simulationClock.now();
+        startSimulationTime = engineClock.now();
         elapsedSimulationTime = startSimulationTime - endSimulationTime;
 
         //compute update time spent
@@ -189,7 +188,7 @@ void Engine::simulationThreadFunc() {
         spritesLock.unlock();
 
         // remember how long the above code took, for updateLoop time spent calculation
-        endSimulationTime = simulationClock.now();
+        endSimulationTime = engineClock.now();
         lastSimulationTime = endSimulationTime - startSimulationTime;
         // sleep long enough to updateLoop at approximately updateHz
         sf::Int64 timeToWait = simulationWaitTime - (endSimulationTime - startSimulationTime).count();
@@ -203,7 +202,6 @@ void Engine::simulationThreadFunc() {
 void Engine::renderThreadFunc() {
     INFO("Initializing render thread");
 
-    std::chrono::high_resolution_clock frameClock;
     std::chrono::time_point<std::chrono::high_resolution_clock> frameStart;
     std::chrono::nanoseconds lastFrameTime = 0ns;
     float averageFrameTime = 0.0f;
@@ -222,16 +220,16 @@ void Engine::renderThreadFunc() {
 
     INFO("Starting render loop");
     while (running) {
-        frameStart = frameClock.now();
+        frameStart = engineClock.now();
         // compute FPS
         totalFrameTime += lastFrameTime.count();
         frameCount++;
         averageFrameTime = static_cast<float>(totalFrameTime) / frameCount;
 #ifndef NDEBUG
         // log the average time per frame once per second
-        if (frameClock.now().time_since_epoch().count() - lastLogTime > (1s / 1ns)) {
+        if (engineClock.now().time_since_epoch().count() - lastLogTime > (1s / 1ns)) {
             DBUG("Average frame time: %f ms", averageFrameTime / (1ms / 1ns));
-            lastLogTime = frameClock.now().time_since_epoch().count();
+            lastLogTime = engineClock.now().time_since_epoch().count();
         }
 #endif
 
@@ -262,7 +260,7 @@ void Engine::renderThreadFunc() {
         windowLock.unlock();
 
         // remember how long the whole loop took, for FPS calculation
-        lastFrameTime = frameClock.now() - frameStart;
+        lastFrameTime = engineClock.now() - frameStart;
     }
     INFO("Stopped render loop");
     INFO("Average frame time: %f ms", averageFrameTime / (1ms / 1ns));
