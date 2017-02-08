@@ -92,14 +92,14 @@ bool Engine::run() {
     INFO("Starting a game of '%s'", config.name.c_str());
 
     INFO("Initializing event loop");
-    sf::Int32 updateHz = 60;
-    sf::Int32 updateWaitTime = 1'000'000 / updateHz;
+    sf::Int64 updateHz = 60;
+    sf::Int64 updateWaitTime = 1'000'000 / updateHz;
     sf::Clock gameClock;
     sf::Time elapsedTime;
     sf::Time lastUpdateTime;
+    float averageUpdateTime;
     sf::Int64 totalUpdateTime = 0;
-    sf::Int64 averageUpdateTime;
-    sf::Int32 updateCount = 0;
+    sf::Int64 updateCount = 0;
 
     INFO("Creating Render thread");
     running = true;
@@ -108,20 +108,28 @@ bool Engine::run() {
     INFO("Starting event loop");
     while (running) {
         elapsedTime = gameClock.restart();
+
+        //compute update time spent
+        totalUpdateTime += lastUpdateTime.asMicroseconds();
+        updateCount++;
+        averageUpdateTime = static_cast<float>(totalUpdateTime) / updateCount;
+        // log the average time per update every 0.5 seconds
+        if (updateCount % (60 * 1 / 2) == 0) {
+            DBUG("Average update time: %f ms", averageUpdateTime / 1000.0f);
+        }
+
         processEvents();
         update(elapsedTime);
-        //compute
+
+        // remember how long the above code took, for update time spent calculation
         lastUpdateTime = gameClock.getElapsedTime();
-        totalUpdateTime += lastUpdateTime.asMilliseconds();
-        averageUpdateTime = totalUpdateTime / ++updateCount;
-        // log the average time per update every 1 seconds
-        if (updateCount % (60 * 1) == 0) {
-            DBUG("Average update time: %d ms", averageUpdateTime);
-        }
-        // update at approximately 60 Hz (16666us minus time taken by last update
-        sf::sleep(sf::microseconds(updateWaitTime - lastUpdateTime.asMicroseconds()));
+
+        // sleep long enough to update at approximately updateHz
+        sf::Int64 timeToWait = updateWaitTime - lastUpdateTime.asMicroseconds();
+        sf::sleep(sf::microseconds(timeToWait));
     }
     INFO("Stopped event loop");
+    INFO("Average update time: %f ms", averageUpdateTime / 1000.0f);
     renderThread->join();
     INFO("Closing window");
     window.close();
@@ -190,13 +198,24 @@ void Engine::update(const sf::Time& elapsed) {
 void Engine::renderLoop() {
     INFO("Initializing render loop");
     sf::Clock frameClock;
-    sf::Int32 lastFrameTime;
-    sf::Int32 averageFrameTime;
-    sf::Int32 totalFrameTime = 0;
-    sf::Int32 frameCount = 0;
+    sf::Time lastFrameTime;
+    float averageFrameTime = 0.0f;
+    sf::Int64 totalFrameTime = 0;
+    sf::Int64 frameCount = 0;
+    
     INFO("Starting render loop");
     while (running) {
         frameClock.restart();
+
+        // compute FPS
+        totalFrameTime += lastFrameTime.asMicroseconds();
+        frameCount++;
+        averageFrameTime = static_cast<float>(totalFrameTime) / frameCount;
+        // log the time per frame every 30 frames (every half second if at 60 Hz)
+        if (frameCount % (60 * 1 / 2) == 0) {
+            DBUG("Average frame time: %f ms", averageFrameTime / 1000.0f);
+        }
+
         // blank the render target to black
         screen.clear(sf::Color::Black);
         // render all the normal sprites
@@ -207,6 +226,7 @@ void Engine::renderLoop() {
         spritesLock.unlock();
         // update the target
         screen.display();
+
         // lock and activate the window
         std::unique_lock<std::mutex> windowLock(windowMutex);
         if (window.setActive(true)) {
@@ -221,15 +241,12 @@ void Engine::renderLoop() {
         }
         // release the lock
         windowLock.unlock();
-        lastFrameTime = frameClock.getElapsedTime().asMilliseconds();
-        totalFrameTime += lastFrameTime;
-        averageFrameTime = totalFrameTime / ++frameCount;
-        // log the time per frame every 60 frames (every second if at 60 Hz)
-        if (frameCount % (60 * 1) == 0) {
-            DBUG("Average frame time: %d ms", averageFrameTime);
-        }
+
+        // remember how long the whole loop took, for FPS calculation
+        lastFrameTime = frameClock.getElapsedTime();
     }
     INFO("Stopped render loop");
+    INFO("Average frame time: %f ms", averageFrameTime / 1000.0);
 }
 
 void Engine::handleResize(const sf::Event::SizeEvent& newSize) {
