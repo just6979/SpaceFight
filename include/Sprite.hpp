@@ -12,6 +12,7 @@
 #include <logog/logog.hpp>
 
 #include <yaml-cpp/yaml.h>
+#include <chrono>
 
 class Sprite : public sf::Drawable, public sf::Transformable {
 public:
@@ -22,7 +23,7 @@ public:
     ~Sprite();
     void setTexture(const sf::Texture& _texture);
     void setTexture(const sf::Image& _image);
-    void update(const sf::Time& elapsed);
+    void update(const std::chrono::nanoseconds& elapsed);
     void moveBy(const float& x = 0, const float& y = 0);
 private:
     std::string fileName;

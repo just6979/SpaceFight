@@ -70,6 +70,8 @@ private:
     logog::Cout* logConsole;
     logog::Formatter* formatter;
 
+    std::chrono::high_resolution_clock engineClock;
+
     std::unique_ptr<std::thread> updateThread;
     std::unique_ptr<std::thread> renderThread;
 

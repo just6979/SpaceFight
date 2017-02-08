@@ -116,12 +116,18 @@ void Engine::simulationThreadFunc() {
     INFO("Initializing simulation thread");
 
     uint32_t simulationWaitTime;
-    sf::Clock simulationClock;
-    sf::Time elapsedSimulationTime;
-    sf::Time lastSimulationTime;
+    std::chrono::high_resolution_clock simulationClock;
+    std::chrono::time_point<std::chrono::high_resolution_clock> startSimulationTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock> endSimulationTime;
+    std::chrono::nanoseconds lastSimulationTime = 0ns;
+    std::chrono::nanoseconds elapsedSimulationTime = 0ns;
     float averageSimulationTime = 0.0f;
-    sf::Int64 totalSimulationTime = 0;
-    sf::Int64 simulationCycleCount = 0;
+    uint64_t totalSimulationTime = 0;
+    uint64_t simulationCycleCount = 0;
+
+#ifndef NDEBUG
+    int64_t lastLogTime = 0;
+#endif
 
     // controller statuses
     float joy0_X, joy0_y;
@@ -138,16 +144,20 @@ void Engine::simulationThreadFunc() {
 
     INFO("Starting simulation loop");
     while (running) {
-        elapsedSimulationTime = simulationClock.restart();
+        startSimulationTime = simulationClock.now();
+        elapsedSimulationTime = startSimulationTime - endSimulationTime;
 
         //compute update time spent
-        totalSimulationTime += lastSimulationTime.asMicroseconds();
+        totalSimulationTime += lastSimulationTime.count();
         simulationCycleCount++;
         averageSimulationTime = static_cast<float>(totalSimulationTime) / simulationCycleCount;
-        // log the average time per update every 0.5 seconds
-        if (simulationCycleCount % (60 * 1 / 2) == 0) {
-            DBUG("Average simulation time: %f ms", averageSimulationTime / 1000.0f);
+#ifndef NDEBUG
+        // log the average time per frame once per second
+        if (engineClock.now().time_since_epoch().count() - lastLogTime > (1s / 1ns)) {
+            DBUG("Average simulation time: %f ms", averageSimulationTime / (1ms / 1ns));
+            lastLogTime = engineClock.now().time_since_epoch().count();
         }
+#endif
 
         // get current state of controls
         joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
@@ -179,9 +189,10 @@ void Engine::simulationThreadFunc() {
         spritesLock.unlock();
 
         // remember how long the above code took, for updateLoop time spent calculation
-        lastSimulationTime = simulationClock.getElapsedTime();
+        endSimulationTime = simulationClock.now();
+        lastSimulationTime = endSimulationTime - startSimulationTime;
         // sleep long enough to updateLoop at approximately updateHz
-        sf::Int64 timeToWait = simulationWaitTime - lastSimulationTime.asMicroseconds();
+        sf::Int64 timeToWait = simulationWaitTime - (endSimulationTime - startSimulationTime).count();
         sf::sleep(sf::microseconds(timeToWait));
     }
     INFO("Stopped simulation loop");
