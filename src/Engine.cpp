@@ -199,6 +199,10 @@ void Engine::renderThreadFunc() {
     uint64_t totalFrameTime = 0;
     uint64_t frameCount = 0;
 
+#ifndef NDEBUG
+    uint64_t lastLogTime = 0;
+#endif
+
     INFO("Render thread: waiting for Engine to become ready");
     while (!running) {
         std::this_thread::yield();
@@ -212,10 +216,13 @@ void Engine::renderThreadFunc() {
         totalFrameTime += lastFrameTime.count();
         frameCount++;
         averageFrameTime = static_cast<float>(totalFrameTime) / frameCount;
-        // log the time per frame every 30 frames (every half second at 60 Hz)
-        if (frameCount % 30 == 0) {
+#ifndef NDEBUG
+        // log the average time per frame once per second
+        if (totalFrameTime - lastLogTime > (1s/1ns)) {
             DBUG("Average frame time: %f ms", averageFrameTime / (1ms / 1ns));
+            lastLogTime = totalFrameTime;
         }
+#endif
 
         // blank the render target to black
         screen.clear(sf::Color::Black);
