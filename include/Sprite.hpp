@@ -22,7 +22,7 @@ public:
     ~Sprite();
     void setTexture(const sf::Texture& _texture);
     void setTexture(const sf::Image& _image);
-    void update(const int elapsed);
+    void update(const sf::Time& elapsed);
     void moveBy(const float x = 0, const float y = 0);
 private:
     std::string fileName;

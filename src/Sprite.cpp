@@ -95,8 +95,8 @@ void Sprite::setVertices() {
     vertices[3].texCoords = sf::Vector2f(0, size.y);
 }
 
-void Sprite::update(const int elapsed) {
-    move(dir * (speed * elapsed));
+void Sprite::update(const sf::Time& elapsed) {
+    move(dir * (speed * static_cast<float>(elapsed.asMicroseconds()) / 1000.0f));
 }
 
 void Sprite::moveBy(const float x, const float y) {

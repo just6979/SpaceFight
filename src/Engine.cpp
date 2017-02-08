@@ -187,9 +187,8 @@ void Engine::update(const sf::Time& elapsed) {
 
     player->moveBy(x, y);
 
-    const int millis = elapsed.asMilliseconds();
     for (auto sprite : sprites) {
-        sprite->update(millis);
+        sprite->update(elapsed);
     }
 
     spritesLock.unlock();
