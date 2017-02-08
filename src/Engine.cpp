@@ -87,10 +87,10 @@ bool Engine::run() {
     INFO("Starting a game of '%s'", config.name.c_str());
 
     INFO("Creating Update thread");
-    updateThread = std::make_unique<std::thread>(&Engine::updateLoop, this);
+    updateThread = std::make_unique<std::thread>(&Engine::simulationThreadFunc, this);
 
     INFO("Creating Render thread");
-    renderThread = std::make_unique<std::thread>(&Engine::renderLoop, this);
+    renderThread = std::make_unique<std::thread>(&Engine::renderThreadFunc, this);
 
     INFO("Starting event loop");
     running = true;
@@ -111,63 +111,42 @@ bool Engine::run() {
     return true;
 }
 
-void Engine::processEvents() {
-    static sf::Event event;
-
-    while (window.pollEvent(event)) {
-        switch (event.type) {
-            case sf::Event::Closed:
-                INFO("Window closed");
-                running = false;
-                break;
-            case sf::Event::Resized:
-                handleResize(event.size);
-                break;
-            case sf::Event::KeyPressed:
-                handleKeyPress(event);
-                break;
-            case sf::Event::KeyReleased:
-                handleKeyRelease(event);
-                break;
-            default:
-                break;
-        }
-    }
-}
-
 // runs in its own thread
-void Engine::updateLoop() {
-    INFO("Initializing update thread");
+void Engine::simulationThreadFunc() {
+    INFO("Initializing simulation thread");
 
+    uint32_t simulationWaitTime;
+    sf::Clock simulationClock;
+    sf::Time elapsedSimulationTime;
+    sf::Time lastSimulationTime;
+    float averageSimulationTime = 0.0f;
+    sf::Int64 totalSimulationTime = 0;
+    sf::Int64 simulationCycleCount = 0;
+
+    // controller statuses
     float joy0_X, joy0_y;
     float x, y = 0;
 
-    sf::Int64 updateHz = 120;
-    sf::Int64 updateWaitTime = 1'000'000 / updateHz;
-    sf::Clock gameClock;
-    sf::Time elapsedTime;
-    sf::Time lastUpdateTime;
-    float averageUpdateTime = 0.0f;
-    sf::Int64 totalUpdateTime = 0;
-    sf::Int64 updateCount = 0;
+    // compute time between updates based on desired frequency
+    simulationWaitTime = static_cast<uint32_t>(1s / 1ms) / simulationHz;
 
-    INFO("Update thread: waiting for Engine to become ready");
+    INFO("Simulation thread: waiting for Engine to become ready");
     while (!running) {
         std::this_thread::yield();
         std::this_thread::sleep_for(10ms);
     }
 
-    INFO("Starting update loop");
+    INFO("Starting simulation loop");
     while (running) {
-        elapsedTime = gameClock.restart();
+        elapsedSimulationTime = simulationClock.restart();
 
         //compute update time spent
-        totalUpdateTime += lastUpdateTime.asMicroseconds();
-        updateCount++;
-        averageUpdateTime = static_cast<float>(totalUpdateTime) / updateCount;
+        totalSimulationTime += lastSimulationTime.asMicroseconds();
+        simulationCycleCount++;
+        averageSimulationTime = static_cast<float>(totalSimulationTime) / simulationCycleCount;
         // log the average time per update every 0.5 seconds
-        if (updateCount % (60 * 1 / 2) == 0) {
-            DBUG("Average update time: %f ms", averageUpdateTime / 1000.0f);
+        if (simulationCycleCount % (60 * 1 / 2) == 0) {
+            DBUG("Average simulation time: %f ms", averageSimulationTime / 1000.0f);
         }
 
         // get current state of controls
@@ -194,23 +173,23 @@ void Engine::updateLoop() {
         player->moveBy(x, y);
 
         for (auto sprite : sprites) {
-            sprite->update(elapsedTime);
+            sprite->update(elapsedSimulationTime);
         }
 
         spritesLock.unlock();
 
         // remember how long the above code took, for updateLoop time spent calculation
-        lastUpdateTime = gameClock.getElapsedTime();
+        lastSimulationTime = simulationClock.getElapsedTime();
         // sleep long enough to updateLoop at approximately updateHz
-        sf::Int64 timeToWait = updateWaitTime - lastUpdateTime.asMicroseconds();
+        sf::Int64 timeToWait = simulationWaitTime - lastSimulationTime.asMicroseconds();
         sf::sleep(sf::microseconds(timeToWait));
     }
-    INFO("Stopped render loop");
-    INFO("Average update time: %f ms", averageUpdateTime / (1ms / 1ns));
+    INFO("Stopped simulation loop");
+    INFO("Average simulation time: %f ms", averageSimulationTime / (1ms / 1ns));
 }
 
 // runs in its own thread
-void Engine::renderLoop() {
+void Engine::renderThreadFunc() {
     INFO("Initializing render thread");
 
     std::chrono::high_resolution_clock frameClock;
@@ -269,6 +248,30 @@ void Engine::renderLoop() {
     }
     INFO("Stopped render loop");
     INFO("Average frame time: %f ms", averageFrameTime / (1ms / 1ns));
+}
+
+void Engine::processEvents() {
+    static sf::Event event;
+
+    while (window.pollEvent(event)) {
+        switch (event.type) {
+            case sf::Event::Closed:
+                INFO("Window closed");
+                running = false;
+                break;
+            case sf::Event::Resized:
+                handleResize(event.size);
+                break;
+            case sf::Event::KeyPressed:
+                handleKeyPress(event);
+                break;
+            case sf::Event::KeyReleased:
+                handleKeyRelease(event);
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 void Engine::handleResize(const sf::Event::SizeEvent& newSize) {

@@ -25,6 +25,8 @@ public:
     const uint32_t JAGE_VERSION_MINOR = 5;
     const uint32_t JAGE_VERSION_REVISION = 2;
 
+    const uint32_t simulationHz = 120;
+
     Engine(const int argc, const char** argv);
     ~Engine();
 
@@ -39,9 +41,9 @@ private:
     //event dispatcher
     void processEvents();
     // update the simulation
-    void updateLoop();
+    void simulationThreadFunc();
     // render everything, runs in separate thread
-    void renderLoop();
+    void renderThreadFunc();
 
     // event handlers
     void handleResize(const sf::Event::SizeEvent& newSize);
