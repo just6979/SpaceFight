@@ -46,7 +46,7 @@ private:
     void handleKeyRelease(const sf::Event& event);
 
     // log some build & system info
-    void dumpSystemInfo();
+    void dumpSystemInfo() const;
 
     // get the configuration from an INI file
     void readConfig();

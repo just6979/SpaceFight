@@ -1,7 +1,7 @@
 
 #include <utils.hpp>
 
-std::string NodeTypeToString(YAML::Node node) {
+std::string NodeTypeToString(const YAML::Node& node) {
     switch (node.Type()) {
         case YAML::NodeType::Null:
             return "Null";

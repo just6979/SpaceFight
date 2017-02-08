@@ -2,4 +2,4 @@
 
 #include <yaml-cpp/yaml.h>
 
-std::string NodeTypeToString(YAML::Node node);
+std::string NodeTypeToString(const YAML::Node& node);

@@ -282,7 +282,7 @@ void Engine::handleKeyRelease(const sf::Event& event) {
 }
 
 
-void Engine::dumpSystemInfo() {
+void Engine::dumpSystemInfo() const {
 #ifndef NDEBUG
     INFO(argv[0]);
 #endif

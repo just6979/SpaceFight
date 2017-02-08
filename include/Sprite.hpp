@@ -16,14 +16,14 @@
 class Sprite : public sf::Drawable, public sf::Transformable {
 public:
     Sprite();
-    Sprite(const std::string _fileName);
+    Sprite(const std::string& _fileName);
     Sprite(const sf::Texture& _texture);
     Sprite(const sf::Image& _image);
     ~Sprite();
     void setTexture(const sf::Texture& _texture);
     void setTexture(const sf::Image& _image);
     void update(const sf::Time& elapsed);
-    void moveBy(const float x = 0, const float y = 0);
+    void moveBy(const float& x = 0, const float& y = 0);
 private:
     std::string fileName;
     sf::VertexArray vertices;

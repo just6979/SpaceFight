@@ -3,7 +3,7 @@
 Sprite::Sprite() {
 }
 
-Sprite::Sprite(const std::string _fileName) {
+Sprite::Sprite(const std::string& _fileName) {
     loadFromYAML(_fileName);
 }
 
@@ -99,7 +99,7 @@ void Sprite::update(const sf::Time& elapsed) {
     move(dir * (speed * static_cast<float>(elapsed.asMicroseconds()) / 1000.0f));
 }
 
-void Sprite::moveBy(const float x, const float y) {
+void Sprite::moveBy(const float& x, const float& y) {
     dir.x = x;
     dir.y = y;
 }
