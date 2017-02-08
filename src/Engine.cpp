@@ -126,6 +126,7 @@ void Engine::simulationThreadFunc() {
 
 #ifndef NDEBUG
     int64_t lastLogTime = 0;
+    int64_t checkLogTime = 0;
 #endif
 
     // controller statuses
@@ -152,9 +153,10 @@ void Engine::simulationThreadFunc() {
         averageSimulationTime = static_cast<float>(totalSimulationTime) / simulationCycleCount;
 #ifndef NDEBUG
         // log the average time per frame once per second
-        if (engineClock.now().time_since_epoch().count() - lastLogTime > (1s / 1ns)) {
+        checkLogTime = engineClock.now().time_since_epoch().count();
+        if (checkLogTime - lastLogTime > (1s / 1ns)) {
             DBUG("Average simulation time: %f ms", averageSimulationTime / (1ms / 1ns));
-            lastLogTime = engineClock.now().time_since_epoch().count();
+            lastLogTime = checkLogTime;
         }
 #endif
 
@@ -210,6 +212,7 @@ void Engine::renderThreadFunc() {
 
 #ifndef NDEBUG
     int64_t lastLogTime = 0;
+    int64_t checkLogTime = 0;
 #endif
 
     INFO("Render thread: waiting for Engine to become ready");
@@ -227,9 +230,10 @@ void Engine::renderThreadFunc() {
         averageFrameTime = static_cast<float>(totalFrameTime) / frameCount;
 #ifndef NDEBUG
         // log the average time per frame once per second
-        if (engineClock.now().time_since_epoch().count() - lastLogTime > (1s / 1ns)) {
+        checkLogTime = engineClock.now().time_since_epoch().count();
+        if (checkLogTime - lastLogTime > (1s / 1ns)) {
             DBUG("Average frame time: %f ms", averageFrameTime / (1ms / 1ns));
-            lastLogTime = engineClock.now().time_since_epoch().count();
+            lastLogTime = checkLogTime;
         }
 #endif
 
