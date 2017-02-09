@@ -45,20 +45,22 @@ IF (CCACHE_FOUND)
 ENDIF (CCACHE_FOUND)
 
 ## external libs
-## root dir for externals is set in CLion CMake settings because it's system dependent
 
 # logog
+# for Unixes, installing devel libs should put headers & libs in the correct places
+# for Windows, set LOGOG_ROOT in CLion CMake settings
 IF (WIN32)
-    # set LOGOG_ROOT in CLion CMake settings
     INCLUDE_DIRECTORIES(${LOGOG_ROOT}/include)
-    LINK_DIRECTORIES(${LOGOG_ROOT}/lib)
+    SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${LOGOG_ROOT}/lib)
 ENDIF ()
-SET(EXTERNAL_LIBS logog ${EXTERNAL_LIBS})
+FIND_LIBRARY(LOGOG_LIBS logog)
+SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${LOGOG_LIBS})
 
 ## external libs with CMake find_package() support
+## root dirs are set in CLion CMake settings because they're system dependent
 
 # yaml-cpp
-SET(CMAKE_PREFIX_PATH "${YAML_CPP_ROOT}" ${CMAKE_PREFIX_PATH})
+SET(CMAKE_PREFIX_PATH ${YAML_CPP_ROOT} ${CMAKE_PREFIX_PATH})
 FIND_PACKAGE(yaml-cpp 0.5 REQUIRED CONFIG)
 IF (yaml-cpp_FOUND)
     INCLUDE_DIRECTORIES(${YAML_CPP_INCLUDE_DIR})
