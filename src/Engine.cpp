@@ -99,14 +99,18 @@ bool Engine::run() {
         std::this_thread::yield();
     }
     INFO("Stopped event loop");
-    INFO("Stopping update thread");
+
+    INFO("Stopping simulation thread");
     updateThread->join();
+
     INFO("Stopping render thread");
     renderThread->join();
+
     if (window.isOpen()) {
         INFO("Closing window");
         window.close();
     }
+
     INFO("Game of '%s' ended successfully", config.name.c_str());
     return true;
 }
