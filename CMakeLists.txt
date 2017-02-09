@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.3)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.3)
 
-project("jage")
+PROJECT("jage")
 
-set(EXECUTABLE_NAME ${PROJECT_NAME})
+SET(EXECUTABLE_NAME ${PROJECT_NAME})
 
 ## compiler options
 
@@ -10,75 +10,75 @@ set(EXECUTABLE_NAME ${PROJECT_NAME})
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # require compilers that do plain C11 & C++14
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+SET(CMAKE_C_STANDARD 11)
+SET(CMAKE_C_STANDARD_REQUIRED ON)
+SET(CMAKE_C_EXTENSIONS OFF)
+SET(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(CMAKE_CXX_EXTENSIONS OFF)
 
 # use debugging-aware optimization for debug builds
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Og")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
+SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Og")
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
 
 # show all warnings for release builds
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
+SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall")
+SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 
 # use ccache if found
-find_program(CCACHE_FOUND ccache)
-if (CCACHE_FOUND)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-endif (CCACHE_FOUND)
+FIND_PROGRAM(CCACHE_FOUND ccache)
+IF (CCACHE_FOUND)
+    SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+ENDIF (CCACHE_FOUND)
 
 ## external libs
 ## root dir for externals is set in CLion CMake settings because it's system dependent
 
 # logog
-if (WIN32)
+IF (WIN32)
     # set LOGOG_ROOT in CLion CMake settings
     INCLUDE_DIRECTORIES(${LOGOG_ROOT}/include)
     LINK_DIRECTORIES(${LOGOG_ROOT}/lib)
-endif ()
-set(EXTERNAL_LIBS logog ${EXTERNAL_LIBS})
+ENDIF ()
+SET(EXTERNAL_LIBS logog ${EXTERNAL_LIBS})
 
 ## external libs with CMake find_package() support
 
 # yaml-cpp
-set(CMAKE_PREFIX_PATH "${YAML_CPP_ROOT}" ${CMAKE_PREFIX_PATH})
-find_package(yaml-cpp 0.5 REQUIRED CONFIG)
-if (yaml-cpp_FOUND)
-    include_directories(${YAML_CPP_INCLUDE_DIR})
-endif ()
+SET(CMAKE_PREFIX_PATH "${YAML_CPP_ROOT}" ${CMAKE_PREFIX_PATH})
+FIND_PACKAGE(yaml-cpp 0.5 REQUIRED CONFIG)
+IF (yaml-cpp_FOUND)
+    INCLUDE_DIRECTORIES(${YAML_CPP_INCLUDE_DIR})
+ENDIF ()
 
 # SFML
-if (WIN32)
+IF (WIN32)
     # use static sfml libs on Windows
-    set(SFML_STATIC_LIBRARIES TRUE)
-endif ()
-set(CMAKE_MODULE_PATH "${SFML_ROOT}/cmake/Modules" ${CMAKE_MODULE_PATH})
-find_package(SFML 2 REQUIRED graphics window system)
-if (SFML_FOUND)
-    include_directories(${SFML_INCLUDE_DIR})
-endif ()
+    SET(SFML_STATIC_LIBRARIES TRUE)
+ENDIF ()
+SET(CMAKE_MODULE_PATH "${SFML_ROOT}/cmake/Modules" ${CMAKE_MODULE_PATH})
+FIND_PACKAGE(SFML 2 REQUIRED graphics window system)
+IF (SFML_FOUND)
+    INCLUDE_DIRECTORIES(${SFML_INCLUDE_DIR})
+ENDIF ()
 
 ## our code
 
 # add local headers
 INCLUDE_DIRECTORIES(include)
 # add all source files
-file(GLOB SOURCE_FILES src/*.cpp)
+FILE(GLOB SOURCE_FILES src/*.cpp)
 
 ## build it
 
 # add output binary dependent on local sources
-add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
+ADD_EXECUTABLE(${EXECUTABLE_NAME} ${SOURCE_FILES})
 
 # link with local objects and SFML libs & dependencies
-target_link_libraries(${EXECUTABLE_NAME}
-        ${EXTERNAL_LIBS}
-        ${YAML_CPP_LIBRARIES}
-        ${SFML_LIBRARIES}
-        ${SFML_DEPENDENCIES}
-        )
+TARGET_LINK_LIBRARIES(${EXECUTABLE_NAME}
+                      ${EXTERNAL_LIBS}
+                      ${YAML_CPP_LIBRARIES}
+                      ${SFML_LIBRARIES}
+                      ${SFML_DEPENDENCIES}
+                      )
