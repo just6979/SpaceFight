@@ -36,7 +36,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             YAML::Node verts = dataFile["verts"];
             if (verts) {
                 INFO("Verts [%d]", verts.size());
-                for (int i = 0; i < verts.size(); i++) {
+                for (uint32_t i = 0; i < verts.size(); i++) {
                     float x = verts[i][0].as<float>() * size / 2;
                     float y = verts[i][1].as<float>() * size / 2;
                     vertices.append(sf::Vertex(sf::Vector2f(x, y)));
@@ -47,7 +47,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             YAML::Node colors = dataFile["colors"];
             if (colors) {
                 INFO("Colors [%d]", colors.size());
-                for (int i = 0; i < colors.size(); i++) {
+                for (uint32_t i = 0; i < colors.size(); i++) {
                     YAML::Node color = colors[i];
                     auto r = sf::Uint8(color[0].as<int>());
                     auto g = sf::Uint8(color[1].as<int>());

@@ -258,7 +258,7 @@ void Engine::renderThreadFunc() {
             // update the window
             window.display();
         } else {
-            ("Failed to get window context for rendering.");
+            INFO("Failed to get window context for rendering.");
         }
         // release the lock
         windowLock.unlock();
