@@ -34,8 +34,8 @@ SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${RELEASE_FLAGS}")
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${RELEASE_FLAGS}")
 SET(CMAKE_C_FLAGS_MINSIZEREL "${CMAKE_C_FLAGS_MINSIZEREL} ${RELEASE_FLAGS}")
 SET(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} ${RELEASE_FLAGS}")
-SET(CMAKE_C_FLAGS_RELWITHDEBINFO  "${CMAKE_C_FLAGS_RELWITHDEBINFO} ${RELEASE_FLAGS}")
-SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO  "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${RELEASE_FLAGS}")
+SET(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} ${RELEASE_FLAGS}")
+SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${RELEASE_FLAGS}")
 
 # use ccache if found
 FIND_PROGRAM(CCACHE_FOUND ccache)
@@ -45,14 +45,18 @@ IF (CCACHE_FOUND)
 ENDIF (CCACHE_FOUND)
 
 ## external libs
+# set LIB_ROOT to a unix-y file structure where the libs are:
+# $LIB_ROOT/include, $LIB_ROOT/lib, etc,
+# in CLion's CMake settings
+
+IF (WIN32)
+    # for Unixes, installing devel libs should put everything in the correct places
+    # but for Windows, we'll use LIB_ROOT
+    INCLUDE_DIRECTORIES(${LIB_ROOT}/include)
+    SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${LIB_ROOT}/lib)
+ENDIF ()
 
 # logog
-# for Unixes, installing devel libs should put headers & libs in the correct places
-# for Windows, set LOGOG_ROOT in CLion CMake settings
-IF (WIN32)
-    INCLUDE_DIRECTORIES(${LOGOG_ROOT}/include)
-    SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${LOGOG_ROOT}/lib)
-ENDIF ()
 FIND_LIBRARY(LOGOG_LIBS logog)
 SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${LOGOG_LIBS})
 
@@ -60,6 +64,10 @@ SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${LOGOG_LIBS})
 ## root dirs are set in CLion CMake settings because they're system dependent
 
 # yaml-cpp
+# set YAML_CPP_ROOT in CLion/CMake if the CMake modules aren't with the libs
+IF (NOT YAML_CPP_ROOT)
+    SET(YAML_CPP_ROOT ${LIB_ROOT})
+ENDIF ()
 SET(CMAKE_PREFIX_PATH ${YAML_CPP_ROOT} ${CMAKE_PREFIX_PATH})
 FIND_PACKAGE(yaml-cpp 0.5 REQUIRED CONFIG)
 IF (yaml-cpp_FOUND)
@@ -67,10 +75,12 @@ IF (yaml-cpp_FOUND)
 ENDIF ()
 
 # SFML
-IF (WIN32)
-    # use static sfml libs on Windows
-    SET(SFML_STATIC_LIBRARIES TRUE)
+# set SFML_ROOT in CLion/CMake if the CMake modules aren't with the libs
+IF (NOT SFML_ROOT)
+    SET(SFML_ROOT ${LIB_ROOT})
 ENDIF ()
+# use static sfml libs
+SET(SFML_STATIC_LIBRARIES TRUE)
 SET(CMAKE_MODULE_PATH "${SFML_ROOT}/cmake/Modules" ${CMAKE_MODULE_PATH})
 FIND_PACKAGE(SFML 2 REQUIRED graphics window system)
 IF (SFML_FOUND)
@@ -90,9 +100,10 @@ FILE(GLOB SOURCE_FILES src/*.cpp)
 ADD_EXECUTABLE(${EXECUTABLE_NAME} ${SOURCE_FILES})
 
 # link with local objects and SFML libs & dependencies
-TARGET_LINK_LIBRARIES(${EXECUTABLE_NAME}
-                      ${EXTERNAL_LIBS}
-                      ${YAML_CPP_LIBRARIES}
-                      ${SFML_LIBRARIES}
-                      ${SFML_DEPENDENCIES}
-                      )
+TARGET_LINK_LIBRARIES(
+        ${EXECUTABLE_NAME}
+        ${EXTERNAL_LIBS}
+        ${YAML_CPP_LIBRARIES}
+        ${SFML_LIBRARIES}
+        ${SFML_DEPENDENCIES}
+)
