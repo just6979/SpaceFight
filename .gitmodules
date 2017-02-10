@@ -1,0 +1,3 @@
+[submodule "contrib/easyloggingcpp"]
+	path = contrib/easyloggingcpp
+	url = https://github.com/muflihun/easyloggingpp.git

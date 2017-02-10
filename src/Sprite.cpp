@@ -21,45 +21,45 @@ Sprite::~Sprite() {
 bool Sprite::loadFromYAML(const std::string& _fileName) {
     fileName = _fileName;
     try {
-        INFO("Loading %s", fileName.c_str());
+        LOG(INFO) << "Loading '" << fileName << "'";
         YAML::Node dataFile = YAML::LoadFile(fileName);
 
         const std::string& type = dataFile["type"].as<std::string>("");
 
-        INFO("Type: %s", type.c_str());
+        LOG(INFO) << "Type: " << type;
         if (type == "sprite") {
             int size = dataFile["size"].as<int>(0);
-            INFO("Size: %d", size);
+            LOG(INFO) << "Size: " << size;
 
             vertices.setPrimitiveType(sf::Quads);
 
             YAML::Node verts = dataFile["verts"];
             if (verts) {
-                INFO("Verts [%d]", verts.size());
+                LOG(INFO) << "Verts: " << verts.size();
                 for (uint32_t i = 0; i < verts.size(); i++) {
                     float x = verts[i][0].as<float>() * size / 2;
                     float y = verts[i][1].as<float>() * size / 2;
                     vertices.append(sf::Vertex(sf::Vector2f(x, y)));
-                    INFO("(%f, %f)", x, y);
+                    LOG(INFO) << "(" << x << ", " << y << ")";
                 }
             }
 
             YAML::Node colors = dataFile["colors"];
             if (colors) {
-                INFO("Colors [%d]", colors.size());
+                LOG(INFO) << "Colors: " << colors.size();
                 for (uint32_t i = 0; i < colors.size(); i++) {
                     YAML::Node color = colors[i];
                     auto r = sf::Uint8(color[0].as<int>());
                     auto g = sf::Uint8(color[1].as<int>());
                     auto b = sf::Uint8(color[2].as<int>());
                     vertices[i].color = sf::Color(r, g, b);
-                    INFO("(%d, %d, %d)", r, g, b);
+                    LOG(INFO) << "(" << r << ", " << g << ", " << b << ")";
                 }
                 texture = NULL;
             }
         }
     } catch (YAML::Exception e) {
-        ERR("YAML Exception: %s", e.what());
+        LOG(ERROR) << "YAML Exception: " << e.what();
         return false;
     }
     return true;

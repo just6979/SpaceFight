@@ -4,16 +4,17 @@
 #include <mutex>
 #include <thread>
 
+#define ELPP_THREAD_SAFE
+#define ELPP_FORCE_USE_STD_THREAD
+//// don't log to the default file if the config doesn't load
+#define ELPP_NO_LOG_TO_FILE
+////always make a new log file
+#define ELPP_FRESH_LOG_FILE
+#include <easylogging++.h>
+
 #include <SFML/Config.hpp>
 #include <SFML/Graphics.hpp>
 #include <yaml-cpp/yaml.h>
-
-#ifdef NDEBUG
-#define LOGOG_LEVEL LOGOG_LEVEL_INFO
-#else
-#define LOGOG_LEVEL LOGOG_LEVEL_ALL
-#endif
-#include <logog/logog.hpp>
 
 #include <Sprite.hpp>
 
@@ -65,10 +66,6 @@ private:
 
     int argc;
     const char** argv;
-
-    logog::LogFile* logFile;
-    logog::Cout* logConsole;
-    logog::Formatter* formatter;
 
     std::chrono::high_resolution_clock engineClock;
 

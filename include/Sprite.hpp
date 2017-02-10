@@ -1,6 +1,8 @@
 #pragma once
 
-#include <string>
+#include <chrono>
+
+#include <easylogging++.h>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Drawable.hpp>
@@ -9,10 +11,7 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-#include <logog/logog.hpp>
-
 #include <yaml-cpp/yaml.h>
-#include <chrono>
 
 class Sprite : public sf::Drawable, public sf::Transformable {
 public:

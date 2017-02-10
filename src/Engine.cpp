@@ -1,5 +1,7 @@
 #include <Engine.hpp>
 
+INITIALIZE_EASYLOGGINGPP
+
 Engine::Engine(const int _argc, const char** _argv) :
         argc(_argc), argv(_argv) {
     // check if a game directory is specified on the command line
@@ -9,37 +11,25 @@ Engine::Engine(const int _argc, const char** _argv) :
         game = "game";
     }
 
-    LOGOG_INITIALIZE();
 
-    // create custom format
-    class FormatterCustom : public logog::FormatterGCC {
-        virtual TOPIC_FLAGS GetTopicFlags(const logog::Topic& topic) {
-            return (logog::FormatterGCC::GetTopicFlags(topic) &
-                    ~(TOPIC_FILE_NAME_FLAG | TOPIC_LINE_NUMBER_FLAG));
-        }
-    };
 
-    const std::string logFilename = data_dir + '/' + game + ".log";
+    // set some global logging flags
+    el::Loggers::addFlag(el::LoggingFlag::NewLineForContainer);
+    el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
+    el::Loggers::addFlag(el::LoggingFlag::AutoSpacing);
+    el::Loggers::addFlag(el::LoggingFlag::FixedTimeFormat);
+    // pass command line args to elcpp for configuration
+    START_EASYLOGGINGPP(argc, argv);
+    // load elcpp configuration from file
+    el::Configurations conf("logging.conf");
+    // reconfigure default logger
+    el::Loggers::reconfigureLogger("default", conf);
 
-    // remove existing log file
-    remove(logFilename.c_str());
-
-    logFile = new logog::LogFile(logFilename.c_str());
-    logConsole = new logog::Cout;
-    formatter = new FormatterCustom;
-    // use custom format
-    formatter->SetShowTimeOfDay(true);
-    logFile->SetFormatter(*formatter);
-    logConsole->SetFormatter(*formatter);
-
-    // try to make sure we don't get extra crap in our console log
-    std::cout.flush();
-
-    INFO("Logging system initialized.");
+    LOG(INFO) << "Logging system initialized.";
 
     dumpSystemInfo();
 
-    INFO("Initializing Engine with game data in '%s'", game.c_str());
+    LOG(INFO) << "Initializing Engine with game data in '" << game << "'";
 
     data_dir = game;
 
@@ -48,35 +38,30 @@ Engine::Engine(const int _argc, const char** _argv) :
 
     readConfig();
 
-    INFO("Creating %dx%d render target", renderWidth, renderHeight);
+    LOG(INFO) << "Creating " << renderWidth << " x " << renderHeight << " render target";
     screen.create(renderWidth, renderHeight);
 
     createWindow(config.fullscreen);
 
     std::unique_lock<std::mutex> spritesLock(spritesMutex);
-    INFO("Creating entities");
+    LOG(INFO) << "Creating entities from YAML";
     player = std::make_shared<Sprite>(data_dir + "/player.yaml");
     player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
     sprites.push_back(player);
-    INFO("Created player");
+    LOG(INFO) << "Created player";
     enemy = std::make_shared<Sprite>(data_dir + "/enemy.yaml");
     enemy->setPosition(renderWidth * 1 / 2, renderHeight * 1 / 4);
     sprites.push_back(enemy);
-    INFO("Created enemy");
+    LOG(INFO) << "Created enemy";
     spritesLock.unlock();
 
     isReady = true;
-    INFO("Initialization Complete");
+    LOG(INFO) << "Initialization Complete";
 }
 
 Engine::~Engine() {
-    INFO("Logging system shutting down.");
-
-    delete logFile;
-    delete logConsole;
-    delete formatter;
-
-    LOGOG_SHUTDOWN();
+    LOG(INFO) << "Logging system shutting down";
+    el::Loggers::flushAll();
 }
 
 bool Engine::ready() {
@@ -84,40 +69,40 @@ bool Engine::ready() {
 }
 
 bool Engine::run() {
-    INFO("Starting a game of '%s'", config.name.c_str());
+    LOG(INFO) << "Starting a game: " << config.name;
 
-    INFO("Creating Update thread");
+    LOG(INFO) << "Creating simulation thread";
     updateThread = std::make_unique<std::thread>(&Engine::simulationThreadFunc, this);
 
-    INFO("Creating Render thread");
+    LOG(INFO) << "Creating render thread";
     renderThread = std::make_unique<std::thread>(&Engine::renderThreadFunc, this);
 
-    INFO("Starting event loop");
+    LOG(INFO) << "Starting event loop";
     running = true;
     while (running) {
         processEvents();
         std::this_thread::yield();
     }
-    INFO("Stopped event loop");
+    LOG(INFO) << "Stopped event loop";
 
-    INFO("Stopping simulation thread");
+    LOG(INFO) << "Stopping simulation thread";
     updateThread->join();
 
-    INFO("Stopping render thread");
+    LOG(INFO) << "Stopping render thread";
     renderThread->join();
 
     if (window.isOpen()) {
-        INFO("Closing window");
+        LOG(INFO) << "Closing window";
         window.close();
     }
 
-    INFO("Game of '%s' ended successfully", config.name.c_str());
+    LOG(INFO) << "Game of '" << config.name << "' ended successfully";
     return true;
 }
 
 // runs in its own thread
 void Engine::simulationThreadFunc() {
-    INFO("Initializing simulation thread");
+    LOG(INFO) << "Initializing simulation thread";
 
     uint32_t simulationWaitTime;
     std::chrono::time_point<std::chrono::high_resolution_clock> startSimulationTime;
@@ -140,13 +125,13 @@ void Engine::simulationThreadFunc() {
     // compute time between updates based on desired frequency
     simulationWaitTime = static_cast<uint32_t>(1s / 1ms) / simulationHz;
 
-    INFO("Simulation thread: waiting for Engine to become ready");
+    LOG(INFO) << "Simulation thread: waiting for Engine to become ready";
     while (!running) {
         std::this_thread::yield();
         std::this_thread::sleep_for(10ms);
     }
 
-    INFO("Starting simulation loop");
+    LOG(INFO) << "Starting simulation loop";
     while (running) {
         startSimulationTime = engineClock.now();
         elapsedSimulationTime = startSimulationTime - endSimulationTime;
@@ -159,7 +144,7 @@ void Engine::simulationThreadFunc() {
         // log the average time per frame once per second
         checkLogTime = engineClock.now().time_since_epoch().count();
         if (checkLogTime - lastLogTime > (1s / 1ns)) {
-            DBUG("Average simulation time: %f ms", averageSimulationTime / (1ms / 1ns));
+            LOG(INFO) << "Average simulation time: " << averageSimulationTime / (1ms / 1ns) << "ms";
             lastLogTime = checkLogTime;
         }
 #endif
@@ -200,13 +185,13 @@ void Engine::simulationThreadFunc() {
         sf::Int64 timeToWait = simulationWaitTime - (endSimulationTime - startSimulationTime).count();
         sf::sleep(sf::microseconds(timeToWait));
     }
-    INFO("Stopped simulation loop");
-    INFO("Average simulation time: %f ms", averageSimulationTime / (1ms / 1ns));
+    LOG(INFO) << "Stopped simulation loop";
+    LOG(INFO) << "Average simulation time: " << averageSimulationTime / (1ms / 1ns) << "ms";
 }
 
 // runs in its own thread
 void Engine::renderThreadFunc() {
-    INFO("Initializing render thread");
+    LOG(INFO) << "Initializing render thread";
 
     std::chrono::time_point<std::chrono::high_resolution_clock> frameStart;
     std::chrono::nanoseconds lastFrameTime = 0ns;
@@ -219,13 +204,13 @@ void Engine::renderThreadFunc() {
     int64_t checkLogTime = 0;
 #endif
 
-    INFO("Render thread: waiting for Engine to become ready");
+    LOG(INFO) << "Render thread: waiting for Engine to become ready";
     while (!running) {
         std::this_thread::yield();
         std::this_thread::sleep_for(10ms);
     }
 
-    INFO("Starting render loop");
+    LOG(INFO) << "Starting render loop";
     while (running) {
         frameStart = engineClock.now();
         // compute FPS
@@ -236,7 +221,7 @@ void Engine::renderThreadFunc() {
         // log the average time per frame once per second
         checkLogTime = engineClock.now().time_since_epoch().count();
         if (checkLogTime - lastLogTime > (1s / 1ns)) {
-            DBUG("Average frame time: %f ms", averageFrameTime / (1ms / 1ns));
+            LOG(INFO) << "Average frame time: " << averageFrameTime / (1ms / 1ns) << "ms";
             lastLogTime = checkLogTime;
         }
 #endif
@@ -262,7 +247,7 @@ void Engine::renderThreadFunc() {
             // update the window
             window.display();
         } else {
-            INFO("Failed to get window context for rendering.");
+            LOG(INFO) << "Failed to get window context for rendering.";
         }
         // release the lock
         windowLock.unlock();
@@ -270,8 +255,8 @@ void Engine::renderThreadFunc() {
         // remember how long the whole loop took, for FPS calculation
         lastFrameTime = engineClock.now() - frameStart;
     }
-    INFO("Stopped render loop");
-    INFO("Average frame time: %f ms", averageFrameTime / (1ms / 1ns));
+    LOG(INFO) << "Stopped render loop";
+    LOG(INFO) << "Average frame time: " << averageFrameTime / (1ms / 1ns) << "ms";
 }
 
 void Engine::processEvents() {
@@ -280,7 +265,7 @@ void Engine::processEvents() {
     while (window.pollEvent(event)) {
         switch (event.type) {
             case sf::Event::Closed:
-                INFO("Window closed");
+                LOG(INFO) << "Window closed";
                 running = false;
                 break;
             case sf::Event::Resized:
@@ -303,7 +288,7 @@ void Engine::handleResize(const sf::Event::SizeEvent& newSize) {
     // not from a window creation event (initialization or fullscreen toggle)
     config.width = newSize.width;
     config.height = newSize.height;
-    INFO("Window resized to: %dx%d", config.width, config.height);
+    LOG(INFO) << "Window resized to: " << config.width << " x " << config.height;
     // do the calculation
     adjustAspect(sf::Vector2u(newSize.width, newSize.height));
 }
@@ -311,7 +296,7 @@ void Engine::handleResize(const sf::Event::SizeEvent& newSize) {
 void Engine::handleKeyPress(const sf::Event& event) {
     switch (event.key.code) {
         case sf::Keyboard::Escape:
-            INFO("Key: Escape: exiting");
+            LOG(INFO) << "Key = Escape: exiting";
             running = false;
             break;
         case sf::Keyboard::Return:
@@ -334,40 +319,40 @@ void Engine::handleKeyRelease(const sf::Event& event) {
 
 void Engine::dumpSystemInfo() const {
 #ifndef NDEBUG
-    INFO(argv[0]);
+    LOG(INFO) << argv[0];
 #endif
     // dump our own version and build info
-    INFO("JAGE %d.%d.%d", JAGE_VERSION_MAJOR, JAGE_VERSION_MINOR, JAGE_VERSION_REVISION);
-    INFO("Built %s %s", __DATE__, __TIME__);
+    LOG(INFO) << "JAGE " << JAGE_VERSION_MAJOR << "." << JAGE_VERSION_MINOR << "." << JAGE_VERSION_REVISION;
+    LOG(INFO) << "Built at " << __TIME__ << " on " << __DATE__;
 
     // and SFML's info
-    INFO("SFML %d.%d.%d", SFML_VERSION_MAJOR, SFML_VERSION_MINOR, SFML_VERSION_PATCH);
+    LOG(INFO) << "SFML " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR << "." << SFML_VERSION_PATCH;
 
 // what compiler did we use?
 #ifdef __MINGW32__
 #ifdef __MINGW64__
-    INFO("MinGW-w64 %s", __MINGW64_VERSION_STR);
+    LOG(INFO) << "MinGW-w64 " << __MINGW64_VERSION_STR;
 #else
-    INFO("MinGW %s", __MINGW64_VERSION_STR);
+    LOG(INFO) << "MinGW " << __MINGW64_VERSION_STR;
 #endif
 #endif
 
 #ifdef __clang__
-    INFO("CLang %s", __clang_version__);
+    LOG(INFO) << "CLang " << __clang_version__;
 #endif
 
 #ifdef __GNUG__
-    INFO("GCC %s", __VERSION__);
+    LOG(INFO) << "GCC " << __VERSION__;
 #endif
 
 #ifdef MSC_VER
-    INFO("Visual C++ %s", _MCS_VER);
+    LOG(INFO) << "Visual C++ " << _MCS_VER;
 #endif
 }
 
 void Engine::readConfig() {
     std::string configFilename = data_dir + "/config.yaml";
-    INFO("Reading config from '%s'", configFilename.c_str());
+    LOG(INFO) << "Reading config from '" << configFilename << "'";
     try {
         YAML::Node yamlConfig = YAML::LoadFile(configFilename);
         config.name = yamlConfig["name"].as<std::string>(game);
@@ -379,18 +364,18 @@ void Engine::readConfig() {
         config.deadZone = yamlConfig["deadzone"].as<float>(config.deadZone);
         config.keySpeed = yamlConfig["keySpeed"].as<float>(config.keySpeed);
     } catch (YAML::Exception e) {
-        ERR("YAML Exception: %s", e.msg.c_str());
-        ERR("Can't load '%s', using sane defaults", configFilename.c_str());
+        LOG(ERROR) << "YAML Exception: %s" << e.msg;
+        LOG(ERROR) << "Can't load '%s', using sane defaults" << configFilename;
     }
-    INFO("Current settings:");
-    INFO("\tname = %s", config.name.c_str());
-    INFO("\twidth = %d", config.width);
-    INFO("\theight = %d", config.height);
-    INFO("\tfullscreen = %s", (config.fullscreen ? "true" : "false"));
-    INFO("\tuseDesktopSize = %s", (config.useDesktopSize ? "true" : "false"));
-    INFO("\tvsync = %s", (config.vsync ? "true" : "false"));
-    INFO("\tdeadZone = %f", config.deadZone);
-    INFO("\tkeySpeed = %f", config.keySpeed);
+    LOG(INFO) << "Current settings:";
+    LOG(INFO) << "\tname = " << config.name;
+    LOG(INFO) << "\twidth = %d" << config.width;
+    LOG(INFO) << "\theight = %d" << config.height;
+    LOG(INFO) << "\tfullscreen = " << (config.fullscreen ? "true" : "false");
+    LOG(INFO) << "\tuseDesktopSize = " << (config.useDesktopSize ? "true" : "false");
+    LOG(INFO) << "\tvsync = " << (config.vsync ? "true" : "false");
+    LOG(INFO) << "\tdeadZone = %f" << config.deadZone;
+    LOG(INFO) << "\tkeySpeed = %f" << config.keySpeed;
 }
 
 void Engine::createWindow(const bool shouldFullscreen) {
@@ -398,46 +383,47 @@ void Engine::createWindow(const bool shouldFullscreen) {
 
     std::unique_lock<std::mutex> windowLock(windowMutex);
 
-    INFO("Reading config");
+    LOG(INFO) << "Reading config";
     sf::VideoMode mode;
     config.fullscreen = shouldFullscreen;
     if (config.fullscreen) {
-        INFO("Going fullscreen");
+        LOG(INFO) << "Going fullscreen";
         window.setMouseCursorVisible(false);
         if (config.useDesktopSize) {
-            INFO("Setting fullscreen mode (using desktop size): %dx%d",
-                 sf::VideoMode::getDesktopMode().width,
-                 sf::VideoMode::getDesktopMode().height);
+            LOG(INFO) << "Setting fullscreen mode (using desktop size): "
+                      << sf::VideoMode::getDesktopMode().width
+                      << " x "
+                      << sf::VideoMode::getDesktopMode().height;
             mode = sf::VideoMode::getDesktopMode();
         } else {
-            INFO("Setting fullscreen mode: %dx%d", config.width, config.height);
+            LOG(INFO) << "Setting fullscreen mode: " << config.width << " x " << config.height;
             mode = sf::VideoMode(config.width, config.height);
         }
         flags = sf::Style::Fullscreen;
     } else {
-        INFO("Setting windowed mode: %dx%d", config.width, config.height);
+        LOG(INFO) << "Setting windowed mode: " << config.width << " x " << config.height;
         window.setMouseCursorVisible(true);
         mode = sf::VideoMode(config.width, config.height);
         flags = sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize;
     }
-    INFO("Creating the main window");
+    LOG(INFO) << "Creating the main window";
     window.create(mode, game, flags);
     if (!window.isOpen()) {
-        ERR("Could not create main window");
+        LOG(ERROR) << "Could not create main window";
         exit(EXIT_FAILURE);
     }
     window.setActive(true);
     sf::ContextSettings settings = window.getSettings();
-    INFO("Using OpenGL %d.%d", settings.majorVersion, settings.minorVersion);
+    LOG(INFO) << "Using OpenGL " << settings.majorVersion << "." << settings.minorVersion;
 
     // initialize the view
-    INFO("Setting window view");
+    LOG(INFO) << "Setting window view";
     view = window.getDefaultView();
     view.setSize(renderWidth, renderHeight);
     view.setCenter(renderWidth / 2, renderHeight / 2);
     window.setView(view);
     if (config.vsync) {
-        INFO("Enabling V-sync");
+        LOG(INFO) << "Enabling v-sync";
         window.setVerticalSyncEnabled(true);
     } else {
         window.setVerticalSyncEnabled(false);
@@ -451,7 +437,7 @@ void Engine::createWindow(const bool shouldFullscreen) {
 }
 
 void Engine::adjustAspect(const sf::Vector2u& newSize) {
-    INFO("Adjusting aspect for window size %dx%d", newSize.x, newSize.y);
+    LOG(INFO) << "Adjusting aspect for window size: " << newSize.x << " x " << newSize.y;
     // compute the current aspect
     float currentRatio = (float) newSize.x / (float) newSize.y;
     // used to offset and scale the viewport to maintain 16:9 aspect
@@ -474,8 +460,11 @@ void Engine::adjustAspect(const sf::Vector2u& newSize) {
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
     std::unique_lock<std::mutex> windowLock(windowMutex);
-    INFO("Setting %s viewport (wo:%f, ho:%f; ws:%f, hs: %f", isSixteenNine.c_str(),
-         widthOffset, heightOffset, widthScale, heightScale);
+    LOG(INFO) << "Setting %s viewport " << isSixteenNine
+              << "; wo: " << widthOffset
+              << ", ho: " << heightOffset
+              << "; ws: " << widthScale
+              << ", hs: " << heightScale;
     view.setViewport(sf::FloatRect(widthOffset, heightOffset, widthScale, heightScale));
     window.setView(view);
     windowLock.unlock();

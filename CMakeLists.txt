@@ -44,11 +44,14 @@ IF (CCACHE_FOUND)
     SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 ENDIF (CCACHE_FOUND)
 
-## external libs
+## local 3rd party libraries
+INCLUDE_DIRECTORIES(contrib/easyloggingcpp/src)
+FILE(GLOB CONTRIB_SOURCE_FILES contrib/easyloggingcpp/src/*.c*)
+
+## external 3rd party libraries
 # set LIB_ROOT to a unix-y file structure where the libs are:
 # $LIB_ROOT/include, $LIB_ROOT/lib, etc,
 # in CLion's CMake settings
-
 IF (WIN32)
     # for Unixes, installing devel libs should put everything in the correct places
     # but for Windows, we'll use LIB_ROOT
@@ -60,7 +63,7 @@ ENDIF ()
 FIND_LIBRARY(LOGOG_LIBS logog)
 SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${LOGOG_LIBS})
 
-## external libs with CMake find_package() support
+## external 3rd party libraries with CMake find_package() support
 ## root dirs are set in CLion CMake settings because they're system dependent
 
 # yaml-cpp
@@ -97,7 +100,7 @@ FILE(GLOB SOURCE_FILES src/*.cpp)
 ## build it
 
 # add output binary dependent on local sources
-ADD_EXECUTABLE(${EXECUTABLE_NAME} ${SOURCE_FILES})
+ADD_EXECUTABLE(${EXECUTABLE_NAME} ${SOURCE_FILES} ${CONTRIB_SOURCE_FILES})
 
 # link with local objects and SFML libs & dependencies
 TARGET_LINK_LIBRARIES(
