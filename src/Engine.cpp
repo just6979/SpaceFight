@@ -14,7 +14,6 @@ Engine::Engine(const int _argc, const char** _argv) :
     // set some global logging flags
     el::Loggers::addFlag(el::LoggingFlag::NewLineForContainer);
     el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
-    el::Loggers::addFlag(el::LoggingFlag::AutoSpacing);
     el::Loggers::addFlag(el::LoggingFlag::FixedTimeFormat);
     // pass command line args to elpp for configuration
     START_EASYLOGGINGPP(argc, argv);
