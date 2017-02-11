@@ -1,7 +1,7 @@
 type: "sprite"
 size: 100
 # regular sequence
-verts:
+vertices:
  - [-1, -1]
  - [1, -1]
  - [1, 1]

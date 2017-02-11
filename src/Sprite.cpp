@@ -33,12 +33,12 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
 
             vertices.setPrimitiveType(sf::Quads);
 
-            YAML::Node verts = dataFile["verts"];
-            if (verts) {
-                LOG(INFO) << "Verts: " << verts.size();
-                for (uint32_t i = 0; i < verts.size(); i++) {
-                    float x = verts[i][0].as<float>() * size / 2;
-                    float y = verts[i][1].as<float>() * size / 2;
+            YAML::Node newVertices = dataFile["vertices"];
+            if (newVertices) {
+                LOG(INFO) << "Vertices: " << newVertices.size();
+                for (uint32_t i = 0; i < newVertices.size(); i++) {
+                    float x = newVertices[i][0].as<float>() * size / 2;
+                    float y = newVertices[i][1].as<float>() * size / 2;
                     vertices.append(sf::Vertex(sf::Vector2f(x, y)));
                     LOG(INFO) << "(" << x << ", " << y << ")";
                 }

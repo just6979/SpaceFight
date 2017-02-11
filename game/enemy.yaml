@@ -1,6 +1,6 @@
 type: "sprite"
 size: 100
-verts:
+vertices:
  - [-1, -1]
  - [1, -1]
  - [1, 1]

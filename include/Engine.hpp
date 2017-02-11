@@ -91,7 +91,6 @@ private:
         bool fullscreen = false;
         // but do use desktop size when going fullscreen
         bool useDesktopSize = true;
-        // obvi, use vsync
         bool vsync = true;
         // controller/keyboard settings
         float deadZone = 15.0;

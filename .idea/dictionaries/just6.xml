@@ -1,14 +1,20 @@
 <component name="ProjectDictionaryState">
   <dictionary name="just6">
     <words>
+      <w>chdir</w>
+      <w>deadzone</w>
       <w>easylogging</w>
+      <w>elpp</w>
       <w>fullscreen</w>
+      <w>jage</w>
       <w>logog</w>
       <w>patchlevel</w>
+      <w>resized</w>
       <w>sfml</w>
       <w>spdlog</w>
       <w>vsync</w>
       <w>widescreen</w>
+      <w>yaml</w>
     </words>
   </dictionary>
 </component>

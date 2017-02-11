@@ -11,16 +11,14 @@ Engine::Engine(const int _argc, const char** _argv) :
         game = "game";
     }
 
-
-
     // set some global logging flags
     el::Loggers::addFlag(el::LoggingFlag::NewLineForContainer);
     el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
     el::Loggers::addFlag(el::LoggingFlag::AutoSpacing);
     el::Loggers::addFlag(el::LoggingFlag::FixedTimeFormat);
-    // pass command line args to elcpp for configuration
+    // pass command line args to elpp for configuration
     START_EASYLOGGINGPP(argc, argv);
-    // load elcpp configuration from file
+    // load elpp configuration from file
     el::Configurations conf("logging.conf");
     // reconfigure default logger
     el::Loggers::reconfigureLogger("default", conf);
@@ -33,8 +31,8 @@ Engine::Engine(const int _argc, const char** _argv) :
 
     data_dir = game;
 
-    // TODO: verify data_dir is accesible, abort if not
-    // TODO: _chdir into data_dir for easier relative paths everywhere else
+    // TODO: verify data_dir is accessible, abort if not
+    // TODO: chdir into data_dir for easier relative paths everywhere else
 
     readConfig();
 
