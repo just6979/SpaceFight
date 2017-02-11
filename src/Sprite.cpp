@@ -1,8 +1,5 @@
 #include <Sprite.hpp>
 
-Sprite::Sprite() {
-}
-
 Sprite::Sprite(const std::string& _fileName) {
     loadFromYAML(_fileName);
 }
@@ -26,44 +23,37 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
 
         const std::string& type = dataFile["type"].as<std::string>("");
 
-        LOG(INFO) << "Type: " << type;
+        LOG(INFO) << "Entity Type: " << type;
         if (type == "sprite") {
-            int size = dataFile["size"].as<int>(0);
-            LOG(INFO) << "Size: " << size;
+            size = dataFile["size"].as<uint32_t>(DEFAULT_SPRITE_SIZE);
+            LOG(INFO) << "Sprite Size: " << size;
 
             vertices.setPrimitiveType(sf::Quads);
 
-            YAML::Node newVertices = dataFile["vertices"];
-            if (newVertices) {
-                LOG(INFO) << "Vertices: " << newVertices.size();
-                for (uint32_t i = 0; i < newVertices.size(); i++) {
-                    float x = newVertices[i][0].as<float>() * size / 2;
-                    float y = newVertices[i][1].as<float>() * size / 2;
-                    vertices.append(sf::Vertex(sf::Vector2f(x, y)));
-                    LOG(INFO) << "(" << x << ", " << y << ")";
+            YAML::Node vertexList = dataFile["vertices"];
+            if (vertexList && (vertexList.Type() == YAML::NodeType::Sequence)) {
+                LOG(INFO) << "Vertex List Size: " << vertexList.size();
+                YAML::Node colorNode;
+                bool foundColorNode = false;
+                for (auto vertexIter = vertexList.begin(); vertexIter != vertexList.end(); vertexIter++) {
+                    if (vertexIter->Type() == YAML::NodeType::Map) {
+                        colorNode = vertexIter->operator[]("color");
+                        foundColorNode = true;
+                        continue;
+                    }
+                    sf::Vertex vertex = nodeToVertex2f(*vertexIter, size);
+                    if (foundColorNode) {
+                        vertex.color = nodeToColor(colorNode);
+                    }
+                    vertices.append(vertex);
                 }
             }
 
-            YAML::Node colors = dataFile["colors"];
-            if (colors) {
-                LOG(INFO) << "Colors: " << colors.size();
-                for (uint32_t i = 0; i < colors.size(); i++) {
-                    YAML::Node color = colors[i];
-                    auto r = color[0].as<int32_t>();
-                    auto g = color[1].as<uint32_t>();
-                    auto b = color[2].as<uint32_t>();
-                    uint32_t a = 255;
-                    if (color.size() == 4) {
-                        a = color[3].as<uint32_t>();
-                    }
-                    vertices[i].color = sf::Color(
-                            static_cast<uint8_t>(r),
-                            static_cast<uint8_t>(g),
-                            static_cast<uint8_t>(b),
-                            static_cast<uint8_t>(a)
-
-                    );
-                    LOG(INFO) << "(" << r << ", " << g << ", " << b << ")";
+            YAML::Node colorList = dataFile["colors"];
+            if (colorList && (colorList.Type() == YAML::NodeType::Sequence)) {
+                LOG(INFO) << "Color List Size: " << colorList.size();
+                for (uint32_t i = 0; i < colorList.size(); i++) {
+                    vertices[i].color = nodeToColor(colorList[i]);
                 }
                 texture = NULL;
             }

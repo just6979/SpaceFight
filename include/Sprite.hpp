@@ -13,23 +13,30 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <yaml-utils.hpp>
+
 class Sprite : public sf::Drawable, public sf::Transformable {
 public:
-    Sprite();
+    const int DEFAULT_SPRITE_SIZE = 50;
+
+    Sprite() = delete;
     Sprite(const std::string& _fileName);
     Sprite(const sf::Texture& _texture);
     Sprite(const sf::Image& _image);
     ~Sprite();
+
     void setTexture(const sf::Texture& _texture);
     void setTexture(const sf::Image& _image);
     void update(const std::chrono::nanoseconds& elapsed);
     void moveBy(const float& x = 0, const float& y = 0);
 private:
     std::string fileName;
+    uint32_t size;
     sf::VertexArray vertices;
     sf::Vector2f dir;
     float speed = 0.01;
     std::shared_ptr<sf::Texture> texture;
+
     void setVertices();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
     bool loadFromYAML(const std::string& _fileName);

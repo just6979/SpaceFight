@@ -1,15 +1,9 @@
 type: "sprite"
-size: 100
-# regular sequence
+size: 50
 vertices:
+ - color: [0, 0, 255]
  - [-1, -1]
  - [1, -1]
+ - color: [255, 128, 0]
  - [1, 1]
  - [-1, 1]
-# flow seqeuence
-colors: [
- [0, 0, 255],
- [0, 0, 255],
- [0, 0, 255],
- [0, 0, 255]
-]
