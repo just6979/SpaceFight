@@ -49,10 +49,20 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
                 LOG(INFO) << "Colors: " << colors.size();
                 for (uint32_t i = 0; i < colors.size(); i++) {
                     YAML::Node color = colors[i];
-                    auto r = sf::Uint8(color[0].as<int>());
-                    auto g = sf::Uint8(color[1].as<int>());
-                    auto b = sf::Uint8(color[2].as<int>());
-                    vertices[i].color = sf::Color(r, g, b);
+                    auto r = color[0].as<int32_t>();
+                    auto g = color[1].as<uint32_t>();
+                    auto b = color[2].as<uint32_t>();
+                    uint32_t a = 255;
+                    if (color.size() == 4) {
+                        a = color[3].as<uint32_t>();
+                    }
+                    vertices[i].color = sf::Color(
+                            static_cast<uint8_t>(r),
+                            static_cast<uint8_t>(g),
+                            static_cast<uint8_t>(b),
+                            static_cast<uint8_t>(a)
+
+                    );
                     LOG(INFO) << "(" << r << ", " << g << ", " << b << ")";
                 }
                 texture = NULL;
