@@ -13,8 +13,7 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <sfml-utils.hpp>
-#include <yaml-utils.hpp>
+#include <utilities.hpp>
 
 using namespace std::chrono_literals;
 
