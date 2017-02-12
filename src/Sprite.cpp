@@ -58,7 +58,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             if (vertexListNode && (vertexListNode.Type() == YAML::NodeType::Sequence)) {
                 LOG(INFO) << "Vertex list size: " << vertexListNode.size();
                 for (auto&& vertexIter = vertexListNode.begin(); vertexIter != vertexListNode.end(); vertexIter++) {
-                    vertexList.push_back(nodeToVertex2f(vertexIter.operator*(), size));
+                    vertexList.push_back(nodeToVertex(vertexIter.operator*(), size));
                 }
             }
 
