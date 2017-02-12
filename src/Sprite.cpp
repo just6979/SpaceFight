@@ -44,9 +44,13 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
         LOG(INFO) << "Entity Type: " << type;
         if (type == "sprite") {
             size = dataFile["size"].as<uint32_t>(DEFAULT_SPRITE_SIZE);
-            LOG(INFO) << "Sprite Size: " << size;
+            LOG(INFO) << "Initial size: " << size;
 
-            vertices.setPrimitiveType(sf::Quads);
+            float rotation = dataFile["rotation"].as<float>(0);
+            rotate(rotation);
+            LOG(INFO) << "Initial rotation: " << rotation;
+
+            vertices.setPrimitiveType(sf::TriangleStrip);
 
             YAML::Node vertexList = dataFile["vertices"];
             if (vertexList && (vertexList.Type() == YAML::NodeType::Sequence)) {
