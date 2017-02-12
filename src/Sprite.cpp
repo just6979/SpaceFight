@@ -58,7 +58,10 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             if (vertexListNode && (vertexListNode.Type() == YAML::NodeType::Sequence)) {
                 LOG(INFO) << "Vertex list size: " << vertexListNode.size();
                 for (auto&& vertexIter = vertexListNode.begin(); vertexIter != vertexListNode.end(); vertexIter++) {
-                    vertexList.push_back(nodeToVertex(vertexIter.operator*(), size));
+                    const sf::Vertex& vertex = nodeToVertex(vertexIter.operator*(), size);
+                    LOG(DEBUG) << "nodeToColor: " << YAML::Dump(*vertexIter) << " = " << vertexToString(vertex);
+                    vertexList.push_back(vertex);
+
                 }
             }
 
@@ -68,7 +71,10 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             if (colorListNode && (colorListNode.Type() == YAML::NodeType::Sequence)) {
                 LOG(INFO) << "Color list size: " << colorListNode.size();
                 for (auto&& colorIter = colorListNode.begin(); colorIter != colorListNode.end(); colorIter++) {
-                    colorList.push_back(nodeToColor(colorIter.operator*()));
+                    const sf::Color& color = nodeToColor(colorIter.operator*());
+                    colorList.push_back(color);
+                    LOG(DEBUG) << "nodeToVertex: " << YAML::Dump(*colorIter) << " = " << colorToString(color);
+
                 }
             }
 

@@ -26,8 +26,6 @@ sf::Color nodeToColor(const YAML::Node& node) {
         a = node[3].as<uint32_t>();
     }
 
-    LOG(DEBUG) << "nodeToColor: " << YAML::Dump(node) << " = (" << r << ", " << g << ", " << b << ", " << a << ")";
-
     return sf::Color(
             static_cast<uint8_t>(r),
             static_cast<uint8_t>(g),
@@ -41,8 +39,6 @@ sf::Vertex nodeToVertex(const YAML::Node& node, int size) {
     auto y = node[1].as<float>() * size / 2;
 
     sf::Vertex vertex(sf::Vector2f(x, y));
-
-    LOG(DEBUG) << "nodeToVertex: " << YAML::Dump(node) << " = (" << x << ", " << y << ")";
 
     return vertex;
 }

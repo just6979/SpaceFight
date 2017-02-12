@@ -1,7 +1,5 @@
 #pragma once
 
-#include <easylogging++.h>
-
 #include <SFML/Graphics/Vertex.hpp>
 
 #include <yaml-cpp/yaml.h>
