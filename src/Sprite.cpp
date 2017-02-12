@@ -82,7 +82,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
                     if (indexIter->Type() == YAML::NodeType::Map) {
                         uint32_t colorIndex = indexIter->operator[]("color").as<uint32_t>(0);
                         color = colorList[colorIndex - 1];
-                        LOG(INFO) << "Found color index: " << colorIndex << "= (" << color.r << ", " << color.g << ", " << color.b <<", " << color.a << ")";
+                        LOG(INFO) << "Found color index: " << colorIndex << " = " << colorToString(color);
                         foundColor = true;
                         continue;
                     }
@@ -93,7 +93,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
                                 color = sf::Color::White;
                             }
                             sf::Vertex vertex = vertexList[vertexIndex -1];
-                            LOG(INFO) << "Found vertex index: " << vertexIndex << " = " << vertex.position.x << ", " << vertex.position.y;
+                            LOG(INFO) << "Found vertex index: " << vertexIndex << " = " << vertexToString(vertex);
                             if (foundColor) {
                                 vertex.color = color;
                             }
