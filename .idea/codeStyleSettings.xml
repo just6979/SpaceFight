@@ -3,6 +3,8 @@
   <component name="ProjectCodeStyleSettingsManager">
     <option name="PER_PROJECT_SETTINGS">
       <value>
+        <option name="LINE_SEPARATOR" value="&#10;" />
+        <option name="RIGHT_MARGIN" value="200" />
         <CMakeCodeStyleSettings>
           <option name="FORCE_COMMANDS_CASE" value="0" />
         </CMakeCodeStyleSettings>
