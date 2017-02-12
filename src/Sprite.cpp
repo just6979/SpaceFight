@@ -15,6 +15,24 @@ Sprite::Sprite(const sf::Image& _image) {
 Sprite::~Sprite() {
 }
 
+void Sprite::setVelocityDir(const float& x, const float& y) {
+    velocityDir.x = x;
+    velocityDir.y = y;
+}
+
+void Sprite::update(const std::chrono::nanoseconds& elapsed) {
+    move(velocityDir * (speed * static_cast<float>(elapsed.count()) / 1'000'000));
+}
+
+void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    states.transform *= getTransform();
+    if (texture) {
+        states.texture = texture.get();
+    }
+    target.draw(vertices, states);
+}
+
+
 bool Sprite::loadFromYAML(const std::string& _fileName) {
     fileName = _fileName;
     try {
@@ -67,16 +85,16 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
 
 void Sprite::setTexture(const sf::Texture& _texture) {
     texture = std::make_shared<sf::Texture>(_texture);
-    setVertices();
+    setVerticesFromTexture();
 }
 
 void Sprite::setTexture(const sf::Image& _image) {
-    texture = std::make_shared<sf::Texture>();
-    texture->loadFromImage(_image);
-    setVertices();
+    sf::Texture texture;
+    texture.loadFromImage(_image);
+    setTexture(texture);
 }
 
-void Sprite::setVertices() {
+void Sprite::setVerticesFromTexture() {
     sf::Vector2u size = texture->getSize();
 
     setOrigin(size.x / 2, size.y / 2);
@@ -85,29 +103,11 @@ void Sprite::setVertices() {
     vertices.resize(4);
 
     vertices[0].position = sf::Vector2f(0, 0);
-    vertices[1].position = sf::Vector2f(0, size.y);
-    vertices[2].position = sf::Vector2f(size.x, size.y);
-    vertices[3].position = sf::Vector2f(size.x, 0);
-
     vertices[0].texCoords = sf::Vector2f(0, 0);
+    vertices[1].position = sf::Vector2f(0, size.y);
     vertices[1].texCoords = sf::Vector2f(size.x, 0);
+    vertices[2].position = sf::Vector2f(size.x, size.y);
     vertices[2].texCoords = sf::Vector2f(size.x, size.y);
+    vertices[3].position = sf::Vector2f(size.x, 0);
     vertices[3].texCoords = sf::Vector2f(0, size.y);
-}
-
-void Sprite::update(const std::chrono::nanoseconds& elapsed) {
-    move(dir * (speed * static_cast<float>(elapsed.count()) / 1'000'000));
-}
-
-void Sprite::moveBy(const float& x, const float& y) {
-    dir.x = x;
-    dir.y = y;
-}
-
-void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    states.transform *= getTransform();
-    if (texture) {
-        states.texture = texture.get();
-    }
-    target.draw(vertices, states);
 }

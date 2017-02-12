@@ -25,19 +25,22 @@ public:
     Sprite(const sf::Image& _image);
     ~Sprite();
 
-    void setTexture(const sf::Texture& _texture);
-    void setTexture(const sf::Image& _image);
+    void setVelocityDir(const float& x = 0, const float& y = 0);
     void update(const std::chrono::nanoseconds& elapsed);
-    void moveBy(const float& x = 0, const float& y = 0);
+
 private:
     std::string fileName;
     uint32_t size;
     sf::VertexArray vertices;
-    sf::Vector2f dir;
+    sf::Vector2f velocityDir;
     float speed = 0.01;
     std::shared_ptr<sf::Texture> texture;
 
-    void setVertices();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
     bool loadFromYAML(const std::string& _fileName);
+
+    void setTexture(const sf::Texture& _texture);
+    void setTexture(const sf::Image& _image);
+    void setVerticesFromTexture();
 };

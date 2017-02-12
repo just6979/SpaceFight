@@ -167,7 +167,7 @@ void Engine::simulationThreadFunc() {
 
         std::unique_lock<std::mutex> spritesLock(spritesMutex);
 
-        player->moveBy(x, y);
+        player->setVelocityDir(x, y);
 
         for (auto sprite : sprites) {
             sprite->update(elapsedSimulationTime);
