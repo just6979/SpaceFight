@@ -43,7 +43,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
 
         LOG(INFO) << "Entity Type: " << type;
         if (type == "sprite") {
-            size = dataFile["size"].as<uint32_t>(DEFAULT_SPRITE_SIZE);
+            size = dataFile["size"].as<float>(DEFAULT_SPRITE_SIZE);
             LOG(INFO) << "Initial size: " << size;
 
             float rotation = dataFile["rotation"].as<float>(0);

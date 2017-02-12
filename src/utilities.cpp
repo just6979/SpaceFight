@@ -52,9 +52,6 @@ sf::Color nodeToColor(const YAML::Node& node) {
     );
 }
 
-sf::Vertex nodeToVertex(const YAML::Node& node, int size) {
-    auto x = node[0].as<float>() * size / 2;
-    auto y = node[1].as<float>() * size / 2;
-
-    return sf::Vertex(sf::Vector2f(x, y));
+sf::Vertex nodeToVertex(const YAML::Node& node, float size) {
+    return sf::Vertex(sf::Vector2f(node[0].as<float>(), node[1].as<float>()) * (size / 2.0f));
 }

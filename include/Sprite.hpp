@@ -19,7 +19,7 @@ using namespace std::chrono_literals;
 
 class Sprite : public sf::Drawable, public sf::Transformable {
 public:
-    const int DEFAULT_SPRITE_SIZE = 50;
+    const float DEFAULT_SPRITE_SIZE = 50.0f;
 
     Sprite() = delete;
     Sprite(const std::string& _fileName);
@@ -32,7 +32,7 @@ public:
 
 private:
     std::string fileName;
-    uint32_t size;
+    float size;
     sf::VertexArray vertices;
     sf::Vector2f velocityDir;
     float speed = 10;

@@ -13,6 +13,6 @@ std::string vertexToString(const sf::Vertex& vertex);
 
 std::string nodeTypeToString(const YAML::Node& node);
 
-sf::Vertex nodeToVertex(const YAML::Node& node, int size = 50);
+sf::Vertex nodeToVertex(const YAML::Node& node, float size);
 sf::Color nodeToColor(const YAML::Node& node);
 
