@@ -52,32 +52,55 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
 
             vertices.setPrimitiveType(sf::TriangleStrip);
 
-            YAML::Node vertexList = dataFile["vertices"];
-            if (vertexList && (vertexList.Type() == YAML::NodeType::Sequence)) {
-                LOG(INFO) << "Vertex List Size: " << vertexList.size();
-                YAML::Node colorNode;
-                bool foundColorNode = false;
-                for (auto vertexIter = vertexList.begin(); vertexIter != vertexList.end(); vertexIter++) {
-                    if (vertexIter->Type() == YAML::NodeType::Map) {
-                        colorNode = vertexIter->operator[]("color");
-                        foundColorNode = true;
-                        continue;
-                    }
-                    sf::Vertex vertex = nodeToVertex2f(*vertexIter, size);
-                    if (foundColorNode) {
-                        vertex.color = nodeToColor(colorNode);
-                    }
-                    vertices.append(vertex);
+            // get all the vertices
+            std::vector <sf::Vertex> vertexList;
+            YAML::Node vertexListNode = dataFile["vertices"];
+            if (vertexListNode && (vertexListNode.Type() == YAML::NodeType::Sequence)) {
+                LOG(INFO) << "Vertex list size: " << vertexListNode.size();
+                for (auto&& vertexIter = vertexListNode.begin(); vertexIter != vertexListNode.end(); vertexIter++) {
+                    vertexList.push_back(nodeToVertex2f(vertexIter.operator*(), size));
                 }
             }
 
-            YAML::Node colorList = dataFile["colors"];
-            if (colorList && (colorList.Type() == YAML::NodeType::Sequence)) {
-                LOG(INFO) << "Color List Size: " << colorList.size();
-                for (uint32_t i = 0; i < colorList.size(); i++) {
-                    vertices[i].color = nodeToColor(colorList[i]);
+            // get all the colors
+            std::vector <sf::Color> colorList;
+            YAML::Node colorListNode = dataFile["colors"];
+            if (colorListNode && (colorListNode.Type() == YAML::NodeType::Sequence)) {
+                LOG(INFO) << "Color list size: " << colorListNode.size();
+                for (auto&& colorIter = colorListNode.begin(); colorIter != colorListNode.end(); colorIter++) {
+                    colorList.push_back(nodeToColor(colorIter.operator*()));
                 }
-                texture = NULL;
+            }
+
+            // get the indexes into the vertex and color lists/
+            YAML::Node indexList = dataFile["indexes"];
+            if (indexList && (indexList.Type() == YAML::NodeType::Sequence)) {
+                LOG(INFO) << "Index list size: " << indexList.size();
+                sf::Color color;
+                bool foundColor = false;
+                for (auto&& indexIter = indexList.begin(); indexIter != indexList.end(); indexIter++) {
+                    if (indexIter->Type() == YAML::NodeType::Map) {
+                        uint32_t colorIndex = indexIter->operator[]("color").as<uint32_t>(0);
+                        color = colorList[colorIndex - 1];
+                        LOG(INFO) << "Found color index: " << colorIndex << "= (" << color.r << ", " << color.g << ", " << color.b <<", " << color.a << ")";
+                        foundColor = true;
+                        continue;
+                    }
+                    if (indexIter->Type() == YAML::NodeType::Sequence) {
+                        for (auto indexIter2 = indexIter->begin(); indexIter2 != indexIter->end(); indexIter2++) {
+                            uint32_t vertexIndex = indexIter2->as<uint32_t>(0);
+                            if (vertexIndex == 0) {
+                                color = sf::Color::White;
+                            }
+                            sf::Vertex vertex = vertexList[vertexIndex -1];
+                            LOG(INFO) << "Found vertex index: " << vertexIndex << " = " << vertex.position.x << ", " << vertex.position.y;
+                            if (foundColor) {
+                                vertex.color = color;
+                            }
+                            vertices.append(vertex);
+                        }
+                    }
+                }
             }
         }
     } catch (YAML::Exception e) {
