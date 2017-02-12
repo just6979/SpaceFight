@@ -34,14 +34,10 @@ std::string nodeTypeToString(const YAML::Node& node) {
 }
 
 sf::Color nodeToColor(const YAML::Node& node) {
-    auto r = node[0].as<uint32_t>();
-    auto g = node[1].as<uint32_t>();
-    auto b = node[2].as<uint32_t>();
-    uint32_t a = 255;
-
-    if (node.size() == 4) {
-        a = node[3].as<uint32_t>();
-    }
+    auto r = node[0].as<uint32_t>(255);
+    auto g = node[1].as<uint32_t>(255);
+    auto b = node[2].as<uint32_t>(255);
+    auto a = node[3].as<uint32_t>(255);
 
     return sf::Color(
             static_cast<uint8_t>(r),
