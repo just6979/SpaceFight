@@ -102,8 +102,8 @@ void Engine::simulationThreadFunc() {
     LOG(INFO) << "Initializing simulation thread";
 
     uint32_t simulationWaitTime;
-    std::chrono::time_point<std::chrono::high_resolution_clock> startSimulationTime;
-    std::chrono::time_point<std::chrono::high_resolution_clock> endSimulationTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::nanoseconds> startSimulationTime;
+    std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::nanoseconds> endSimulationTime;
     std::chrono::nanoseconds lastSimulationTime = 0ns;
     std::chrono::nanoseconds elapsedSimulationTime = 0ns;
     float averageSimulationTime = 0.0f;

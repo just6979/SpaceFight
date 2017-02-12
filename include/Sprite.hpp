@@ -15,6 +15,8 @@
 
 #include <yaml-utils.hpp>
 
+using namespace std::chrono_literals;
+
 class Sprite : public sf::Drawable, public sf::Transformable {
 public:
     const int DEFAULT_SPRITE_SIZE = 50;
@@ -33,7 +35,7 @@ private:
     uint32_t size;
     sf::VertexArray vertices;
     sf::Vector2f velocityDir;
-    float speed = 0.01;
+    float speed = 10;
     std::shared_ptr<sf::Texture> texture;
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

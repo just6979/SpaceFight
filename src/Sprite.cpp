@@ -21,7 +21,7 @@ void Sprite::setVelocityDir(const float& x, const float& y) {
 }
 
 void Sprite::update(const std::chrono::nanoseconds& elapsed) {
-    move(velocityDir * (speed * static_cast<float>(elapsed.count()) / 1'000'000));
+    move(velocityDir * (speed * static_cast<float>(elapsed.count()) / (1s / 1ns)));
 }
 
 void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
