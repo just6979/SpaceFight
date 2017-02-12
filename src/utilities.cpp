@@ -2,7 +2,12 @@
 
 std::string colorToString(const sf::Color& color) {
     std::stringstream ret;
-    ret << "(" << color.r << ", " << color.g << ", " << color.b << ", " << color.a << ", " << ")";
+    ret << "("
+        << static_cast<uint32_t>(color.r) << ", "
+        << static_cast<uint32_t>(color.g) << ", "
+        << static_cast<uint32_t>(color.b) << ", "
+        << static_cast<uint32_t>(color.a)
+        << ")";
     return ret.str();
 }
 
@@ -50,7 +55,5 @@ sf::Vertex nodeToVertex(const YAML::Node& node, int size) {
     auto x = node[0].as<float>() * size / 2;
     auto y = node[1].as<float>() * size / 2;
 
-    sf::Vertex vertex(sf::Vector2f(x, y));
-
-    return vertex;
+    return sf::Vertex(sf::Vector2f(x, y));
 }
