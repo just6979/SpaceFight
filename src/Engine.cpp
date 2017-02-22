@@ -361,18 +361,18 @@ void Engine::readConfig() {
         config.deadZone = yamlConfig["deadzone"].as<float>(config.deadZone);
         config.keySpeed = yamlConfig["keySpeed"].as<float>(config.keySpeed);
     } catch (YAML::Exception e) {
-        LOG(ERROR) << "YAML Exception: %s" << e.msg;
-        LOG(ERROR) << "Can't load '%s', using sane defaults" << configFilename;
+        LOG(ERROR) << "YAML Exception: " << e.msg;
+		LOG(ERROR) << "Can't load '" << configFilename << "', using sane defaults";
     }
     LOG(INFO) << "Current settings:";
     LOG(INFO) << "\tname = " << config.name;
-    LOG(INFO) << "\twidth = %d" << config.width;
-    LOG(INFO) << "\theight = %d" << config.height;
+    LOG(INFO) << "\twidth = " << config.width;
+    LOG(INFO) << "\theight = " << config.height;
     LOG(INFO) << "\tfullscreen = " << (config.fullscreen ? "true" : "false");
     LOG(INFO) << "\tuseDesktopSize = " << (config.useDesktopSize ? "true" : "false");
     LOG(INFO) << "\tvsync = " << (config.vsync ? "true" : "false");
-    LOG(INFO) << "\tdeadZone = %f" << config.deadZone;
-    LOG(INFO) << "\tkeySpeed = %f" << config.keySpeed;
+    LOG(INFO) << "\tdeadZone = " << config.deadZone;
+    LOG(INFO) << "\tkeySpeed = " << config.keySpeed;
 }
 
 void Engine::createWindow(const bool shouldFullscreen) {
@@ -457,7 +457,7 @@ void Engine::adjustAspect(const sf::Vector2u& newSize) {
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
     std::unique_lock<std::mutex> windowLock(windowMutex);
-    LOG(INFO) << "Setting %s viewport " << isSixteenNine
+    LOG(INFO) << "Setting " << isSixteenNine << " viewport "
               << "; wo: " << widthOffset
               << ", ho: " << heightOffset
               << "; ws: " << widthScale
