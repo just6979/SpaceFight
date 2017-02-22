@@ -59,10 +59,6 @@ IF (WIN32)
     SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${LIB_ROOT}/lib)
 ENDIF ()
 
-# logog
-FIND_LIBRARY(LOGOG_LIBS logog)
-SET(EXTERNAL_LIBS ${LOGOG_LIBS} ${EXTERNAL_LIBS})
-
 ## external 3rd party libraries with CMake find_package() support
 ## LIB_ROOT is set in CLion CMake settings because they're system dependent
 ## if a lib's CMake module isn't in LIB_ROOT, set WHAT_EVER_ROOT to its location
