@@ -5,7 +5,7 @@ INITIALIZE_EASYLOGGINGPP
 Engine::Engine(const int _argc, const char** _argv) :
         argc(_argc), argv(_argv) {
     // check if a game directory is specified on the command line
-    if (argc > 1 and argv[1] != nullptr) {
+    if (argc > 1 && argv[1] != nullptr) {
         game = std::string(argv[1]);
     } else {
         game = "game";

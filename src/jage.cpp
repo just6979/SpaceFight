@@ -15,10 +15,10 @@ int done(std::unique_ptr<Engine> theGame, int exitCode, const std::string& msg =
 int main(const int argc, const char** argv) {
     std::cout << "Start" << std::endl;
     auto theGame = std::make_unique<Engine>(argc, argv);
-    if (not theGame->ready()) {
+    if (!theGame->ready()) {
         return done(std::move(theGame), EXIT_FAILURE, "Could not initialize Engine, quitting.");
     }
-    if (not theGame->run()) {
+    if (!theGame->run()) {
         return done(std::move(theGame), EXIT_FAILURE, "Error running Engine, quitting.");
     }
     return done(std::move(theGame), EXIT_SUCCESS);
