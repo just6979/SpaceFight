@@ -1,4 +1,4 @@
 /.idea/workspace.xml
 /cmake-build-*/
-/bin
+/.vs/
 *.log
