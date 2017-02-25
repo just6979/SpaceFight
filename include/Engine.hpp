@@ -6,9 +6,9 @@
 
 #define ELPP_THREAD_SAFE
 #define ELPP_FORCE_USE_STD_THREAD
-//// don't log to the default file if the config doesn't load
+// don't log to the default file if the config doesn't load
 #define ELPP_NO_LOG_TO_FILE
-////always make a new log file
+// but do always make a new log file when needed
 #define ELPP_FRESH_LOG_FILE
 #include <easylogging++.h>
 

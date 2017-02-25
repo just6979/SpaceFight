@@ -15,6 +15,9 @@ Engine::Engine(const int _argc, const char** _argv) :
     el::Loggers::addFlag(el::LoggingFlag::NewLineForContainer);
     el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
     el::Loggers::addFlag(el::LoggingFlag::FixedTimeFormat);
+#ifndef NDEBUG
+    el::Loggers::addFlag(el::LoggingFlag::ImmediateFlush);
+#endif
     // pass command line args to elpp for configuration
     START_EASYLOGGINGPP(argc, argv);
     // load elpp configuration from file
@@ -362,7 +365,7 @@ void Engine::readConfig() {
         config.keySpeed = yamlConfig["keySpeed"].as<float>(config.keySpeed);
     } catch (YAML::Exception e) {
         LOG(ERROR) << "YAML Exception: " << e.msg;
-		LOG(ERROR) << "Can't load '" << configFilename << "', using sane defaults";
+        LOG(ERROR) << "Can't load '" << configFilename << "', using sane defaults";
     }
     LOG(INFO) << "Current settings:";
     LOG(INFO) << "\tname = " << config.name;
