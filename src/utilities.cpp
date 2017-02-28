@@ -36,7 +36,7 @@ std::string nodeTypeToString(const YAML::Node& node) {
 sf::Color nodeToColor(const YAML::Node& node) {
     std::vector<uint8_t> color = {255, 255, 255, 255};
 
-    uint8_t i  = 0;
+    uint8_t i = 0;
     for (auto&& primary : color) {
         auto newPrimary = node[i++].as<uint32_t>(255);
         if (newPrimary > 255) {
@@ -45,10 +45,10 @@ sf::Color nodeToColor(const YAML::Node& node) {
         primary = static_cast<uint8_t>(newPrimary);
     }
     return sf::Color(
-            color[0],
-            color[1],
-            color[2],
-            color[3]
+        color[0],
+        color[1],
+        color[2],
+        color[3]
     );
 }
 

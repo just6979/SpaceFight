@@ -3,7 +3,7 @@
 INITIALIZE_EASYLOGGINGPP
 
 Engine::Engine(const int _argc, const char** _argv) :
-        argc(_argc), argv(_argv) {
+    argc(_argc), argv(_argv) {
     // check if a game directory is specified on the command line
     if (argc > 1 && argv[1] != nullptr) {
         game = std::string(argv[1]);
@@ -15,9 +15,9 @@ Engine::Engine(const int _argc, const char** _argv) :
     el::Loggers::addFlag(el::LoggingFlag::NewLineForContainer);
     el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
     el::Loggers::addFlag(el::LoggingFlag::FixedTimeFormat);
-#ifndef NDEBUG
+    #ifndef NDEBUG
     el::Loggers::addFlag(el::LoggingFlag::ImmediateFlush);
-#endif
+    #endif
     // pass command line args to elpp for configuration
     START_EASYLOGGINGPP(argc, argv);
     // load elpp configuration from file
@@ -54,8 +54,8 @@ Engine::Engine(const int _argc, const char** _argv) :
     LOG(INFO) << "Created player";
     enemy = std::make_shared<Sprite>(data_dir + "/enemy.yaml");
     enemy->setPosition(
-            static_cast<float>(renderWidth * 1 / 2),
-            static_cast<float>(renderHeight * 1 / 4)
+        static_cast<float>(renderWidth * 1 / 2),
+        static_cast<float>(renderHeight * 1 / 4)
     );
     sprites.push_back(enemy);
     LOG(INFO) << "Created enemy";
@@ -119,10 +119,10 @@ void Engine::simulationThreadFunc() {
     uint64_t totalSimulationTime = 0;
     uint64_t simulationCycleCount = 0;
 
-#ifndef NDEBUG
+    #ifndef NDEBUG
     int64_t lastLogTime = 0;
     int64_t checkLogTime = 0;
-#endif
+    #endif
 
     // controller statuses
     float joy0_X, joy0_y;
@@ -146,14 +146,14 @@ void Engine::simulationThreadFunc() {
         totalSimulationTime += lastSimulationTime.count();
         simulationCycleCount++;
         averageSimulationTime = static_cast<float>(totalSimulationTime) / static_cast<float>(simulationCycleCount);
-#ifndef NDEBUG
+        #ifndef NDEBUG
         // log the average time per frame once per second
         checkLogTime = engineClock.now().time_since_epoch().count();
         if (checkLogTime - lastLogTime > (1s / 1ns)) {
             LOG(INFO) << "Average simulation time: " << averageSimulationTime / (1ms / 1ns) << "ms";
             lastLogTime = checkLogTime;
         }
-#endif
+        #endif
 
         // get current state of controls
         joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
@@ -205,10 +205,10 @@ void Engine::renderThreadFunc() {
     uint64_t totalFrameTime = 0;
     uint64_t frameCount = 0;
 
-#ifndef NDEBUG
+    #ifndef NDEBUG
     int64_t lastLogTime = 0;
     int64_t checkLogTime = 0;
-#endif
+    #endif
 
     LOG(INFO) << "Render thread: waiting for Engine to become ready";
     while (!running) {
@@ -223,14 +223,14 @@ void Engine::renderThreadFunc() {
         totalFrameTime += lastFrameTime.count();
         frameCount++;
         averageFrameTime = static_cast<float>(totalFrameTime) / static_cast<float>(frameCount);
-#ifndef NDEBUG
+        #ifndef NDEBUG
         // log the average time per frame once per second
         checkLogTime = engineClock.now().time_since_epoch().count();
         if (checkLogTime - lastLogTime > (1s / 1ns)) {
             LOG(INFO) << "Average frame time: " << averageFrameTime / (1ms / 1ns) << "ms";
             lastLogTime = checkLogTime;
         }
-#endif
+        #endif
 
         // blank the render target to black
         screen.clear(sf::Color::Black);
@@ -324,9 +324,9 @@ void Engine::handleKeyRelease(const sf::Event& event) {
 
 
 void Engine::dumpSystemInfo() const {
-#ifndef NDEBUG
+    #ifndef NDEBUG
     LOG(INFO) << argv[0];
-#endif
+    #endif
     // dump our own version and build info
     LOG(INFO) << "JAGE " << JAGE_VERSION_MAJOR << "." << JAGE_VERSION_MINOR << "." << JAGE_VERSION_REVISION;
     LOG(INFO) << "Built at " << __TIME__ << " on " << __DATE__;
@@ -335,25 +335,25 @@ void Engine::dumpSystemInfo() const {
     LOG(INFO) << "Using SFML " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR << "." << SFML_VERSION_PATCH;
 
 // what compiler did we use?
-#ifdef __MINGW32__
-#ifdef __MINGW64__
+    #ifdef __MINGW32__
+    #ifdef __MINGW64__
     LOG(INFO) << "MinGW-w64 " << __MINGW64_VERSION_STR;
-#else
+    #else
     LOG(INFO) << "MinGW " << __MINGW64_VERSION_STR;
-#endif
-#endif
+    #endif
+    #endif
 
-#ifdef __clang__
+    #ifdef __clang__
     LOG(INFO) << "CLang " << __clang_version__;
-#endif
+    #endif
 
-#ifdef __GNUG__
+    #ifdef __GNUG__
     LOG(INFO) << "GCC " << __VERSION__;
-#endif
+    #endif
 
-#ifdef _MSC_VER
+    #ifdef _MSC_VER
     LOG(INFO) << "Visual C++ " << _MSC_FULL_VER;
-#endif
+    #endif
 }
 
 void Engine::readConfig() {
@@ -430,8 +430,8 @@ void Engine::createWindow(const bool shouldFullscreen) {
         static_cast<float>(renderHeight)
     );
     view.setCenter(
-            static_cast<float>(renderWidth) / 2,
-            static_cast<float>(renderHeight / 2)
+        static_cast<float>(renderWidth) / 2,
+        static_cast<float>(renderHeight / 2)
     );
     window.setView(view);
     if (config.vsync) {

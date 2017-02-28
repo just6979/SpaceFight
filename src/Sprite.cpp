@@ -53,7 +53,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             vertices.setPrimitiveType(sf::TriangleStrip);
 
             // get all the vertices
-            std::vector <sf::Vertex> vertexList;
+            std::vector<sf::Vertex> vertexList;
             YAML::Node vertexListNode = dataFile["vertices"];
             if (vertexListNode && (vertexListNode.Type() == YAML::NodeType::Sequence)) {
                 LOG(INFO) << "Vertex list size: " << vertexListNode.size();
@@ -66,7 +66,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             }
 
             // get all the colors
-            std::vector <sf::Color> colorList;
+            std::vector<sf::Color> colorList;
             YAML::Node colorListNode = dataFile["colors"];
             if (colorListNode && (colorListNode.Type() == YAML::NodeType::Sequence)) {
                 LOG(INFO) << "Color list size: " << colorListNode.size();
@@ -98,7 +98,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
                             if (vertexIndex == 0) {
                                 color = sf::Color::White;
                             }
-                            sf::Vertex vertex = vertexList[vertexIndex -1];
+                            sf::Vertex vertex = vertexList[vertexIndex - 1];
                             LOG(INFO) << "Found vertex index: " << vertexIndex << " = " << vertexToString(vertex);
                             if (foundColor) {
                                 vertex.color = color;
