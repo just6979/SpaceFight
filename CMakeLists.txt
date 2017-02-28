@@ -20,6 +20,7 @@ SET(CMAKE_CXX_EXTENSIONS OFF)
 # use debugging-aware optimization for debug builds
 IF (NOT MSVC)
 	SET(DEBUG_FLAGS "-Og")
+    SET(DEBUG_FLAGS "${DEBUG_FLAGS} -Wconversion")
 ENDIF ()
 
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${DEBUG_FLAGS}")
@@ -27,11 +28,15 @@ SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${DEBUG_FLAGS}")
 
 # show all warnings for release builds
 IF (NOT MSVC)
+    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wconversion")
 	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wall")
-	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wextra")
-	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Werror")
-	#SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic")
-	#SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic-errors")
+    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wextra")
+    # for easylogging++, lots of unused vars currently
+    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wno-unused-variable")
+    # can't use this yet because elpp also has some conversion errors
+#	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Werror")
+	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic")
+	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic-errors")
 ENDIF ()
 
 SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${RELEASE_FLAGS}")
