@@ -46,7 +46,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             size = dataFile["size"].as<float>(DEFAULT_SPRITE_SIZE);
             LOG(INFO) << "Initial size: " << size;
 
-            float rotation = dataFile["rotation"].as<float>(0);
+            float rotation = dataFile["rotation"].as<float>(0.0f);
             rotate(rotation);
             LOG(INFO) << "Initial rotation: " << rotation;
 
@@ -128,19 +128,21 @@ void Sprite::setTexture(const sf::Image& _image) {
 }
 
 void Sprite::setVerticesFromTexture() {
-    sf::Vector2u size = texture->getSize();
+    sf::Vector2f size;
+    size.x = static_cast<float>(texture->getSize().x);
+    size.x = static_cast<float>(texture->getSize().y);
 
     setOrigin(size.x / 2, size.y / 2);
 
     vertices.setPrimitiveType(sf::Quads);
     vertices.resize(4);
 
-    vertices[0].position = sf::Vector2f(0, 0);
-    vertices[0].texCoords = sf::Vector2f(0, 0);
-    vertices[1].position = sf::Vector2f(0, size.y);
-    vertices[1].texCoords = sf::Vector2f(size.x, 0);
+    vertices[0].position = sf::Vector2f(0.0f, 0.0f);
+    vertices[0].texCoords = sf::Vector2f(0.0f, 0.0f);
+    vertices[1].position = sf::Vector2f(0.0f, size.y);
+    vertices[1].texCoords = sf::Vector2f(size.x, 0.0f);
     vertices[2].position = sf::Vector2f(size.x, size.y);
     vertices[2].texCoords = sf::Vector2f(size.x, size.y);
-    vertices[3].position = sf::Vector2f(size.x, 0);
-    vertices[3].texCoords = sf::Vector2f(0, size.y);
+    vertices[3].position = sf::Vector2f(size.x, 0.0f);
+    vertices[3].texCoords = sf::Vector2f(0.0f, size.y);
 }

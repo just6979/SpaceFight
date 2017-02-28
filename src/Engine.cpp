@@ -46,11 +46,17 @@ Engine::Engine(const int _argc, const char** _argv) :
     std::unique_lock<std::mutex> spritesLock(spritesMutex);
     LOG(INFO) << "Creating entities from YAML";
     player = std::make_shared<Sprite>(data_dir + "/player.yaml");
-    player->setPosition(renderWidth * 1 / 2, renderHeight * 3 / 4);
+    player->setPosition(
+        static_cast<float>(renderWidth * 1 / 2),
+        static_cast<float>(renderHeight * 3 / 4)
+    );
     sprites.push_back(player);
     LOG(INFO) << "Created player";
     enemy = std::make_shared<Sprite>(data_dir + "/enemy.yaml");
-    enemy->setPosition(renderWidth * 1 / 2, renderHeight * 1 / 4);
+    enemy->setPosition(
+            static_cast<float>(renderWidth * 1 / 2),
+            static_cast<float>(renderHeight * 1 / 4)
+    );
     sprites.push_back(enemy);
     LOG(INFO) << "Created enemy";
     spritesLock.unlock();
@@ -139,7 +145,7 @@ void Engine::simulationThreadFunc() {
         //compute update time spent
         totalSimulationTime += lastSimulationTime.count();
         simulationCycleCount++;
-        averageSimulationTime = static_cast<float>(totalSimulationTime) / simulationCycleCount;
+        averageSimulationTime = static_cast<float>(totalSimulationTime) / static_cast<float>(simulationCycleCount);
 #ifndef NDEBUG
         // log the average time per frame once per second
         checkLogTime = engineClock.now().time_since_epoch().count();
@@ -216,7 +222,7 @@ void Engine::renderThreadFunc() {
         // compute FPS
         totalFrameTime += lastFrameTime.count();
         frameCount++;
-        averageFrameTime = static_cast<float>(totalFrameTime) / frameCount;
+        averageFrameTime = static_cast<float>(totalFrameTime) / static_cast<float>(frameCount);
 #ifndef NDEBUG
         // log the average time per frame once per second
         checkLogTime = engineClock.now().time_since_epoch().count();
@@ -419,8 +425,14 @@ void Engine::createWindow(const bool shouldFullscreen) {
     // initialize the view
     LOG(INFO) << "Setting window view";
     view = window.getDefaultView();
-    view.setSize(renderWidth, renderHeight);
-    view.setCenter(renderWidth / 2, renderHeight / 2);
+    view.setSize(
+        static_cast<float>(renderWidth),
+        static_cast<float>(renderHeight)
+    );
+    view.setCenter(
+            static_cast<float>(renderWidth) / 2,
+            static_cast<float>(renderHeight / 2)
+    );
     window.setView(view);
     if (config.vsync) {
         LOG(INFO) << "Enabling v-sync";
@@ -451,12 +463,12 @@ void Engine::adjustAspect(const sf::Vector2u& newSize) {
     if (currentRatio > 16.0f / 9.0f) {
         // we are wider
         isSixteenNine = "wide";
-        widthScale = newSize.y * (16.0f / 9.0f) / newSize.x;
+        widthScale = static_cast<float>(newSize.y) * (16.0f / 9.0f) / static_cast<float>(newSize.x);
         widthOffset = (1.0f - widthScale) / 2.0f;
     } else if (currentRatio < 16.0f / 9.0f) {
         // we are narrower
         isSixteenNine = "narrow";
-        heightScale = newSize.x * (9.0f / 16.0f) / newSize.y;
+        heightScale = static_cast<float>(newSize.x) * (16.0f / 9.0f) / static_cast<float>(newSize.y);
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
     std::unique_lock<std::mutex> windowLock(windowMutex);
