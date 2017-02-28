@@ -7,7 +7,7 @@ SET(EXECUTABLE_NAME ${PROJECT_NAME})
 ## compiler options
 
 # show all command lines in CLion
-set(CMAKE_VERBOSE_MAKEFILE ON)
+SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 # require compilers that do plain C11 & C++14
 SET(CMAKE_C_STANDARD 11)
@@ -17,27 +17,33 @@ SET(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_EXTENSIONS OFF)
 
-# use debugging-aware optimization for debug builds
-IF (NOT MSVC)
-	SET(DEBUG_FLAGS "-Og")
-    SET(DEBUG_FLAGS "${DEBUG_FLAGS} -Wconversion")
+IF (MSVC)
+    # use standard C++14 (as much as possible) even in MSVC
+    SET(COMMON_FLAGS ${COMMON_FLAGS} " /std:c++14")
+    # doesn't seem to work for VS2015 generator, should add manually to CMAKE_CXX_FLAGS during CMake configure
+ELSE ()
+    # warn about any implicit conversions
+    SET(COMMON_FLAGS ${COMMON_FLAGS} "-Wconversion")
+
+    # use debugging-aware optimization for debug builds
+    SET(DEBUG_FLAGS "-Og")
+
+    # show lots more warnings for release builds
+    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wall")
+    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wextra")
+    # skip these warnings for easylogging++, lots of unused vars currently
+    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wno-unused-variable")
+    # can't use this yet because elpp also has some conversion errors
+    #SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Werror")
+    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic")
+    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic-errors")
 ENDIF ()
+
+SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${COMMON_FLAGS})
+SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${COMMON_FLAGS})
 
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${DEBUG_FLAGS}")
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${DEBUG_FLAGS}")
-
-# show all warnings for release builds
-IF (NOT MSVC)
-    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wconversion")
-	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wall")
-    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wextra")
-    # for easylogging++, lots of unused vars currently
-    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wno-unused-variable")
-    # can't use this yet because elpp also has some conversion errors
-#	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Werror")
-	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic")
-	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic-errors")
-ENDIF ()
 
 SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${RELEASE_FLAGS}")
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${RELEASE_FLAGS}")
