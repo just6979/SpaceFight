@@ -326,7 +326,7 @@ void Engine::dumpSystemInfo() const {
     LOG(INFO) << "Built at " << __TIME__ << " on " << __DATE__;
 
     // and SFML's info
-    LOG(INFO) << "SFML " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR << "." << SFML_VERSION_PATCH;
+    LOG(INFO) << "Using SFML " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR << "." << SFML_VERSION_PATCH;
 
 // what compiler did we use?
 #ifdef __MINGW32__
@@ -345,8 +345,8 @@ void Engine::dumpSystemInfo() const {
     LOG(INFO) << "GCC " << __VERSION__;
 #endif
 
-#ifdef MSC_VER
-    LOG(INFO) << "Visual C++ " << _MCS_VER;
+#ifdef _MSC_VER
+    LOG(INFO) << "Visual C++ " << _MSC_FULL_VER;
 #endif
 }
 
