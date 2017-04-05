@@ -60,24 +60,26 @@ IF (CCACHE_FOUND)
 ENDIF (CCACHE_FOUND)
 
 ## local 3rd party libraries
+
 INCLUDE_DIRECTORIES(contrib/easyloggingcpp/src)
 FILE(GLOB CONTRIB_SOURCE_FILES contrib/easyloggingcpp/src/*.c*)
 
 ## external 3rd party libraries
+
 # set LIB_ROOT to a unix-y file structure where the libs are:
 # $LIB_ROOT/include, $LIB_ROOT/lib, etc,
 # in CLion's CMake settings
 IF (WIN32)
-    # for Unixes, installing devel libs should put everything in the correct places
+    # for Unixes, installing -dev libraries should put everything in the correct places
     # but for Windows, we'll use LIB_ROOT
     INCLUDE_DIRECTORIES(${LIB_ROOT}/include)
     SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${LIB_ROOT}/lib)
 ENDIF ()
 
 ## external 3rd party libraries with CMake find_package() support
-## LIB_ROOT is set in CLion CMake settings because they're system dependent
-## if a lib's CMake module isn't in LIB_ROOT, set WHAT_EVER_ROOT to its location
 
+# LIB_ROOT is set in CLion CMake settings because it's system dependent
+# if a lib's CMake module isn't in LIB_ROOT, set WHAT_EVER_ROOT to its location
 SET(CMAKE_PREFIX_PATH ${LIB_ROOT} ${CMAKE_PREFIX_PATH})
 SET(CMAKE_MODULE_PATH "${LIB_ROOT}/cmake/Modules" ${CMAKE_MODULE_PATH})
 
