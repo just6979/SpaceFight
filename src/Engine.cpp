@@ -460,15 +460,15 @@ void Engine::adjustAspect(const sf::Vector2u& newSize) {
     // used to compare and compute aspect ratios
     // for logging
     std::string isSixteenNine = "16:9";
-    if (currentRatio > 16.0f / 9.0f) {
-        // we are wider
+    if (currentRatio >= 16.0f / 9.0f) {
+        // we are wider or equal
         isSixteenNine = "wide";
         widthScale = static_cast<float>(newSize.y) * (16.0f / 9.0f) / static_cast<float>(newSize.x);
         widthOffset = (1.0f - widthScale) / 2.0f;
-    } else if (currentRatio < 16.0f / 9.0f) {
+    } else {
         // we are narrower
         isSixteenNine = "narrow";
-        heightScale = static_cast<float>(newSize.x) * (16.0f / 9.0f) / static_cast<float>(newSize.y);
+        heightScale = static_cast<float>(newSize.x) * (9.0f / 16.0f) / static_cast<float>(newSize.y);
         heightOffset = (1.0f - heightScale) / 2.0f;
     }
     std::unique_lock<std::mutex> windowLock(windowMutex);
