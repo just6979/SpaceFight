@@ -42,9 +42,6 @@ Engine::Engine(const int _argc, const char** _argv) :
 
     readConfig();
 
-    LOG(INFO) << "Creating " << renderWidth << " x " << renderHeight << " render target";
-    screen.create(renderWidth, renderHeight);
-
     createWindow(config.fullscreen);
 
     std::unique_lock<std::mutex> spritesLock(spritesMutex);
@@ -236,24 +233,17 @@ void Engine::renderThreadFunc() {
         }
         #endif
 
-        // blank the render target to black
-        screen.clear(sf::Color::Black);
-        // render all the normal sprites
-        std::unique_lock<std::mutex> spritesLock(spritesMutex);
-        for (const auto sprite : sprites) {
-            screen.draw(*sprite);
-        }
-        spritesLock.unlock();
-        // update the target
-        screen.display();
-
         // lock and activate the window
         std::unique_lock<std::mutex> windowLock(windowMutex);
         if (window.setActive(true)) {
-            // blank the window to gray
-            window.clear(sf::Color(128, 128, 128));
-            // copy render target to window
-            window.draw(sf::Sprite(screen.getTexture()));
+            // blank the window to black
+            window.clear(sf::Color::Black);
+            // render all the normal sprites
+            std::unique_lock<std::mutex> spritesLock(spritesMutex);
+            for (const auto sprite : sprites) {
+                window.draw(*sprite);
+            }
+            spritesLock.unlock();
             // update the window
             window.display();
         } else {

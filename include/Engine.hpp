@@ -101,8 +101,6 @@ private:
     sf::RenderWindow window;
     // controls the 2D camera, used for rendering internally at a set size
     sf::View view;
-    // where we render the game before copying it to the window
-    sf::RenderTexture screen;
 
     // mutexes for the window and sprite list
     std::mutex windowMutex;
