@@ -2,6 +2,10 @@
 
 INITIALIZE_EASYLOGGINGPP
 
+#ifndef NDEBUG
+//#define DO_LOG_UPDATE_TIMES
+#endif
+
 Engine::Engine(const int _argc, const char** _argv) :
     argc(_argc), argv(_argv) {
     // check if a game directory is specified on the command line
@@ -119,7 +123,7 @@ void Engine::simulationThreadFunc() {
     uint64_t totalSimulationTime = 0;
     uint64_t simulationCycleCount = 0;
 
-    #ifndef NDEBUG
+    #ifdef DO_LOG_UPDATE_TIMES
     int64_t lastLogTime = 0;
     int64_t checkLogTime = 0;
     #endif
@@ -146,7 +150,7 @@ void Engine::simulationThreadFunc() {
         totalSimulationTime += lastSimulationTime.count();
         simulationCycleCount++;
         averageSimulationTime = static_cast<float>(totalSimulationTime) / static_cast<float>(simulationCycleCount);
-        #ifndef NDEBUG
+        #ifdef DO_LOG_UPDATE_TIMES
         // log the average time per frame once per second
         checkLogTime = engineClock.now().time_since_epoch().count();
         if (checkLogTime - lastLogTime > (1s / 1ns)) {
@@ -205,7 +209,7 @@ void Engine::renderThreadFunc() {
     uint64_t totalFrameTime = 0;
     uint64_t frameCount = 0;
 
-    #ifndef NDEBUG
+    #ifdef DO_LOG_UPDATE_TIMES
     int64_t lastLogTime = 0;
     int64_t checkLogTime = 0;
     #endif
@@ -223,10 +227,10 @@ void Engine::renderThreadFunc() {
         totalFrameTime += lastFrameTime.count();
         frameCount++;
         averageFrameTime = static_cast<float>(totalFrameTime) / static_cast<float>(frameCount);
-        #ifndef NDEBUG
+        #ifdef DO_LOG_UPDATE_TIMES
+        if (checkLogTime - lastLogTime > (1s / 1ns)) {
         // log the average time per frame once per second
         checkLogTime = engineClock.now().time_since_epoch().count();
-        if (checkLogTime - lastLogTime > (1s / 1ns)) {
             LOG(INFO) << "Average frame time: " << averageFrameTime / (1ms / 1ns) << "ms";
             lastLogTime = checkLogTime;
         }
