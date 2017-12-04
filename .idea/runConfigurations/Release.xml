@@ -1,6 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Release" type="CMakeRunConfiguration" factoryName="Application" singleton="true" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="jage" TARGET_NAME="jage" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="jage" RUN_TARGET_NAME="jage">
-    <envs />
-    <method />
-  </configuration>
-</component>
