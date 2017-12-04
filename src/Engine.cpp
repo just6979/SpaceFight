@@ -331,9 +331,9 @@ void Engine::dumpSystemInfo() const {
 // what compiler did we use?
     #ifdef __MINGW32__
     #ifdef __MINGW64__
-    LOG(INFO) << "MinGW-w64 " << __MINGW64_VERSION_STR;
+    LOG(INFO) << "MinGW-w64 64-bit" << __MINGW64_VERSION_STR;
     #else
-    LOG(INFO) << "MinGW " << __MINGW64_VERSION_STR;
+    LOG(INFO) << "MinGW[32|-w64] 32-bit" << __MINGW32_VERSION;
     #endif
     #endif
 
