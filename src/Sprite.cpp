@@ -12,8 +12,7 @@ Sprite::Sprite(const sf::Image& _image) {
     setTexture(_image);
 }
 
-Sprite::~Sprite() {
-}
+Sprite::~Sprite() = default;
 
 void Sprite::setVelocityDir(const float& x, const float& y) {
     velocityDir.x = x;
@@ -46,7 +45,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             size = dataFile["size"].as<float>(DEFAULT_SPRITE_SIZE);
             LOG(INFO) << "Initial size: " << size;
 
-            float rotation = dataFile["rotation"].as<float>(0.0f);
+            auto rotation = dataFile["rotation"].as<float>(0.0f);
             rotate(rotation);
             LOG(INFO) << "Initial rotation: " << rotation;
 
@@ -58,10 +57,10 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             if (vertexListNode && (vertexListNode.Type() == YAML::NodeType::Sequence)) {
                 LOG(INFO) << "Vertex list size: " << vertexListNode.size();
                 for (auto&& vertexIter = vertexListNode.begin(); vertexIter != vertexListNode.end(); vertexIter++) {
-                    const sf::Vertex& vertex = nodeToVertex(vertexIter.operator*(), size);
-                    LOG(DEBUG) << "Vertex found: " << YAML::Dump(*vertexIter) << " = " << vertexToString(vertex);
+                    const YAML::Node& node = vertexIter.operator*();
+                    const sf::Vertex& vertex = nodeToVertex(node, size);
                     vertexList.push_back(vertex);
-
+                    LOG(DEBUG) << "Vertex found: " << YAML::Dump(node) << " = " << vertexToString(vertex);
                 }
             }
 
@@ -71,10 +70,10 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
             if (colorListNode && (colorListNode.Type() == YAML::NodeType::Sequence)) {
                 LOG(INFO) << "Color list size: " << colorListNode.size();
                 for (auto&& colorIter = colorListNode.begin(); colorIter != colorListNode.end(); colorIter++) {
-                    const sf::Color& color = nodeToColor(colorIter.operator*());
+                    const YAML::Node& node = colorIter.operator*();
+                    const sf::Color& color = nodeToColor(node);
                     colorList.push_back(color);
-                    LOG(DEBUG) << "Color found: " << YAML::Dump(*colorIter) << " = " << colorToString(color);
-
+                    LOG(DEBUG) << "Color found: " << YAML::Dump(node) << " = " << colorToString(color);
                 }
             }
 
@@ -86,7 +85,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
                 bool foundColor = false;
                 for (auto&& indexIter = indexList.begin(); indexIter != indexList.end(); indexIter++) {
                     if (indexIter->Type() == YAML::NodeType::Map) {
-                        uint32_t colorIndex = indexIter->operator[]("color").as<uint32_t>(0);
+                        auto colorIndex = indexIter->operator[]("color").as<uint32_t>(0);
                         color = colorList[colorIndex - 1];
                         LOG(INFO) << "Found color index: " << colorIndex << " = " << colorToString(color);
                         foundColor = true;
@@ -94,7 +93,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
                     }
                     if (indexIter->Type() == YAML::NodeType::Sequence) {
                         for (auto indexIter2 = indexIter->begin(); indexIter2 != indexIter->end(); indexIter2++) {
-                            uint32_t vertexIndex = indexIter2->as<uint32_t>(0);
+                            auto vertexIndex = indexIter2->as<uint32_t>(0);
                             if (vertexIndex == 0) {
                                 color = sf::Color::White;
                             }
@@ -109,7 +108,7 @@ bool Sprite::loadFromYAML(const std::string& _fileName) {
                 }
             }
         }
-    } catch (YAML::Exception e) {
+    } catch (YAML::Exception& e) {
         LOG(ERROR) << "YAML Exception: " << e.what();
         return false;
     }

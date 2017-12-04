@@ -159,8 +159,8 @@ void Engine::simulationThreadFunc() {
         // get current state of controls
         joy0_X = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
         joy0_y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-        x = std::fabs(joy0_X) < config.deadZone ? 0 : joy0_X;
-        y = std::fabs(joy0_y) < config.deadZone ? 0 : joy0_y;
+        x = std::abs(joy0_X) < config.deadZone ? 0 : joy0_X;
+        y = std::abs(joy0_y) < config.deadZone ? 0 : joy0_y;
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             y += -config.keySpeed;
@@ -179,7 +179,7 @@ void Engine::simulationThreadFunc() {
 
         player->setVelocityDir(x, y);
 
-        for (auto sprite : sprites) {
+        for (auto& sprite : sprites) {
             sprite->update(elapsedSimulationTime);
         }
 
@@ -189,7 +189,7 @@ void Engine::simulationThreadFunc() {
         endSimulationTime = engineClock.now();
         lastSimulationTime = endSimulationTime - startSimulationTime;
         // sleep long enough to updateLoop at approximately updateHz
-        sf::Int64 timeToWait = simulationWaitTime - (endSimulationTime - startSimulationTime).count();
+        sf::Int64 timeToWait = simulationWaitTime - lastSimulationTime.count();
         sf::sleep(sf::microseconds(timeToWait));
     }
     LOG(INFO) << "Stopped simulation loop";
@@ -240,7 +240,7 @@ void Engine::renderThreadFunc() {
             window.clear(sf::Color::Black);
             // render all the normal sprites
             std::unique_lock<std::mutex> spritesLock(spritesMutex);
-            for (const auto sprite : sprites) {
+            for (const auto& sprite : sprites) {
                 window.draw(*sprite);
             }
             spritesLock.unlock();
@@ -363,7 +363,7 @@ void Engine::readConfig() {
         config.vsync = yamlConfig["vsync"].as<bool>(config.vsync);
         config.deadZone = yamlConfig["deadzone"].as<float>(config.deadZone);
         config.keySpeed = yamlConfig["keySpeed"].as<float>(config.keySpeed);
-    } catch (YAML::Exception e) {
+    } catch (YAML::Exception& e) {
         LOG(ERROR) << "YAML Exception: " << e.msg;
         LOG(ERROR) << "Can't load '" << configFilename << "', using sane defaults";
     }
@@ -475,4 +475,3 @@ void Engine::adjustAspect(const sf::Vector2u& newSize) {
     window.setView(view);
     windowLock.unlock();
 }
-

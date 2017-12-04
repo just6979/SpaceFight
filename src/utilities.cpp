@@ -44,14 +44,15 @@ sf::Color nodeToColor(const YAML::Node& node) {
         }
         primary = static_cast<uint8_t>(newPrimary);
     }
-    return sf::Color(
+    return {
         color[0],
         color[1],
         color[2],
         color[3]
-    );
+    };
 }
 
 sf::Vertex nodeToVertex(const YAML::Node& node, float size) {
-    return sf::Vertex(sf::Vector2f(node[0].as<float>(), node[1].as<float>()) * (size / 2.0f));
+    const sf::Vertex& vertex = sf::Vertex(sf::Vector2f(node[0].as<float>(), node[1].as<float>()) * (size / 2.0f));
+    return vertex;
 }

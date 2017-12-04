@@ -22,10 +22,10 @@ public:
     const float DEFAULT_SPRITE_SIZE = 50.0f;
 
     Sprite() = delete;
-    Sprite(const std::string& _fileName);
-    Sprite(const sf::Texture& _texture);
-    Sprite(const sf::Image& _image);
-    ~Sprite();
+    explicit Sprite(const std::string& _fileName);
+    explicit Sprite(const sf::Texture& _texture);
+    explicit Sprite(const sf::Image& _image);
+    ~Sprite() override;
 
     void setVelocityDir(const float& x = 0, const float& y = 0);
     void update(const std::chrono::nanoseconds& elapsed);
@@ -38,7 +38,7 @@ private:
     float speed = 10;
     std::shared_ptr<sf::Texture> texture;
 
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     bool loadFromYAML(const std::string& _fileName);
 

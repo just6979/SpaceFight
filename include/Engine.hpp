@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <cmath>
 #include <mutex>
 #include <thread>
 
@@ -58,7 +59,7 @@ private:
     void readConfig();
 
     // [re]create the rendering window, possibly fullscreen
-    void createWindow(const bool shouldFullscreen = false);
+    void createWindow(bool shouldFullscreen = false);
     // change the viewport to maintain 16:9 aspect ratio
     void adjustAspect(const sf::Vector2u& newSize);
 
