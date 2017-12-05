@@ -25,9 +25,13 @@ Engine::Engine(const int _argc, const char** _argv) :
 	// pass command line args to elpp for configuration
 	START_EASYLOGGINGPP(argc, argv);
 	// load elpp configuration from file
-	el::Configurations conf("logging.conf");
-	// reconfigure default logger
-	el::Loggers::reconfigureLogger("default", conf);
+	el::Configurations conf;
+	if (conf.parseFromFile("logging.conf")) {
+		// reconfigure default logger
+		el::Loggers::reconfigureLogger("default", conf);
+	} else {
+		LOG(INFO) << "Logging configuration file not found";
+	}
 
 	LOG(INFO) << "Logging system initialized.";
 
