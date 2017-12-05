@@ -18,25 +18,25 @@ SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_EXTENSIONS OFF)
 
 IF (MSVC)
-    # use standard C++14 (as much as possible) even in MSVC
-    SET(COMMON_FLAGS ${COMMON_FLAGS} " /std:c++14")
-    # doesn't seem to work for VS2015 generator, should add manually to CMAKE_CXX_FLAGS during CMake configure
+	# use standard C++14 (as much as possible) even in MSVC
+	SET(COMMON_FLAGS ${COMMON_FLAGS} " /std:c++14")
+	# doesn't seem to work for VS2015 generator, should add manually to CMAKE_CXX_FLAGS during CMake configure
 ELSE ()
-    # warn about any implicit conversions
-    SET(COMMON_FLAGS ${COMMON_FLAGS} "-Wconversion")
+	# warn about any implicit conversions
+	SET(COMMON_FLAGS ${COMMON_FLAGS} "-Wconversion")
 
-    # use debugging-aware optimization for debug builds
-    SET(DEBUG_FLAGS "-Og")
+	# use debugging-aware optimization for debug builds
+	SET(DEBUG_FLAGS "-Og")
 
-    # show lots more warnings for release builds
-    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wall")
-    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wextra")
-    # skip these warnings for easylogging++, lots of unused vars currently
-    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wno-unused-variable")
-    # can't use this yet because elpp also has some conversion errors
-    #SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Werror")
-    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic")
-    SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic-errors")
+	# show lots more warnings for release builds
+	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wall")
+	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wextra")
+	# skip these warnings for easylogging++, lots of unused vars currently
+	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Wno-unused-variable")
+	# can't use this yet because elpp also has some conversion errors
+	#SET(RELEASE_FLAGS "${RELEASE_FLAGS} -Werror")
+	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic")
+	SET(RELEASE_FLAGS "${RELEASE_FLAGS} -pedantic-errors")
 ENDIF ()
 
 SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${COMMON_FLAGS})
@@ -55,8 +55,8 @@ SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${RELEASE_
 # use ccache if found
 FIND_PROGRAM(CCACHE_FOUND ccache)
 IF (CCACHE_FOUND)
-    SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-    SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+	SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+	SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 ENDIF (CCACHE_FOUND)
 
 ## local 3rd party libraries
@@ -70,10 +70,10 @@ FILE(GLOB CONTRIB_SOURCE_FILES contrib/easyloggingcpp/src/*.c*)
 # $LIB_ROOT/include, $LIB_ROOT/lib, etc,
 # in CLion's CMake settings
 IF (WIN32)
-    # for Unixes, installing -dev libraries should put everything in the correct places
-    # but for Windows, we'll use LIB_ROOT
-    INCLUDE_DIRECTORIES(${LIB_ROOT}/include)
-    SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${LIB_ROOT}/lib)
+	# for Unixes, installing -dev libraries should put everything in the correct places
+	# but for Windows, we'll use LIB_ROOT
+	INCLUDE_DIRECTORIES(${LIB_ROOT}/include)
+	SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${LIB_ROOT}/lib)
 ENDIF ()
 
 ## external 3rd party libraries with CMake find_package() support
@@ -86,29 +86,29 @@ SET(CMAKE_MODULE_PATH "${LIB_ROOT}/cmake/Modules" ${CMAKE_MODULE_PATH})
 # yaml-cpp
 # set YAML_CPP_ROOT in CLion/CMake if the CMake modules aren't with the libs
 IF (NOT YAML_CPP_ROOT)
-    SET(YAML_CPP_ROOT ${LIB_ROOT})
+	SET(YAML_CPP_ROOT ${LIB_ROOT})
 ENDIF ()
 SET(CMAKE_PREFIX_PATH ${YAML_CPP_ROOT} ${CMAKE_PREFIX_PATH})
 FIND_PACKAGE(yaml-cpp 0.5 REQUIRED CONFIG)
 IF (yaml-cpp_FOUND)
-    INCLUDE_DIRECTORIES(${YAML_CPP_INCLUDE_DIR})
-    SET(EXTERNAL_LIBS ${YAML_CPP_LIBRARIES} ${EXTERNAL_LIBS})
+	INCLUDE_DIRECTORIES(${YAML_CPP_INCLUDE_DIR})
+	SET(EXTERNAL_LIBS ${YAML_CPP_LIBRARIES} ${EXTERNAL_LIBS})
 ENDIF ()
 
 # SFML
 # set SFML_ROOT in CLion/CMake if the CMake modules aren't with the libs
 IF (NOT SFML_ROOT)
-    SET(SFML_ROOT ${LIB_ROOT})
+	SET(SFML_ROOT ${LIB_ROOT})
 ENDIF ()
 SET(CMAKE_MODULE_PATH "${SFML_ROOT}/cmake/Modules" ${CMAKE_MODULE_PATH})
 IF (WIN32)
-    # use static sfml libs on Windows
-    SET(SFML_STATIC_LIBRARIES TRUE)
+	# use static sfml libs on Windows
+	SET(SFML_STATIC_LIBRARIES TRUE)
 ENDIF ()
 FIND_PACKAGE(SFML 2 REQUIRED graphics window system)
 IF (SFML_FOUND)
-    INCLUDE_DIRECTORIES(${SFML_INCLUDE_DIR})
-    SET(EXTERNAL_LIBS ${SFML_LIBRARIES} ${SFML_DEPENDENCIES} ${EXTERNAL_LIBS})
+	INCLUDE_DIRECTORIES(${SFML_INCLUDE_DIR})
+	SET(EXTERNAL_LIBS ${SFML_LIBRARIES} ${SFML_DEPENDENCIES} ${EXTERNAL_LIBS})
 ENDIF ()
 
 ## our code
@@ -125,6 +125,6 @@ ADD_EXECUTABLE(${EXECUTABLE_NAME} ${CONTRIB_SOURCE_FILES} ${SOURCE_FILES})
 
 # link with local objects and SFML libs & dependencies
 TARGET_LINK_LIBRARIES(
-        ${EXECUTABLE_NAME}
-        ${EXTERNAL_LIBS}
+		${EXECUTABLE_NAME}
+		${EXTERNAL_LIBS}
 )
